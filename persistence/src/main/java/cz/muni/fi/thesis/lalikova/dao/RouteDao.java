@@ -12,6 +12,10 @@ public interface RouteDao {
 
     List<Route> findAll();
 
+    boolean isOrdered(Route route);
+
+    Long getStaringPointId(Route route);
+
     void update(Route route);
 
     void remove(Route route);

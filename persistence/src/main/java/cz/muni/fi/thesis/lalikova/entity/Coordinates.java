@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
@@ -22,6 +23,9 @@ public class Coordinates {
     @NotNull
     @Column(nullable = false)
     private Double Longitude;
+
+    @OneToOne
+    private Point point;
 
     public Long getId() {
         return id;
@@ -45,6 +49,14 @@ public class Coordinates {
 
     public void setLongitude(Double longitude) {
         Longitude = longitude;
+    }
+
+    public Point getPoint() {
+        return point;
+    }
+
+    public void setPoint(Point point) {
+        this.point = point;
     }
 
     @Override

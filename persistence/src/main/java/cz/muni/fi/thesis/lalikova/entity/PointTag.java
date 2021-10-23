@@ -1,12 +1,15 @@
 package cz.muni.fi.thesis.lalikova.entity;
 
+import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Column;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class PointTag {
@@ -20,6 +23,9 @@ public class PointTag {
     private String name;
 
     private String description;
+
+    @ManyToMany
+    private Set<Point> points = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -43,6 +49,14 @@ public class PointTag {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Set<Point> getPoints() {
+        return points;
+    }
+
+    public void setPoints(Set<Point> points) {
+        this.points = points;
     }
 
     @Override

@@ -2,6 +2,7 @@ package cz.muni.fi.thesis.lalikova.jpa;
 
 import cz.muni.fi.thesis.lalikova.entity.Route;
 import cz.muni.fi.thesis.lalikova.dao.RouteDao;
+import cz.muni.fi.thesis.lalikova.exceptions.DaoDataAccessException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -30,6 +31,20 @@ public class RouteDaoImpl implements RouteDao {
     public List<Route> findAll() {
         return entityManager.createQuery(
                 "select r from Route r", Route.class).getResultList();
+    }
+
+    @Override
+    public boolean isOrdered(Route route) {
+        return !route.getOrderedPointIds().isEmpty();
+    }
+
+    @Override
+    public Long getStaringPointId(Route route) {
+        if (isOrdered(route)) {
+            return route.getOrderedPointIds().get(0);
+        } else {
+            throw new DaoDataAccessException("Requesting starting point of unordered route not possible");
+        }
     }
 
     @Override

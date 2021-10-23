@@ -27,7 +27,7 @@ public class Point {
     @Column(nullable = false)
     private String title;
 
-    @OneToOne
+    @OneToOne(mappedBy = "point")
     private Coordinates coordinates;
 
     private String description;
@@ -35,7 +35,7 @@ public class Point {
     @OneToMany(mappedBy = "point")
     private Set<Photo> photos ;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "points")
     private Set<PointTag> tags = new HashSet<>();
 
     @ManyToMany
