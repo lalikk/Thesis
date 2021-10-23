@@ -1,13 +1,15 @@
-package cz.muni.fi.thesis.lalikova.service;
+package cz.muni.fi.thesis.lalikova.service.service;
 
 import cz.muni.fi.thesis.lalikova.dao.CoordinatesDao;
 import cz.muni.fi.thesis.lalikova.entity.Coordinates;
 import cz.muni.fi.thesis.lalikova.exceptions.DaoDataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import lombok.NonNull;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class CoordinatesServiceImpl implements CoordinatesService {
 
     @Autowired

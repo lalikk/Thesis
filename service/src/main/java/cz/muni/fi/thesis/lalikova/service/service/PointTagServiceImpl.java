@@ -1,13 +1,15 @@
-package cz.muni.fi.thesis.lalikova.service;
+package cz.muni.fi.thesis.lalikova.service.service;
 
 import cz.muni.fi.thesis.lalikova.dao.PointTagDao;
 import cz.muni.fi.thesis.lalikova.entity.PointTag;
 import cz.muni.fi.thesis.lalikova.exceptions.DaoDataAccessException;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class PointTagServiceImpl implements PointTagService{
 
     @Autowired

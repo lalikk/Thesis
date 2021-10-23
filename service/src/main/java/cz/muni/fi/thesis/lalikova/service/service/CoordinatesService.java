@@ -1,4 +1,4 @@
-package cz.muni.fi.thesis.lalikova.service;
+package cz.muni.fi.thesis.lalikova.service.service;
 
 import cz.muni.fi.thesis.lalikova.entity.Coordinates;
 import java.util.List;

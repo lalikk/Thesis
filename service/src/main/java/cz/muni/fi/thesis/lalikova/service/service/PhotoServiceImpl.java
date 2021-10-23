@@ -1,13 +1,15 @@
-package cz.muni.fi.thesis.lalikova.service;
+package cz.muni.fi.thesis.lalikova.service.service;
 
 import cz.muni.fi.thesis.lalikova.dao.PhotoDao;
 import cz.muni.fi.thesis.lalikova.entity.Photo;
 import cz.muni.fi.thesis.lalikova.exceptions.DaoDataAccessException;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class PhotoServiceImpl implements PhotoService{
 
     @Autowired
