@@ -71,4 +71,11 @@ public class PointTag {
     public int hashCode() {
         return Objects.hash(getName(), getDescription());
     }
+
+    @Override
+    public String toString() {
+        return "PointTag{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }
