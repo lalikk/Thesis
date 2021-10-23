@@ -73,4 +73,11 @@ public class Photo {
     public int hashCode() {
         return Objects.hash(getDescription(), getPoint());
     }
+
+    @Override
+    public String toString() {
+        return "Photo{" +
+                "description='" + description + '\'' +
+                '}';
+    }
 }

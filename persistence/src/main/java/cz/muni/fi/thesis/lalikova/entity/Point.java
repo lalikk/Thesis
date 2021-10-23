@@ -109,4 +109,11 @@ public class Point {
     public int hashCode() {
         return Objects.hash(getTitle(), getCoordinates());
     }
+
+    @Override
+    public String toString() {
+        return "Point{" +
+                "title='" + title + '\'' +
+                '}';
+    }
 }

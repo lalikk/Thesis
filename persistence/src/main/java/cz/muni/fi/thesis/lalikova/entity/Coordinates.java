@@ -71,4 +71,12 @@ public class Coordinates {
     public int hashCode() {
         return Objects.hash(getLatitude(), getLongitude());
     }
+
+    @Override
+    public String toString() {
+        return "Coordinates{" +
+                "Latitude=" + Latitude +
+                ", Longitude=" + Longitude +
+                '}';
+    }
 }
