@@ -54,7 +54,7 @@ public class CoordinatesServiceImpl implements CoordinatesService {
         try {
             coordinatesDao.remove(coordinates);
         } catch (Exception ex) {
-            throw new DaoDataAccessException("Coordinates Dao Remove Exception with coodinates: "+ ex);
+            throw new DaoDataAccessException("Coordinates Dao Remove Exception with coodinates: "+ coordinates, ex);
         }
     }
 }
