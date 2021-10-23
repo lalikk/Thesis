@@ -1,4 +1,4 @@
-package exceptions;
+package cz.muni.fi.thesis.lalikova.exceptions;
 
 import org.springframework.dao.DataAccessException;
 

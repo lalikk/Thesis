@@ -1,7 +1,7 @@
-package jpa;
+package cz.muni.fi.thesis.lalikova.jpa;
 
-import dao.PointTagDao;
-import entity.PointTag;
+import cz.muni.fi.thesis.lalikova.entity.PointTag;
+import cz.muni.fi.thesis.lalikova.dao.PointTagDao;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 

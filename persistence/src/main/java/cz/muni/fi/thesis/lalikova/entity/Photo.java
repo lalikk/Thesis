@@ -1,15 +1,16 @@
-package entity;
+package cz.muni.fi.thesis.lalikova.entity;
 
-import javax.validation.constraints.NotNull;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Entity
-public class PointTag {
+public class Photo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,9 +18,12 @@ public class PointTag {
 
     @NotNull
     @Column(nullable = false)
-    private String name;
-
     private String description;
+
+    @Lob
+    @NotNull
+    @Column(nullable=false)
+    private byte[] image;
 
     public Long getId() {
         return id;
@@ -27,14 +31,6 @@ public class PointTag {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getDescription() {
@@ -45,16 +41,24 @@ public class PointTag {
         this.description = description;
     }
 
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PointTag pointTag = (PointTag) o;
-        return getName().equals(pointTag.getName()) && Objects.equals(getDescription(), pointTag.getDescription());
+        Photo photo = (Photo) o;
+        return getId().equals(photo.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getDescription());
+        return Objects.hash(getId());
     }
 }

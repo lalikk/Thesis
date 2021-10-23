@@ -1,6 +1,7 @@
-package dao;
+package cz.muni.fi.thesis.lalikova.dao;
 
-import entity.Photo;
+import cz.muni.fi.thesis.lalikova.entity.Photo;
+
 import java.util.List;
 
 public interface PhotoDao {

@@ -1,4 +1,4 @@
-package entity;
+package cz.muni.fi.thesis.lalikova.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

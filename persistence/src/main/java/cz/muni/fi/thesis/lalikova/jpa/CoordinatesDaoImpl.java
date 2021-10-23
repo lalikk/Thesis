@@ -1,7 +1,7 @@
-package jpa;
+package cz.muni.fi.thesis.lalikova.jpa;
 
-import dao.CoordinatesDao;
-import entity.Coordinates;
+import cz.muni.fi.thesis.lalikova.dao.CoordinatesDao;
+import cz.muni.fi.thesis.lalikova.entity.Coordinates;
 import lombok.NonNull;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

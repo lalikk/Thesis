@@ -1,7 +1,7 @@
-package jpa;
+package cz.muni.fi.thesis.lalikova.jpa;
 
-import dao.PhotoDao;
-import entity.Photo;
+import cz.muni.fi.thesis.lalikova.entity.Photo;
+import cz.muni.fi.thesis.lalikova.dao.PhotoDao;
 import lombok.NonNull;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

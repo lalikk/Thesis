@@ -1,6 +1,7 @@
-package dao;
+package cz.muni.fi.thesis.lalikova.dao;
 
-import entity.Route;
+import cz.muni.fi.thesis.lalikova.entity.Route;
+
 import java.util.List;
 
 public interface RouteDao {

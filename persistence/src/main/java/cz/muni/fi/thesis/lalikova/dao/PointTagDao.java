@@ -1,6 +1,7 @@
-package dao;
+package cz.muni.fi.thesis.lalikova.dao;
 
-import entity.PointTag;
+import cz.muni.fi.thesis.lalikova.entity.PointTag;
+
 import java.util.List;
 
 public interface PointTagDao {

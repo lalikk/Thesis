@@ -1,7 +1,7 @@
-package jpa;
+package cz.muni.fi.thesis.lalikova.jpa;
 
-import dao.RouteDao;
-import entity.Route;
+import cz.muni.fi.thesis.lalikova.entity.Route;
+import cz.muni.fi.thesis.lalikova.dao.RouteDao;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

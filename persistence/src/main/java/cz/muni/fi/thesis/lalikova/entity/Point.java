@@ -1,4 +1,4 @@
-package entity;
+package cz.muni.fi.thesis.lalikova.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Class for Point entity
+ * Class for Point cz.muni.fi.thesis.lalikova.entity
  */
 @Entity
 public class Point {

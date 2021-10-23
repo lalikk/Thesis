@@ -1,6 +1,7 @@
-package dao;
+package cz.muni.fi.thesis.lalikova.dao;
 
-import entity.Coordinates;
+import cz.muni.fi.thesis.lalikova.entity.Coordinates;
+
 import java.util.List;
 
 public interface CoordinatesDao {
