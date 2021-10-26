@@ -41,4 +41,11 @@ public class PointTagCreateDto {
     public int hashCode() {
         return Objects.hash(getName(), getDescription());
     }
+
+    @Override
+    public String toString() {
+        return "PointTagCreateDto{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }

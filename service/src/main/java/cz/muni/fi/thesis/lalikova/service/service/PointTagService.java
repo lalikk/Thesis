@@ -13,5 +13,5 @@ public interface PointTagService {
 
     void update(PointTag pointTag);
 
-    void remove(PointTag pointTag);
+    void removeById(Long id);
 }

@@ -15,5 +15,5 @@ public interface PointTagFacade {
 
     void update(PointTagDto pointTag);
 
-    void remove(PointTagDto pointTag);
+    void removeById(Long id);
 }

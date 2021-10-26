@@ -52,11 +52,11 @@ public class PointTagServiceImpl implements PointTagService{
     }
 
     @Override
-    public void remove(PointTag pointTag) {
+    public void removeById(Long id) {
         try {
-            pointTagDao.remove(pointTag);
+            pointTagDao.remove(pointTagDao.findById(id));
         } catch (Exception ex) {
-            throw new DaoDataAccessException("PointTag Dao Remove Exception with pointTag: "+ pointTag, ex);
+            throw new DaoDataAccessException("PointTag Dao Remove Exception with pointTag id: "+ id, ex);
         }
     }
 }
