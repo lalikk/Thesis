@@ -15,5 +15,5 @@ public interface CoordinatesFacade {
 
     void update(CoordinatesDto coordinates);
 
-    void remove(CoordinatesDto coordinates);
+    void removeById(Long Id);
 }

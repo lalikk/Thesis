@@ -52,11 +52,11 @@ public class CoordinatesServiceImpl implements CoordinatesService {
     }
 
     @Override
-    public void remove(Coordinates coordinates) {
+    public void removeById(Long id) {
         try {
-            coordinatesDao.remove(coordinates);
+            coordinatesDao.remove(coordinatesDao.findById(id));
         } catch (Exception ex) {
-            throw new DaoDataAccessException("Coordinates Dao Remove Exception with coodinates: "+ coordinates, ex);
+            throw new DaoDataAccessException("Coordinates Dao Remove Exception with coordinates with id: "+ id, ex);
         }
     }
 }

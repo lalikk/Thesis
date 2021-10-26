@@ -46,4 +46,12 @@ public class CoordinatesDto {
     public int hashCode() {
         return Objects.hash(getLatitude(), getLongitude());
     }
+
+    @Override
+    public String toString() {
+        return "CoordinatesDto{" +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                '}';
+    }
 }

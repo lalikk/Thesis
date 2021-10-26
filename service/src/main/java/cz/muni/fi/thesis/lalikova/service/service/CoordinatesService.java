@@ -13,5 +13,5 @@ public interface CoordinatesService {
 
     void update(Coordinates coordinates);
 
-    void remove(Coordinates coordinates);
+    void removeById(Long id);
 }

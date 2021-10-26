@@ -40,4 +40,12 @@ public class CoordinatesCreateDto {
     public int hashCode() {
         return Objects.hash(getLatitude(), getLongitude());
     }
+
+    @Override
+    public String toString() {
+        return "CoordinatesCreateDto{" +
+                "latitude=" + latitude +
+                ", longitude=" + longitude +
+                '}';
+    }
 }
