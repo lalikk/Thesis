@@ -52,11 +52,11 @@ public class PointServiceImpl implements PointService{
     }
 
     @Override
-    public void remove(Point point) {
+    public void removeById(Long id) {
         try {
-            pointDao.remove(point);
+            pointDao.remove(pointDao.findById(id));
         } catch (Exception ex) {
-            throw new DaoDataAccessException("Point Dao Remove Exception with point: "+ point, ex);
+            throw new DaoDataAccessException("Point Dao Remove Exception with point id: "+ id, ex);
         }
     }
 }

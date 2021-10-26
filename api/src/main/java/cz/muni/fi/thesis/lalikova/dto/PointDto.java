@@ -46,4 +46,12 @@ public class PointDto {
     public int hashCode() {
         return Objects.hash(getId(), getTitle());
     }
+
+    @Override
+    public String toString() {
+        return "PointDto{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                '}';
+    }
 }

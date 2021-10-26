@@ -74,4 +74,12 @@ public class PointCreateDto {
     public int hashCode() {
         return Objects.hash(getTitle(), getCoordinates());
     }
+
+    @Override
+    public String toString() {
+        return "PointCreateDto{" +
+                "title='" + title + '\'' +
+                ", coordinates=" + coordinates +
+                '}';
+    }
 }

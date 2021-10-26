@@ -14,6 +14,6 @@ public interface PointFacade {
 
     void update(PointDto point);
 
-    void remove(PointDto point);
+    void removeById(Long id);
 
 }

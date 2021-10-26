@@ -12,6 +12,6 @@ public interface PointService {
 
     void update(Point point);
 
-    void remove(Point point);
+    void removeById(Long id);
 
 }
