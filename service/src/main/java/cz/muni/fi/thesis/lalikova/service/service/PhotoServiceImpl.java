@@ -52,11 +52,11 @@ public class PhotoServiceImpl implements PhotoService{
     }
 
     @Override
-    public void remove(Photo photo) {
+    public void removeById(Long id) {
         try {
-            photoDao.remove(photo);
+            photoDao.remove(photoDao.findById(id));
         } catch (Exception ex) {
-            throw new DaoDataAccessException("Photo Dao Remove Exception with photo: "+ photo, ex);
+            throw new DaoDataAccessException("Photo Dao Remove Exception with photo id: "+ id, ex);
         }
     }
 }

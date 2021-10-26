@@ -15,5 +15,5 @@ public interface PhotoFacade {
 
     void update(PhotoDto photo);
 
-    void remove(PhotoDto photo);
+    void removeById(Long Id);
 }

@@ -46,4 +46,12 @@ public class PhotoDto {
     public int hashCode() {
         return Objects.hash(getId(), getDescription());
     }
+
+    @Override
+    public String toString() {
+        return "PhotoDto{" +
+                "id=" + id +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

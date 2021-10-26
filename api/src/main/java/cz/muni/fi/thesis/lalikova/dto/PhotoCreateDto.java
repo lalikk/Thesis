@@ -44,4 +44,11 @@ public class PhotoCreateDto {
         result = 31 * result + Arrays.hashCode(getImage());
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "PhotoCreateDto{" +
+                "description='" + description + '\'' +
+                '}';
+    }
 }

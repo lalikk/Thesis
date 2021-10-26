@@ -13,5 +13,5 @@ public interface PhotoService {
 
     void update(Photo photo);
 
-    void remove(Photo photo);
+    void removeById(Long id);
 }
