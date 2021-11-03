@@ -16,6 +16,7 @@
         <version.spring>5.0.8.RELEASE</version.spring>
         <tomcat.version>9.0.36</tomcat.version>
     </properties>
+
     <build>
         <pluginManagement>
             <plugins>
@@ -61,7 +62,6 @@
             </plugins>
         </pluginManagement>
     </build>
-
     <modules>
         <module>persistence</module>
         <module>service</module>
