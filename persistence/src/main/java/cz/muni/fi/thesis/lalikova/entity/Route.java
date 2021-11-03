@@ -78,12 +78,12 @@ public class Route {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Route route = (Route) o;
-        return getTitle().equals(route.getTitle()) && Objects.equals(getPoints(), route.getPoints());
+        return getId().equals(route.getId()) && getTitle().equals(route.getTitle());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getTitle(), getPoints());
+        return Objects.hash(getId(), getTitle());
     }
 
     @Override

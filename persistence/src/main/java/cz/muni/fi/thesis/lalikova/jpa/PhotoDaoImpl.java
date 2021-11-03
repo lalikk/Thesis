@@ -39,7 +39,7 @@ public class PhotoDaoImpl implements PhotoDao {
     }
 
     @Override
-    public void remove(Photo photo) {
+    public void remove(@NonNull Photo photo) {
         entityManager.remove(findById(photo.getId()));
     }
 }
