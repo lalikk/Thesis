@@ -1,12 +1,12 @@
-package cz.muni.fi.thesis.lalikova.service.service.facade;
+package cz.muni.fi.thesis.lalikova.service.facade;
 
 import cz.muni.fi.thesis.lalikova.dto.PointCreateDto;
 import cz.muni.fi.thesis.lalikova.dto.PointDto;
 import cz.muni.fi.thesis.lalikova.entity.Point;
 import cz.muni.fi.thesis.lalikova.exceptions.ServiceCallException;
 import cz.muni.fi.thesis.lalikova.facade.PointFacade;
-import cz.muni.fi.thesis.lalikova.service.service.BeanMappingService;
-import cz.muni.fi.thesis.lalikova.service.service.PointService;
+import cz.muni.fi.thesis.lalikova.service.BeanMappingService;
+import cz.muni.fi.thesis.lalikova.service.PointService;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

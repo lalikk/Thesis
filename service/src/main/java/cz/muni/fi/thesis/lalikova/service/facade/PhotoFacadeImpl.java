@@ -1,12 +1,12 @@
-package cz.muni.fi.thesis.lalikova.service.service.facade;
+package cz.muni.fi.thesis.lalikova.service.facade;
 
 import cz.muni.fi.thesis.lalikova.dto.PhotoCreateDto;
 import cz.muni.fi.thesis.lalikova.dto.PhotoDto;
 import cz.muni.fi.thesis.lalikova.entity.Photo;
 import cz.muni.fi.thesis.lalikova.exceptions.ServiceCallException;
 import cz.muni.fi.thesis.lalikova.facade.PhotoFacade;
-import cz.muni.fi.thesis.lalikova.service.service.BeanMappingService;
-import cz.muni.fi.thesis.lalikova.service.service.PhotoService;
+import cz.muni.fi.thesis.lalikova.service.BeanMappingService;
+import cz.muni.fi.thesis.lalikova.service.PhotoService;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

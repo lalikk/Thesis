@@ -1,8 +1,7 @@
-package cz.muni.fi.thesis.lalikova.service;
+package cz.muni.fi.thesis.lalikova;
 
-import cz.muni.fi.thesis.lalikova.InMemoryDb;
-import cz.muni.fi.thesis.lalikova.service.service.PointServiceImpl;
-import cz.muni.fi.thesis.lalikova.service.service.RouteServiceImpl;
+import cz.muni.fi.thesis.lalikova.service.PointServiceImpl;
+import cz.muni.fi.thesis.lalikova.service.RouteServiceImpl;
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
 import org.springframework.context.annotation.Bean;

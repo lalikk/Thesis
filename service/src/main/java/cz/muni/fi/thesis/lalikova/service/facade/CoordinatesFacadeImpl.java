@@ -1,12 +1,12 @@
-package cz.muni.fi.thesis.lalikova.service.service.facade;
+package cz.muni.fi.thesis.lalikova.service.facade;
 
 import cz.muni.fi.thesis.lalikova.dto.CoordinatesCreateDto;
 import cz.muni.fi.thesis.lalikova.dto.CoordinatesDto;
 import cz.muni.fi.thesis.lalikova.entity.Coordinates;
 import cz.muni.fi.thesis.lalikova.exceptions.ServiceCallException;
 import cz.muni.fi.thesis.lalikova.facade.CoordinatesFacade;
-import cz.muni.fi.thesis.lalikova.service.service.BeanMappingService;
-import cz.muni.fi.thesis.lalikova.service.service.CoordinatesService;
+import cz.muni.fi.thesis.lalikova.service.BeanMappingService;
+import cz.muni.fi.thesis.lalikova.service.CoordinatesService;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

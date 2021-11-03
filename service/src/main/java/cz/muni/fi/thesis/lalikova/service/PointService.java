@@ -1,4 +1,4 @@
-package cz.muni.fi.thesis.lalikova.service.service;
+package cz.muni.fi.thesis.lalikova.service;
 
 import java.util.List;
 import cz.muni.fi.thesis.lalikova.entity.Point;

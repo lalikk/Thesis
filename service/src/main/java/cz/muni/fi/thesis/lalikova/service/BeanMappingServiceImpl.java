@@ -1,4 +1,4 @@
-package cz.muni.fi.thesis.lalikova.service.service;
+package cz.muni.fi.thesis.lalikova.service;
 
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;

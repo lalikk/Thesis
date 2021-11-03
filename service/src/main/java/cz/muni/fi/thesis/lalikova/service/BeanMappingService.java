@@ -1,4 +1,4 @@
-package cz.muni.fi.thesis.lalikova.service.service;
+package cz.muni.fi.thesis.lalikova.service;
 
 import java.util.Collection;
 import java.util.List;
