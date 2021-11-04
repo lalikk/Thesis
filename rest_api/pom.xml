@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cz.muni.fi.thesis.lalikova</groupId>
-    <artifactId>rest</artifactId>
+    <artifactId>rest_api</artifactId>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
