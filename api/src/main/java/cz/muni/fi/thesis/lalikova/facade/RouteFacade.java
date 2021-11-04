@@ -18,5 +18,5 @@ public interface RouteFacade {
 
     void update(RouteDto route);
 
-    void remove(RouteDto route);
+    void removeById(Long id);
 }
