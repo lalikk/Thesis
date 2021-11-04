@@ -25,7 +25,7 @@ public class PointServiceImpl implements PointService{
     }
 
     @Override
-    public Point findById(Long id) {
+    public Point findById(@NonNull Long id) {
         try {
             return pointDao.findById(id);
         } catch (Exception ex) {
@@ -43,7 +43,7 @@ public class PointServiceImpl implements PointService{
     }
 
     @Override
-    public void update(Point point) {
+    public void update(@NonNull Point point) {
         try {
             pointDao.update(point);
         } catch (Exception ex) {
@@ -52,7 +52,7 @@ public class PointServiceImpl implements PointService{
     }
 
     @Override
-    public void removeById(Long id) {
+    public void removeById(@NonNull Long id) {
         try {
             pointDao.remove(pointDao.findById(id));
         } catch (Exception ex) {

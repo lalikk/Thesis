@@ -25,7 +25,7 @@ public class RouteServiceImpl implements RouteService {
     }
 
     @Override
-    public Route findById(Long id) {
+    public Route findById(@NonNull Long id) {
         try {
             return routeDao.findById(id);
         } catch (Exception ex) {
@@ -43,7 +43,7 @@ public class RouteServiceImpl implements RouteService {
     }
 
     @Override
-    public boolean isOrdered(Route route) {
+    public boolean isOrdered(@NonNull Route route) {
         try {
             return routeDao.isOrdered(route);
         } catch (Exception ex) {
@@ -52,7 +52,7 @@ public class RouteServiceImpl implements RouteService {
     }
 
     @Override
-    public Long getStaringPointId(Route route) {
+    public Long getStaringPointId(@NonNull Route route) {
         try {
             return routeDao.getStaringPointId(route);
         } catch (Exception ex) {
@@ -61,7 +61,7 @@ public class RouteServiceImpl implements RouteService {
     }
 
     @Override
-    public void update(Route route) {
+    public void update(@NonNull Route route) {
         try {
             routeDao.update(route);
         } catch (Exception ex) {
@@ -70,11 +70,11 @@ public class RouteServiceImpl implements RouteService {
     }
 
     @Override
-    public void remove(Route route) {
+    public void removeById(@NonNull Long id) {
         try {
-            routeDao.remove(route);
+            routeDao.remove(routeDao.findById(id));
         } catch (Exception ex) {
-            throw new DaoDataAccessException("Route Dao Remove Exception with route: "+ route, ex);
+            throw new DaoDataAccessException("Route Dao Remove Exception with id: "+ id, ex);
         }
     }
 }

@@ -16,5 +16,5 @@ public interface RouteService {
 
     void update(Route route);
 
-    void remove(Route route);
+    void removeById(Long id);
 }

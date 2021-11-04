@@ -25,7 +25,7 @@ public class CoordinatesServiceImpl implements CoordinatesService {
     }
 
     @Override
-    public Coordinates findById(Long id) {
+    public Coordinates findById(@NonNull Long id) {
         try {
             return coordinatesDao.findById(id);
         } catch (Exception ex) {
@@ -43,7 +43,7 @@ public class CoordinatesServiceImpl implements CoordinatesService {
     }
 
     @Override
-    public void update(Coordinates coordinates) {
+    public void update(@NonNull Coordinates coordinates) {
         try {
             coordinatesDao.update(coordinates);
         } catch (Exception ex) {
@@ -52,7 +52,7 @@ public class CoordinatesServiceImpl implements CoordinatesService {
     }
 
     @Override
-    public void removeById(Long id) {
+    public void removeById(@NonNull Long id) {
         try {
             coordinatesDao.remove(coordinatesDao.findById(id));
         } catch (Exception ex) {

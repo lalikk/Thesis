@@ -25,7 +25,7 @@ public class PhotoServiceImpl implements PhotoService{
     }
 
     @Override
-    public Photo findById(Long id) {
+    public Photo findById(@NonNull Long id) {
         try {
             return photoDao.findById(id);
         } catch (Exception ex) {
@@ -43,7 +43,7 @@ public class PhotoServiceImpl implements PhotoService{
     }
 
     @Override
-    public void update(Photo photo) {
+    public void update(@NonNull Photo photo) {
         try {
             photoDao.update(photo);
         } catch (Exception ex) {
@@ -52,7 +52,7 @@ public class PhotoServiceImpl implements PhotoService{
     }
 
     @Override
-    public void removeById(Long id) {
+    public void removeById(@NonNull Long id) {
         try {
             photoDao.remove(photoDao.findById(id));
         } catch (Exception ex) {
