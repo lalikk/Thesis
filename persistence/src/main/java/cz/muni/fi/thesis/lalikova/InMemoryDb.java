@@ -45,6 +45,7 @@ public class InMemoryDb {
         jpaFactoryBean.setDataSource(db());
         jpaFactoryBean.setLoadTimeWeaver(instrumentationLoadTimeWeaver());
         jpaFactoryBean.setPersistenceProviderClass(HibernatePersistenceProvider.class);
+        jpaFactoryBean.setPackagesToScan("cz.muni.fi.thesis.lalikova");
         return jpaFactoryBean;
     }
 

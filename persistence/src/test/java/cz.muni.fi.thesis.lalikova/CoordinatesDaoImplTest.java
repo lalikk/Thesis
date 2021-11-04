@@ -56,14 +56,6 @@ public class CoordinatesDaoImplTest extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void testUpdate() {
-        final Double newLatitude = 49.2107581;
-        coordinates1.setLatitude(newLatitude);
-        coordinatesDao.update(coordinates1);
-        assertThat(coordinatesDao.findById(coordinates1.getId())).isEqualTo(coordinates1);
-    }
-
-    @Test
     public void testRemove() {
         Long coordinates1Id = coordinates1.getId();
         coordinatesDao.remove(coordinates1);

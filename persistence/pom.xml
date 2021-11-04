@@ -9,6 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>cz.muni.fi.thesis.lalikova</groupId>
     <artifactId>persistence</artifactId>
 
     <dependencies>

@@ -102,12 +102,12 @@ public class Point {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Point point = (Point) o;
-        return getTitle().equals(point.getTitle()) && Objects.equals(getCoordinates(), point.getCoordinates());
+        return Objects.equals(getId(), point.getId()) && Objects.equals(getTitle(), point.getTitle());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getTitle(), getCoordinates());
+        return Objects.hash(getId(), getTitle());
     }
 
     @Override

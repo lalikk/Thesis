@@ -2,6 +2,7 @@ package cz.muni.fi.thesis.lalikova.jpa;
 
 import cz.muni.fi.thesis.lalikova.entity.PointTag;
 import cz.muni.fi.thesis.lalikova.dao.PointTagDao;
+import lombok.NonNull;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,12 +19,12 @@ public class PointTagDaoImpl implements PointTagDao {
     private EntityManager entityManager;
 
     @Override
-    public void create(PointTag pointTag) {
+    public void create(@NonNull PointTag pointTag) {
         entityManager.persist(pointTag);
     }
 
     @Override
-    public PointTag findById(Long id) {
+    public PointTag findById(@NonNull Long id) {
         return entityManager.find(PointTag.class, id);
     }
 
@@ -34,12 +35,12 @@ public class PointTagDaoImpl implements PointTagDao {
     }
 
     @Override
-    public void update(PointTag pointTag) {
+    public void update(@NonNull PointTag pointTag) {
         entityManager.merge(pointTag);
     }
 
     @Override
-    public void remove(PointTag pointTag) {
+    public void remove(@NonNull PointTag pointTag) {
         entityManager.remove(findById(pointTag.getId()));
     }
 }

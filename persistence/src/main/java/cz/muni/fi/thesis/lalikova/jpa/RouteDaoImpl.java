@@ -3,6 +3,7 @@ package cz.muni.fi.thesis.lalikova.jpa;
 import cz.muni.fi.thesis.lalikova.entity.Route;
 import cz.muni.fi.thesis.lalikova.dao.RouteDao;
 import cz.muni.fi.thesis.lalikova.exceptions.DaoDataAccessException;
+import lombok.NonNull;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -18,12 +19,12 @@ public class RouteDaoImpl implements RouteDao {
     private EntityManager entityManager;
 
     @Override
-    public void create(Route route) {
+    public void create(@NonNull Route route) {
         entityManager.persist(route);
     }
 
     @Override
-    public Route findById(Long id) {
+    public Route findById(@NonNull Long id) {
         return entityManager.find(Route.class, id);
     }
 
@@ -34,12 +35,12 @@ public class RouteDaoImpl implements RouteDao {
     }
 
     @Override
-    public boolean isOrdered(Route route) {
+    public boolean isOrdered(@NonNull Route route) {
         return !route.getOrderedPointIds().isEmpty();
     }
 
     @Override
-    public Long getStaringPointId(Route route) {
+    public Long getStaringPointId(@NonNull Route route) {
         if (isOrdered(route)) {
             return route.getOrderedPointIds().get(0);
         } else {
@@ -48,12 +49,12 @@ public class RouteDaoImpl implements RouteDao {
     }
 
     @Override
-    public void update(Route route) {
+    public void update(@NonNull Route route) {
         entityManager.merge(route);
     }
 
     @Override
-    public void remove(Route route) {
-        entityManager.remove(route);
+    public void remove(@NonNull Route route) {
+        entityManager.remove(findById(route.getId()));
     }
 }

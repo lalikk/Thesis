@@ -1,45 +1,24 @@
-package cz.muni.fi.thesis.lalikova.entity;
+package cz.muni.fi.thesis.lalikova.dto;
 
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-@Entity
-public class Route {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class RouteCreateDto {
 
     @NotNull
-    @Column(nullable = false)
+    @Size(max=64)
     private String title;
 
     private String description;
 
-    @ManyToMany(mappedBy = "routes")
-    private Set<Point> points = new HashSet<>();
+    private Set<PointDto> points = new HashSet<>();
 
-    @ElementCollection
     private List<Long> orderedPointIds = new ArrayList<>();
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getTitle() {
         return title;
@@ -57,11 +36,11 @@ public class Route {
         this.description = description;
     }
 
-    public Set<Point> getPoints() {
+    public Set<PointDto> getPoints() {
         return points;
     }
 
-    public void setPoints(Set<Point> points) {
+    public void setPoints(Set<PointDto> points) {
         this.points = points;
     }
 
@@ -77,19 +56,12 @@ public class Route {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Route route = (Route) o;
-        return getId().equals(route.getId()) && getTitle().equals(route.getTitle());
+        RouteCreateDto that = (RouteCreateDto) o;
+        return getTitle().equals(that.getTitle()) && Objects.equals(getPoints(), that.getPoints());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getTitle());
-    }
-
-    @Override
-    public String toString() {
-        return "Route{" +
-                "title='" + title + '\'' +
-                '}';
+        return Objects.hash(getTitle(), getPoints());
     }
 }
