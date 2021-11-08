@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -29,6 +30,9 @@ public class Route {
 
     @ManyToMany(mappedBy = "routes")
     private Set<Point> points = new HashSet<>();
+
+    @ManyToOne
+    private User user;
 
     @ElementCollection
     private List<Long> orderedPointIds = new ArrayList<>();
@@ -63,6 +67,14 @@ public class Route {
 
     public void setPoints(Set<Point> points) {
         this.points = points;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public List<Long> getOrderedPointIds() {

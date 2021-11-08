@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
@@ -37,6 +38,9 @@ public class Point {
 
     @ManyToMany(mappedBy = "points")
     private Set<PointTag> tags = new HashSet<>();
+
+    @ManyToOne
+    private User user;
 
     @ManyToMany
     private Set<Route> routes = new HashSet<>();
@@ -87,6 +91,14 @@ public class Point {
 
     public void setTags(Set<PointTag> tags) {
         this.tags = tags;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(AdvancedUser user) {
+        this.user = user;
     }
 
     public Set<Route> getRoutes() {
