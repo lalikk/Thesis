@@ -1,19 +1,17 @@
 package cz.muni.fi.thesis.lalikova.facade;
 
-import cz.muni.fi.thesis.lalikova.dto.UserAuthenticateDto;
-import cz.muni.fi.thesis.lalikova.dto.UserDto;
+import cz.muni.fi.thesis.lalikova.dto.AdvancedUserAuthenticateDto;
+import cz.muni.fi.thesis.lalikova.dto.AdvancedUserDto;
 
 import java.util.List;
 
 public interface AdvancedUserFacade {
 
-    boolean authenticate(UserAuthenticateDto userAuthenticateDto);
+    boolean authenticate(AdvancedUserAuthenticateDto userAuthenticateDto);
 
-    boolean isAdmin(UserDto userDto);
+    AdvancedUserDto findById(Long id);
 
-    UserDto findById(Long id);
+    List<AdvancedUserDto> findAll();
 
-    List<UserDto> findAll();
-
-    UserDto findByLogin(String login);
+    AdvancedUserDto findByLogin(String login);
 }
