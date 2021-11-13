@@ -1,33 +1,24 @@
 package cz.muni.fi.thesis.lalikova.rest_api;
 
-public enum ApiUri {
+public class ApiUri {
 
-    ROOT_URI ("/rest"),
+    public static final String ROOT_URI = "/rest";
 
-    ROOT_URI_USER ("/users/{id}"),
-    ROOT_URI_USERS("/users"),
+    public static final String ROOT_URI_USER = "/users/{id}";
+    public static final String ROOT_URI_USERS = "/users";
 
-    ROOT_URI_COORDINATE ("/coordinates/{id}"),
-    ROOT_URI_COORDINATES("/coordinates"),
+    public static final String ROOT_URI_COORDINATE = "/coordinates/{id}";
+    public static final String ROOT_URI_COORDINATES = "/coordinates";
 
-    ROOT_URI_PHOTO ("/photos/{id}"),
-    ROOT_URI_PHOTOS("/photos"),
+    public static final String ROOT_URI_PHOTO = "/photos/{id}";
+    public static final String ROOT_URI_PHOTOS = "/photos";
 
-    ROOT_URI_ROUTE ("/routes/{id}"),
-    ROOT_URI_ROUTES("/routes"),
+    public static final String ROOT_URI_ROUTE = "/routes/{id}";
+    public static final String ROOT_URI_ROUTES = "/routes";
 
-    ROOT_URI_PHOTO_TAG ("/point_tags/{id}"),
-    ROOT_URI_PHOTO_TAGS("/point_tags"),
+    public static final String ROOT_URI_PHOTO_TAG = "/point_tags/{id}";
+    public static final String ROOT_URI_PHOTO_TAGS = "/point_tags";
 
-    ROOT_URI_POINT ("/points/{id}"),
-    ROOT_URI_POINTS("/points");
-
-    private final String uri;
-    ApiUri(String uri) {
-        this.uri = uri;
-    }
-
-    private String getUri() {
-        return uri;
-    }
+    public static final String ROOT_URI_POINT = "/points/{id}";
+    public static final String ROOT_URI_POINTS = "/points";
 }

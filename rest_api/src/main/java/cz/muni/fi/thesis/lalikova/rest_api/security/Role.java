@@ -1,16 +1,7 @@
 package cz.muni.fi.thesis.lalikova.rest_api.security;
 
-public enum Role {
+public class Role {
 
-    LIMITED ( "LIMITED_ACCESS"),
-    FULL ("FULL_ACCESS");
-
-    private final String type;
-    Role(String type) {
-        this.type = type;
-    }
-
-    private String getType() {
-        return type;
-    }
+    public static final String LIMITED = "LIMITED_ACCESS";
+    public static final String FULL = "FULL_ACCESS";
 }
