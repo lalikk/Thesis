@@ -1,7 +1,9 @@
 package cz.muni.fi.thesis.lalikova.service.facade;
 
 import cz.muni.fi.thesis.lalikova.dto.UserAuthenticateDto;
+import cz.muni.fi.thesis.lalikova.dto.UserCreateDto;
 import cz.muni.fi.thesis.lalikova.dto.UserDto;
+import cz.muni.fi.thesis.lalikova.entity.Route;
 import cz.muni.fi.thesis.lalikova.entity.User;
 import cz.muni.fi.thesis.lalikova.exceptions.ServiceCallException;
 import cz.muni.fi.thesis.lalikova.facade.UserFacade;
@@ -23,6 +25,11 @@ public class UserFacadeImpl implements UserFacade {
 
     @Autowired
     private BeanMappingService beanMappingService;
+
+    @Override
+    public void create(UserCreateDto userDto, String unencryptedPassword) {
+        userService.create(beanMappingService.mapTo(userDto, User.class), unencryptedPassword);
+    }
 
     @Override
     public boolean authenticate(@NonNull UserAuthenticateDto userAuthenticateDto) {
@@ -58,5 +65,24 @@ public class UserFacadeImpl implements UserFacade {
         } catch (Throwable e) {
             throw new ServiceCallException("BeanMappingService Map To Exception with user: " + user, e);
         }
+    }
+
+    @Override
+    public void update(UserDto user) {
+        User userEntity; // = userService.findUserById(user.getId());
+        try {
+            userEntity = beanMappingService.mapTo(user, User.class);
+        } catch (Exception e) {
+            throw new ServiceCallException("BeanMappingService Map To Exception with route: " + user, e);
+        }
+        if (user.getPasswordHash() != null) {
+            userService.changeUserPassword(userEntity, user.getPasswordHash());
+        }
+        userService.update(userEntity);
+    }
+
+    @Override
+    public void removeById(Long userId) {
+        userService.removeById(userId);
     }
 }

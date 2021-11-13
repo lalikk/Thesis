@@ -94,4 +94,26 @@ public class RouteRestController {
             return ResponseEntity.notFound().header("message", "Id not found.\nCause:" + ex.getLocalizedMessage()).build();
         }
     }
+
+    @GetMapping(value = ApiUri.ROOT_URI_ROUTES, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Boolean> isOrdered(RouteDto routeDto) {
+        log.info("isOrdered({})", routeDto);
+        try {
+            return ResponseEntity.ok(routeFacade.isOrdered(routeDto));
+        } catch (Exception ex) {
+            log.error("Exception={}", ex.getCause(), ex);
+            return ResponseEntity.notFound().header("message", "Is ordered query failed.\nCause:" + ex.getLocalizedMessage()).build();
+        }
+    }
+
+    @GetMapping(value = ApiUri.ROOT_URI_ROUTES, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Long> getStaringPointId(RouteDto routeDto) {
+        log.info("getStartingPointId({})", routeDto);
+        try {
+            return ResponseEntity.ok(routeFacade.getStaringPointId(routeDto));
+        } catch (Exception ex) {
+            log.error("Exception={}", ex.getCause(), ex);
+            return ResponseEntity.notFound().header("message", "Starting point Id not found.\nCause:" + ex.getLocalizedMessage()).build();
+        }
+    }
 }
