@@ -16,8 +16,8 @@ public class ApiUri {
     public static final String ROOT_URI_ROUTE = "/routes/{id}";
     public static final String ROOT_URI_ROUTES = "/routes";
 
-    public static final String ROOT_URI_PHOTO_TAG = "/point_tags/{id}";
-    public static final String ROOT_URI_PHOTO_TAGS = "/point_tags";
+    public static final String ROOT_URI_POINT_TAG = "/point_tags/{id}";
+    public static final String ROOT_URI_POINT_TAGS = "/point_tags";
 
     public static final String ROOT_URI_POINT = "/points/{id}";
     public static final String ROOT_URI_POINTS = "/points";
