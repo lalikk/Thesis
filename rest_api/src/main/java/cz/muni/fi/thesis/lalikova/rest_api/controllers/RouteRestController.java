@@ -1,8 +1,8 @@
 package cz.muni.fi.thesis.lalikova.rest_api.controllers;
 
-import cz.muni.fi.thesis.lalikova.dto.PointCreateDto;
-import cz.muni.fi.thesis.lalikova.dto.PointDto;
-import cz.muni.fi.thesis.lalikova.facade.PointFacade;
+import cz.muni.fi.thesis.lalikova.dto.RouteCreateDto;
+import cz.muni.fi.thesis.lalikova.dto.RouteDto;
+import cz.muni.fi.thesis.lalikova.facade.RouteFacade;
 import cz.muni.fi.thesis.lalikova.rest_api.ApiUri;
 import cz.muni.fi.thesis.lalikova.rest_api.security.Role;
 import io.swagger.annotations.Api;
@@ -23,59 +23,59 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.security.RolesAllowed;
 import java.util.Collection;
 
-@Api(value = ApiUri.ROOT_URI_POINTS)
+@Api(value = ApiUri.ROOT_URI_ROUTES)
 @RequestMapping(ApiUri.ROOT_URI)
 @RestController
-public class PointRestController {
+public class RouteRestController {
 
     private final Logger log = LoggerFactory.getLogger(PhotoRestController.class);
 
     @Autowired
-    PointFacade pointFacade;
+    RouteFacade routeFacade;
 
-    @GetMapping(value = ApiUri.ROOT_URI_POINTS, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<PointDto>> findAll() {
+    @GetMapping(value = ApiUri.ROOT_URI_ROUTES, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<RouteDto>> findAll() {
         log.info("findAll()");
         try {
-            return ResponseEntity.ok(pointFacade.findAll());
+            return ResponseEntity.ok(routeFacade.findAll());
         } catch (Exception ex) {
             log.error("Exception={}", ex.getCause(), ex);
             return ResponseEntity.notFound().header("message", ex.getLocalizedMessage()).build();
         }
     }
 
-    @GetMapping(value = ApiUri.ROOT_URI_POINT, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PointDto> findById(@PathVariable("id") Long id) {
+    @GetMapping(value = ApiUri.ROOT_URI_ROUTE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<RouteDto> findById(@PathVariable("id") Long id) {
         log.info("findById({})", id);
         try {
-            return ResponseEntity.ok(pointFacade.findById(id));
+            return ResponseEntity.ok(routeFacade.findById(id));
         } catch (Exception ex) {
             log.error("Exception={}", ex.getCause(), ex);
             return ResponseEntity.notFound().header("message", "Id not found.\nCause:" + ex.getLocalizedMessage()).build();
         }
     }
 
-    @PostMapping(value = ApiUri.ROOT_URI_POINTS, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed({Role.FULL, Role.LIMITED})
-    public ResponseEntity<PointDto> create(@RequestBody PointCreateDto pointCreateDto) {
-        log.info("create({})", pointCreateDto);
+    @PostMapping(value = ApiUri.ROOT_URI_ROUTES, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RolesAllowed({Role.FULL})
+    public ResponseEntity<RouteDto> create(@RequestBody RouteCreateDto routeCreateDto) {
+        log.info("create({})", routeCreateDto);
         try {
-            pointFacade.create(pointCreateDto);
-            return ResponseEntity.ok(pointFacade.findById((long) pointFacade.findAll().size()));
+            routeFacade.create(routeCreateDto);
+            return ResponseEntity.ok(routeFacade.findById((long) routeFacade.findAll().size()));
         } catch (Exception ex) {
             log.error("Exception={}", ex.getCause(), ex);
             return ResponseEntity.notFound().header("message", "Create with passed body failed.\nCause:" + ex.getLocalizedMessage()).build();
         }
     }
 
-    @PutMapping(value = ApiUri.ROOT_URI_POINTS, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed({Role.FULL, Role.LIMITED})
-    public ResponseEntity<PointDto> update(@RequestBody PointDto pointDto) {
-        log.info("update({})", pointDto);
+    @PutMapping(value = ApiUri.ROOT_URI_ROUTES, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RolesAllowed({Role.FULL})
+    public ResponseEntity<RouteDto> update(@RequestBody RouteDto routeDto) {
+        log.info("update({})", routeDto);
         try {
-            pointFacade.update(pointDto);
-            Long id = pointDto.getId() != null ? pointDto.getId() : pointFacade.findAll().size();
-            return ResponseEntity.ok(pointFacade.findById(id));
+            routeFacade.update(routeDto);
+            Long id = routeDto.getId() != null ? routeDto.getId() : routeFacade.findAll().size();
+            return ResponseEntity.ok(routeFacade.findById(id));
         } catch (Exception ex) {
             log.error("Exception={}", ex.getCause(), ex);
             return ResponseEntity.notFound().header("message", "Update with passed body failed.\nCause:" + ex.getLocalizedMessage()).build();
@@ -83,11 +83,11 @@ public class PointRestController {
     }
 
     @DeleteMapping(value = ApiUri.ROOT_URI_POINT, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed({Role.FULL, Role.LIMITED})
+    @RolesAllowed({Role.FULL})
     public ResponseEntity<Void> removeById(@PathVariable("id") Long id) {
         log.info("removeById({})", id);
         try {
-            pointFacade.removeById(id);
+            routeFacade.removeById(id);
             return ResponseEntity.ok().build();
         } catch (Exception ex) {
             log.error("Exception={}", ex.getCause(), ex);
