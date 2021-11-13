@@ -36,6 +36,10 @@ public class UserDto {
         return this;
     }
 
+    public boolean hasFullAccess() {
+        return true;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

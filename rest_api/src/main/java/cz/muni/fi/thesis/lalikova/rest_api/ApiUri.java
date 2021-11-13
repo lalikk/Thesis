@@ -30,5 +30,4 @@ public enum ApiUri {
     private String getUri() {
         return uri;
     }
-
 }

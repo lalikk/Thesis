@@ -37,6 +37,10 @@ public class AdvancedUserDto {
         return this;
     }
 
+    public boolean hasFullAccess() {
+        return false;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
