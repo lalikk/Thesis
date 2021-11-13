@@ -138,7 +138,7 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-crypto</artifactId>
-            <version>${version.spring}</version>
+            <version>5.5.3</version>
         </dependency>
         <dependency>
             <groupId>cz.muni.fi.thesis.lalikova</groupId>
