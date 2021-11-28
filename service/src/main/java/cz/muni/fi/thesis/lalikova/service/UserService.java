@@ -7,6 +7,7 @@ import java.util.List;
 
 @Service
 public interface UserService {
+    void create(User user, String unencryptedPassword);
 
     boolean authenticate(User user, String password);
 
@@ -15,4 +16,10 @@ public interface UserService {
     List<User> findAll();
 
     User findByLogin(String login);
+
+    void changeUserPassword(User user, String plaintextPassword);
+
+    void update(User user);
+
+    void removeById(Long id);
 }

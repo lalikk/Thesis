@@ -2,49 +2,39 @@ package cz.muni.fi.thesis.lalikova.dto;
 
 import java.util.Objects;
 
-public class UserDto {
-    private Long id;
+public class AdvancedUserCreateDto {
 
     private String login;
 
-    private String passwordHash;
-
-    public Long getId() {
-        return id;
-    }
-
-    public UserDto setId(Long id) {
-        this.id = id;
-        return this;
-    }
+    private String password;
 
     public String getLogin() {
         return login;
     }
 
-    public UserDto setLogin(String login) {
+    public AdvancedUserCreateDto setLogin(String login) {
         this.login = login;
         return this;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
 
-    public UserDto setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public AdvancedUserCreateDto setPassword(String password) {
+        this.password = password;
         return this;
     }
 
     public boolean hasFullAccess() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof UserDto)) return false;
-        UserDto userDto = (UserDto) o;
+        if (!(o instanceof AdvancedUserCreateDto)) return false;
+        AdvancedUserCreateDto userDto = (AdvancedUserCreateDto) o;
         return getLogin().equals(userDto.getLogin());
     }
 
