@@ -1,0 +1,18 @@
+:root {
+    --main-color-dark:#194f3e;
+    --main-color-original:#25775e;
+    --main-color-lighter:#319e7d;
+    --main-color-light:#65b69e;
+    --main-color-whitish:#b2dbce;
+
+    --backup-color-dark:#1B4332;
+    --backup-color-original:#2D6A4F;
+    --backup-color-lighter:#40916C;
+    --backup-color-light:#52B788;
+    --backup-color-whitish:#B7E4C7;
+
+    --accent-color-dark:#77253e;
+    --accent-color-original:#9e3152;
+    --accent-color-light:#aa4b68;
+    
+}
