@@ -30,6 +30,7 @@
   <!-- Custom styles for this template -->
   <link href="headers.css" rel="stylesheet">
   <link href="sidebars.css" rel="stylesheet">
+  <link href="colorscheme.css" rel="stylesheet">
 </head>
 
 <body>
@@ -105,7 +106,7 @@
 
   <main>
     <header>
-      <div class="px-3 py-2 bg-dark text-white" style="position:absolute;left:0; right:0; height: 5rem;">
+      <div class="px-3 py-2 bg-dark text-white" style="position:absolute;left:0; right:0; top:0; height: 5rem;">
         <div class="container">
           <div class="d-flex flex-wrap align-items-right justify-content-right justify-content-lg-end">
             <a href="/" class="d-flex align-items-right my-2 my-lg-0 me-lg-auto text-white text-decoration-none">
@@ -177,13 +178,20 @@
     </ul>
   </div>
 
-  <div class="col-12 mx-auto ">
-  <div class="has-bg-image">
-    <h2>
+  <div class="col-12 mx-auto " style="position:absolute; left: 4.5rem; top:5rem; right:4.5rem; bottom: 0;">
+    <div class="cover">
+      <div class="clearfix"></div>
+      <h1>
+        Welcome little ado comes here with a background picture or something.
+      </h1>  
+    </div>
+
+  <!--div class="">
+    <h1>
       Welcome little ado comes here with a background picture or something.
-    </h2>  
+    </h1>  
     <img class = "bg-img" src="./bcgd.jpg" alt="background forest">
-  </div>
+  </div-->
   
   <div class="px-4 py-5 my-5  text-center">
     <div class="col-6 mx-auto">
@@ -195,32 +203,26 @@
     </div>
   </div>
   </div>
-
   
     <script src="node_modules/jquery/dist/jquery.slim.min.js"></script>
     <script type="module" src="assets/js/starter.js"></script>
 
+
   </main>
-
-</div>
-
 
 <div class="container">
   <footer class="py-3 my-4">
     <ul class="nav justify-content-center border-bottom pb-3 mb-3">
-      <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Home</a></li>
-      <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Features</a></li>
-      <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Pricing</a></li>
-      <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">FAQs</a></li>
       <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">FAQ</a></li>
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Contact</a></li>
     </ul>
-    <p class="text-center text-muted">&copy; 2021 Company, Inc</p>
+    <p class="text-center text-muted">&copy; 2022</p>
   </footer>
 </div>
 
 
-<script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
-
-<script src="sidebars.js"></script>
+    <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="sidebars.js"></script>
   </body>
-  </html>
+</html>
