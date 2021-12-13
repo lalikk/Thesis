@@ -34,5 +34,8 @@
 .cover{
   color: rgb(255, 255, 255);
   min-height: 350px;
-  background: url("https://cdn.pixabay.com/photo/2018/08/21/23/29/forest-3622519_960_720.jpg") no-repeat scroll 0px 100% / cover transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url("./bcgd.jpg") no-repeat scroll 0px 100% / cover transparent;
 }
