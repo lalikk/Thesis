@@ -1,8 +1,11 @@
-/* global bootstrap: false */
-(function () {
-  'use strict'
-  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-  tooltipTriggerList.forEach(function (tooltipTriggerEl) {
-    new bootstrap.Tooltip(tooltipTriggerEl)
-  })
-})()
+$(document).ready(function(){
+  $(".button a").click(function(){
+      $(".overlay").fadeToggle(200);
+     $(this).toggleClass('btn-open').toggleClass('btn-close');
+  });
+});
+$('.overlay').on('click', function(){
+  $(".overlay").fadeToggle(200);   
+  $(".button a").toggleClass('btn-open').toggleClass('btn-close');
+  open = false;
+});
