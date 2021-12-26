@@ -39,3 +39,15 @@
   align-items: center;
   background: url("./bcgd.jpg") no-repeat scroll 0px 100% / cover transparent;
 }
+
+.title-simple{
+  min-height: 250px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.text-body{
+margin: auto;
+width: 80%;
+}
