@@ -110,14 +110,6 @@
           <div class="d-flex justify-content-end">
             <ul class="nav col-auto my-2 my-md-0 text-small">
               <li>
-                <a href="#" class="nav-link text-secondary">
-                  <svg class="bi d-block mx-auto mb-1" width="24" height="24">
-                    <use xlink:href="#home" />
-                  </svg>
-                  Home
-                </a>
-              </li>
-              <li>
                 <a href="#" class="nav-link text-white">
                   <svg class="bi d-block mx-auto mb-1" width="24" height="24">
                     <use xlink:href="#location" />
@@ -137,33 +129,25 @@
           </div>
       </div>
     </header>
-  <!--script src="../assets/dist/js/bootstrap.bundle.min.js"></script-->
-
-  <div class="d-flex flex-column flex-shrink-0 bg-dark" style="position:absolute; left:0; top:0rem; bottom: 0; width: 4.5rem;">
-    <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
-      <li>
-        <a href="index.html" class="nav-link py-3 border-bottom" aria-current="page" title="" data-bs-toggle="tooltip" data-bs-placement="right" 
-            style="height:5rem;align-items: center;display: flex;margin: auto;justify-content: center;" data-bs-original-title="Home">
-          <svg class="bi" width="36" height="36" role="img" aria-label="Home"><use xlink:href="#home"></use></svg>
-        </a> 
-        </a>
-      </li>
-      <li>
-        <a href="route_list.html" class="nav-link py-3 border-bottom" title="Routes" data-bs-toggle="tooltip" data-bs-placement="right" 
-            style="height:4.5rem;align-items: center;display: flex;margin: auto;justify-content: center;">
-          <svg class="bi" width="24" height="24" role="img" aria-label="Orders"><use xlink:href="#table"/></svg>
-        </a>
-      </li>      
-      <li>
-        <a href="points_list.html" class="nav-link py-3 border-bottom" title="Points" data-bs-toggle="tooltip" data-bs-placement="right"
-            style="height:4.5rem;align-items: center;display: flex;margin: auto;justify-content: center;">
-          <svg class="bi" width="24" height="24" role="img" aria-label="Orders"><use xlink:href="#table"/></svg>
-        </a>
-      </li>
-    </ul>
+  <div class="outer-menu">
+    <input class="checkbox-toggle" type="checkbox" />
+    <div class="hamburger">
+      <div></div>
+    </div>
+    <div class="menu">
+      <div>
+        <div>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="route_list.html">Routes</a></li>
+            <li><a href="point_list.html">Sights</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="mx-auto " style="position:absolute; left: 4.5rem; top:5rem; right:0rem; bottom: 0;">
+  <div class="mx-auto " style="padding-top: 5rem;">
     <div class="cover">
       <div class="clearfix"></div>
       <h1>
