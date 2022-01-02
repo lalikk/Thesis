@@ -11,6 +11,8 @@
   <link href="./assets/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://api.mapy.cz/loader.js"></script>
+  <script type="text/javascript">Loader.load();</script>
 
   <style>
     .bd-placeholder-img {
@@ -91,25 +93,36 @@
     </div>
   </div>
 
+  <div style="margin-top: 5rem;">
+    <div id="m"></div>
+	<script type="text/javascript">
+        var center = SMap.Coords.fromWGS84(14.41790, 50.12655);
+        var m = new SMap(JAK.gel("m"), center, 13);
+        m.addDefaultLayer(SMap.DEF_BASE).enable();
+        m.addDefaultControls();
+    
+        var znacka = JAK.mel("div");
+        var obrazek = JAK.mel("img", {src:SMap.CONFIG.img+"/marker/drop-red.png"});
+        znacka.appendChild(obrazek);
 
-  <div class="mx-auto " style="padding-top: 5rem;">
-    <div class="title-simple">
-        <div class="clearfix">
-            <h1> About this app </h1>
-        </div>
-    </div>    
-    <div class="text-body">
-        <div class="clearfix">
-            <h3> Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem 
-                ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum 
-                lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem 
-                ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum 
-                lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem 
-                ipsum lorem ipsum lorem ipsum lorem ipsum </h3>
-        </div>
-    </div>    
+
+        var sync = new SMap.Control.Sync({bottomSpace:30});
+        m.addControl(sync);
+
+
+        var layer = new SMap.Layer.Marker();
+        m.addLayer(layer);
+        layer.enable();
+
+        var options = {};
+        var marker = new SMap.Marker(center, "myMarker", {url:znacka});
+        layer.addMarker(marker);
+    </script>
 </div>
 
+
+
+  <script type="text/javascript" src="location.js"></script>
   
     <script src="node_modules/jquery/dist/jquery.slim.min.js"></script>
     <script type="module" src="assets/js/starter.js"></script>
@@ -117,7 +130,7 @@
 
   </main>
 
-<div class="container">
+<div class="container">a
   <footer class="py-3 my-4">
     <ul class="nav justify-content-center border-bottom pb-3 mb-3">
       <li class="nav-item"><a href="about.html" class="nav-link px-2 text-muted">About</a></li>
