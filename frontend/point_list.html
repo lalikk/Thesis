@@ -28,7 +28,6 @@
     }
   </style>
 
-
   <!-- Custom styles for this template -->
   <link href="headers.css" rel="stylesheet">
   <link href="sidebars.css" rel="stylesheet">
@@ -73,56 +72,36 @@
           </div>
       </div>
     </header>
-  <!--script src="../assets/dist/js/bootstrap.bundle.min.js"></script-->
-
-  <div class="d-flex flex-column flex-shrink-0 bg-dark" style="position:absolute; left:0; top:0rem; bottom: 0; width: 4.5rem;">
-    <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
-      <li class="nav-item">
-        <a href="#" class="nav-link active py-3 border-bottom" aria-current="page" title="Home" data-bs-toggle="tooltip" data-bs-placement="right">
-          <svg class="bi" width="24" height="24" role="img" aria-label="Home"><use xlink:href="#home"/></svg>
-        </a>
-      </li>
-      <li>
-        <a href="#" class="nav-link py-3 border-bottom" title="Dashboard" data-bs-toggle="tooltip" data-bs-placement="right">
-          <svg class="bi" width="24" height="24" role="img" aria-label="Dashboard"><use xlink:href="#speedometer2"/></svg>
-        </a>
-      </li>
-      <li>
-        <a href="#" class="nav-link py-3 border-bottom" title="Orders" data-bs-toggle="tooltip" data-bs-placement="right">
-          <svg class="bi" width="24" height="24" role="img" aria-label="Orders"><use xlink:href="#table"/></svg>
-        </a>
-      </li>
-      <li>
-        <a href="#" class="nav-link py-3 border-bottom" title="Products" data-bs-toggle="tooltip" data-bs-placement="right">
-          <svg class="bi" width="24" height="24" role="img" aria-label="Products"><use xlink:href="#grid"/></svg>
-        </a>
-      </li>
-      <li>
-        <a href="#" class="nav-link py-3 border-bottom" title="Customers" data-bs-toggle="tooltip" data-bs-placement="right">
-          <svg class="bi" width="24" height="24" role="img" aria-label="Customers"><use xlink:href="#people-circle"/></svg>
-        </a>
-      </li>
-    </ul>
-  </div>  
-  
+    <div class="outer-menu">
+      <input class="checkbox-toggle" type="checkbox" />
+      <div class="hamburger">
+        <div></div>
+      </div>
+      <div class="menu">
+        <div>
+          <div>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="route_list.html">Routes</a></li>
+              <li><a href="point_list.html">Sights</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div> 
     <script src="node_modules/jquery/dist/jquery.slim.min.js"></script>
     <script type="module" src="assets/js/starter.js"></script>
-
-
   </main>
-
-<div class="container">
-  <footer class="py-3 my-4">
-    <ul class="nav justify-content-center border-bottom pb-3 mb-3">
-      <li class="nav-item"><a href="about.html" class="nav-link px-2 text-muted">About</a></li>
-      <li class="nav-item"><a href="contact.html" class="nav-link px-2 text-muted">Contact</a></li>
-      <li class="nav-item"><a href="login.html" class="nav-link px-2 text-muted">Login</a></li>
-    </ul>
-    <p class="text-center text-muted">&copy; 2022</p>
-  </footer>
-</div>
-
-
-    <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+  <div class="container">
+    <footer class="py-3 my-4">
+      <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+        <li class="nav-item"><a href="about.html" class="nav-link px-2 text-muted">About</a></li>
+        <li class="nav-item"><a href="contact.html" class="nav-link px-2 text-muted">Contact</a></li>
+        <li class="nav-item"><a href="login.html" class="nav-link px-2 text-muted">Login</a></li>
+      </ul>
+      <p class="text-center text-muted">&copy; 2022</p>
+    </footer>
+  </div>
+  <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
