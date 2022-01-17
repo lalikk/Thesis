@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import cz.muni.fi.thesis.lalikova.ServiceConfiguration;
+import cz.muni.fi.thesis.lalikova.rest_api.controllers.PointRestController;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -21,10 +24,9 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
+/*
 @EnableWebMvc
 @Configuration
-@Import({ServiceConfiguration.class, ServiceConfiguration.class})
-@ComponentScan(basePackages = {"cz.muni.fi.thesis.lalikova.rest_api", "cz.muni.fi.thesis.lalikova.rest_api.controllers"})
 public class RestConfig implements WebMvcConfigurer {
 
     @Override
@@ -55,3 +57,5 @@ public class RestConfig implements WebMvcConfigurer {
         converters.add(customJackson2HttpMessageConverter());
     }
 }
+
+ */

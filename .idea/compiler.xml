@@ -2,6 +2,7 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
@@ -15,10 +16,10 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="api" options="-Xlint:unchecked,deprecation" />
-      <module name="persistence" options="-Xlint:unchecked,deprecation" />
-      <module name="rest_api" options="-Xlint:unchecked,deprecation" />
-      <module name="service" options="-Xlint:unchecked,deprecation" />
+      <module name="api" options="-parameters -Xlint:unchecked,deprecation" />
+      <module name="persistence" options="-parameters -Xlint:unchecked,deprecation" />
+      <module name="rest_api" options="-parameters -Xlint:unchecked,deprecation" />
+      <module name="service" options="-parameters -Xlint:unchecked,deprecation" />
     </option>
   </component>
 </project>
