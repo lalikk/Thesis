@@ -36,7 +36,7 @@ public class Point {
     @OneToMany(mappedBy = "point")
     private Set<Photo> photos ;
 
-    @ManyToMany(mappedBy = "points")
+    @ManyToMany(mappedBy = "points")            // TODO check if mapped by necessary here
     private Set<PointTag> tags = new HashSet<>();
 
     @ManyToOne
