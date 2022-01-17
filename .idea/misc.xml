@@ -6,6 +6,7 @@
     <file type="web" url="file://$PROJECT_DIR$/persistence" />
     <file type="web" url="file://$PROJECT_DIR$/rest_api" />
     <file type="web" url="file://$PROJECT_DIR$/service" />
+    <file type="web" url="file://$PROJECT_DIR$/test_data" />
   </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">

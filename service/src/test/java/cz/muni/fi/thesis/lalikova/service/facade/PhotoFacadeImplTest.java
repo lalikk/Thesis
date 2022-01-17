@@ -100,11 +100,11 @@ public class PhotoFacadeImplTest extends AbstractTestNGSpringContextTests {
         photo1 = new Photo();
         photo1.setId(1L);
         photo1.setDescription("Photo 1");
-        photo1.setImage("Image mock bytes".getBytes());
+        photo1.setImage("Image mock url");
 
         photo2 = new Photo();
         photo2.setId(2L);
         photo2.setDescription("Photo 2");
-        photo2.setImage("Image mock bytes".getBytes());
+        photo2.setImage("Image mock url");
     }
 }

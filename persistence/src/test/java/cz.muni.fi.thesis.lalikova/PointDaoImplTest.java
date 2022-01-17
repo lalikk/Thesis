@@ -163,15 +163,15 @@ public class PointDaoImplTest extends AbstractTestNGSpringContextTests {
     private void initPhotos() {
         Photo photo1 = new Photo();
         photo1.setDescription("Test create photo 1");
-        photo1.setImage("Image mock bytes".getBytes());
+        photo1.setImage("Image mock url");
         photoDao.create(photo1);
         Photo photo2 = new Photo();
         photo2.setDescription("Test create photo 2");
-        photo2.setImage("Image mock bytes".getBytes());
+        photo2.setImage("Image mock url");
         photoDao.create(photo2);
         Photo photo3 = new Photo();
         photo3.setDescription("Test create photo 3");
-        photo3.setImage("Image mock bytes".getBytes());
+        photo3.setImage("Image mock url");
         photoDao.create(photo3);
         photos1 = Sets.newHashSet(Arrays.asList(photo1, photo2));
         photos2 = Sets.newHashSet(Arrays.asList(photo3));

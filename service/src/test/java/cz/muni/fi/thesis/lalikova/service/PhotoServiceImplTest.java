@@ -161,11 +161,11 @@ public class PhotoServiceImplTest extends AbstractTestNGSpringContextTests {
         photo1 = new Photo();
         photo1.setId(1L);
         photo1.setDescription("Photo 1 Description");
-        photo1.setImage("Image mock bytes".getBytes());
+        photo1.setImage("Image mock url");
 
         photo2 = new Photo();
         photo2.setId(2L);
         photo2.setDescription("Photo 2 Description");
-        photo2.setImage("Image mock bytes".getBytes());
+        photo2.setImage("Image mock url");
     }
 }
