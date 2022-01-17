@@ -22,9 +22,8 @@ public class Photo {
     private String description;
 
     @Lob
-    @NotNull
     @Column(nullable=false)
-    private byte[] image;
+    private @NotNull String image;
 
     @ManyToOne
     private Point point;
@@ -45,11 +44,11 @@ public class Photo {
         this.description = description;
     }
 
-    public byte[] getImage() {
+    public @NotNull String getImage() {
         return image;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(@NotNull String image) {
         this.image = image;
     }
 

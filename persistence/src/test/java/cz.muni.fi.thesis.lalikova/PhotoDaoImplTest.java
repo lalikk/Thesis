@@ -37,7 +37,7 @@ public class PhotoDaoImplTest extends AbstractTestNGSpringContextTests {
     public void testCreate() {
         Photo photo = new Photo();
         photo.setDescription("Test create photo");
-        photo.setImage("Image mock bytes".getBytes());
+        photo.setImage("Image mock url");
         photoDao.create(photo);
         assertThat(photoDao.findById(photo.getId())).isEqualTo(photo);
     }
@@ -57,7 +57,7 @@ public class PhotoDaoImplTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void testUpdate() {
-        final byte[] newPhoto = "New photo mock bytes".getBytes();
+        final @javax.validation.constraints.NotNull String newPhoto = "New photo mock url";
         photo1.setImage(newPhoto);
         photoDao.update(photo1);
         Photo searchResult = photoDao.findById(photo1.getId());
@@ -106,11 +106,11 @@ public class PhotoDaoImplTest extends AbstractTestNGSpringContextTests {
     private void initPhoto() {
         photo1 = new Photo();
         photo1.setDescription("Test create photo 1");
-        photo1.setImage("Image mock bytes".getBytes());
+        photo1.setImage("Image mock url");
         photoDao.create(photo1);
         photo2 = new Photo();
         photo2.setDescription("Test create photo 2");
-        photo2.setImage("Image mock bytes".getBytes());
+        photo2.setImage("Image mock url");
         photoDao.create(photo2);
     }
 
