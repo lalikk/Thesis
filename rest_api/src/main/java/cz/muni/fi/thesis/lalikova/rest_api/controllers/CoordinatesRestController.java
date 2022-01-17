@@ -5,7 +5,6 @@ import cz.muni.fi.thesis.lalikova.dto.CoordinatesDto;
 import cz.muni.fi.thesis.lalikova.facade.CoordinatesFacade;
 import cz.muni.fi.thesis.lalikova.rest_api.ApiUri;
 import cz.muni.fi.thesis.lalikova.rest_api.security.Role;
-import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,18 +22,17 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.security.RolesAllowed;
 import java.util.Collection;
 
-@Api(value = ApiUri.ROOT_URI_COORDINATES)
 @RequestMapping(ApiUri.ROOT_URI)
 @RestController
 public class CoordinatesRestController {
 
-    private final Logger log = LoggerFactory.getLogger(PhotoRestController.class);
+    private final Logger log = LoggerFactory.getLogger(CoordinatesRestController.class);
 
     @Autowired
     CoordinatesFacade coordinatesFacade;
 
     @GetMapping(value = ApiUri.ROOT_URI_COORDINATES, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed({Role.FULL, Role.LIMITED})
+    //@RolesAllowed({Role.FULL, Role.LIMITED})
     public ResponseEntity<Collection<CoordinatesDto>> findAll() {
         log.info("findAll()");
         try {
@@ -58,7 +56,7 @@ public class CoordinatesRestController {
     }
 
     @PostMapping(value = ApiUri.ROOT_URI_COORDINATES, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed({Role.FULL, Role.LIMITED})
+    //@RolesAllowed({Role.FULL, Role.LIMITED})
     public ResponseEntity<CoordinatesDto> create(@RequestBody CoordinatesCreateDto coordinatesCreateDto) {
         log.info("create({})", coordinatesCreateDto);
         try {
@@ -71,7 +69,7 @@ public class CoordinatesRestController {
     }
 
     @PutMapping(value = ApiUri.ROOT_URI_COORDINATES, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed({Role.FULL, Role.LIMITED})
+    //@RolesAllowed({Role.FULL, Role.LIMITED})
     public ResponseEntity<CoordinatesDto> update(@RequestBody CoordinatesDto coordinatesDto) {
         log.info("update({})", coordinatesDto);
         try {

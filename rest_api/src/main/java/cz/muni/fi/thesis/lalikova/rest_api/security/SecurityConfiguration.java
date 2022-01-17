@@ -14,13 +14,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import springfox.documentation.service.ApiKey;
-import springfox.documentation.service.AuthorizationScope;
-import springfox.documentation.service.SecurityReference;
-import springfox.documentation.spi.service.contexts.SecurityContext;
-
-import java.util.Collections;
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -65,24 +58,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
 
         http.authorizeRequests() //be warned that the order of those calls matters!
-                .antMatchers("/rest/auth/signin").permitAll()
-                .antMatchers("/rest/**").authenticated();
+                .antMatchers("/rest").permitAll();
+                //.antMatchers("/rest/**").authenticated();
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
-    public ApiKey apiKey() {
-        return new ApiKey("JWT", "Authorization", "header");
-    }
-
-    public SecurityContext securityContext() {
-        return SecurityContext.builder().securityReferences(defaultAuth()).build();
-    }
-
-    private List<SecurityReference> defaultAuth() {
-        AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
-        AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
-        authorizationScopes[0] = authorizationScope;
-        return Collections.singletonList(new SecurityReference("JWT", authorizationScopes));
-    }
 }

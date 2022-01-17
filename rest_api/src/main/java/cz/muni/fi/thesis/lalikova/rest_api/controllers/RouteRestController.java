@@ -5,7 +5,6 @@ import cz.muni.fi.thesis.lalikova.dto.RouteDto;
 import cz.muni.fi.thesis.lalikova.facade.RouteFacade;
 import cz.muni.fi.thesis.lalikova.rest_api.ApiUri;
 import cz.muni.fi.thesis.lalikova.rest_api.security.Role;
-import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.security.RolesAllowed;
 import java.util.Collection;
 
-@Api(value = ApiUri.ROOT_URI_ROUTES)
 @RequestMapping(ApiUri.ROOT_URI)
 @RestController
 public class RouteRestController {
@@ -82,7 +80,7 @@ public class RouteRestController {
         }
     }
 
-    @DeleteMapping(value = ApiUri.ROOT_URI_POINT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = ApiUri.ROOT_URI_ROUTE, produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({Role.FULL})
     public ResponseEntity<Void> removeById(@PathVariable("id") Long id) {
         log.info("removeById({})", id);
@@ -95,7 +93,7 @@ public class RouteRestController {
         }
     }
 
-    @GetMapping(value = ApiUri.ROOT_URI_ROUTES, produces = MediaType.APPLICATION_JSON_VALUE)
+    /*@GetMapping(value = ApiUri.ROOT_URI_ROUTES, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> isOrdered(RouteDto routeDto) {
         log.info("isOrdered({})", routeDto);
         try {
@@ -104,9 +102,9 @@ public class RouteRestController {
             log.error("Exception={}", ex.getCause(), ex);
             return ResponseEntity.notFound().header("message", "Is ordered query failed.\nCause:" + ex.getLocalizedMessage()).build();
         }
-    }
+    }*/
 
-    @GetMapping(value = ApiUri.ROOT_URI_ROUTES, produces = MediaType.APPLICATION_JSON_VALUE)
+    /*@GetMapping(value = ApiUri.ROOT_URI_ROUTES, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Long> getStaringPointId(RouteDto routeDto) {
         log.info("getStartingPointId({})", routeDto);
         try {
@@ -115,5 +113,5 @@ public class RouteRestController {
             log.error("Exception={}", ex.getCause(), ex);
             return ResponseEntity.notFound().header("message", "Starting point Id not found.\nCause:" + ex.getLocalizedMessage()).build();
         }
-    }
+    }*/
 }
