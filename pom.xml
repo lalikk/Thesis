@@ -70,9 +70,9 @@
     </build>
     <modules>
         <module>persistence</module>
-        <module>service</module>
         <module>api</module>
-        <module>rest_api</module>
         <module>test_data</module>
+        <module>service</module>
+        <module>rest_api</module>
     </modules>
 </project>
