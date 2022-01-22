@@ -1,3 +1,4 @@
+
 var center = SMap.Coords.fromWGS84(14.41790, 50.12655);
 var m = new SMap(JAK.gel("m"), center, 13);
 
@@ -21,3 +22,14 @@ layer.enable();
 var options = {};
 var marker = new SMap.Marker(center, "myMarker", {url:znacka});
 layer.addMarker(marker);
+
+$.getJSON('http://localhost:8080/rest/coordinates', function(data, status) {
+    console.log(data, status);
+    
+    for (let index = 0; index < data.length; index++) {
+        var location = SMap.Coords.fromWGS84(data[index].latitude, data[index].longitude);
+        var point_marker = new SMap.Marker(location, "point" + (index+1), options);
+        layer.addMarker(point_marker);
+    }
+   })
+

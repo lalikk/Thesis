@@ -45,3 +45,4 @@ hs_err_pid*
 /test_data/target/maven-archiver/pom.properties
 /rest_api/target/rest_api-1.0-SNAPSHOT.war.original
 /frontend/temp.html
+persistence/target/surefire-reports/2022-01-22T18-41-43_406-jvmRun1.dumpstream
