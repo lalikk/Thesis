@@ -17,6 +17,7 @@ import java.util.Collection;
 
 @RequestMapping(ApiUri.ROOT_URI)
 @RestController
+@CrossOrigin
 public class PointRestController {
 
     private final Logger log = LoggerFactory.getLogger(PointRestController.class);

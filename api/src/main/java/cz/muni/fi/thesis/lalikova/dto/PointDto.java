@@ -10,6 +10,8 @@ public class PointDto {
 
     private String description;
 
+    private Long coordinatesId;
+
     public Long getId() {
         return id;
     }
@@ -32,6 +34,14 @@ public class PointDto {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Long getCoordinatesId() {
+        return coordinatesId;
+    }
+
+    public void setCoordinatesId(Long coordinatesId) {
+        this.coordinatesId = coordinatesId;
     }
 
     @Override
