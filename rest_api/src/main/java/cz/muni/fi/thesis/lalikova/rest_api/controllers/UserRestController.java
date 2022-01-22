@@ -5,7 +5,6 @@ import cz.muni.fi.thesis.lalikova.dto.UserDto;
 import cz.muni.fi.thesis.lalikova.facade.UserFacade;
 import cz.muni.fi.thesis.lalikova.rest_api.ApiUri;
 import cz.muni.fi.thesis.lalikova.rest_api.security.Role;
-import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.security.RolesAllowed;
 import java.util.Collection;
 
-@Api(value = ApiUri.ROOT_URI_USERS)
 @RequestMapping(ApiUri.ROOT_URI)
 @RestController
 public class UserRestController {

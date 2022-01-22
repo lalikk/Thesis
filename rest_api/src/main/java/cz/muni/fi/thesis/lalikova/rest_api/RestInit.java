@@ -7,6 +7,7 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 
 import javax.servlet.Filter;
 
+/*
 public class RestInit extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     @Override
@@ -37,4 +38,4 @@ public class RestInit extends AbstractAnnotationConfigDispatcherServletInitializ
         super.onStartup(servletContext);
         servletContext.addListener(RequestContextListener.class);
     }
-}
+}*/

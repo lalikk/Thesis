@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
@@ -21,10 +20,8 @@ public class Photo {
     @Column(nullable = false)
     private String description;
 
-    @Lob
-    @NotNull
     @Column(nullable=false)
-    private byte[] image;
+    private @NotNull String image;
 
     @ManyToOne
     private Point point;
@@ -45,11 +42,11 @@ public class Photo {
         this.description = description;
     }
 
-    public byte[] getImage() {
+    public @NotNull String getImage() {
         return image;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(@NotNull String image) {
         this.image = image;
     }
 

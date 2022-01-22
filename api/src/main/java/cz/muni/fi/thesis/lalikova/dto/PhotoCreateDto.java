@@ -12,7 +12,7 @@ public class PhotoCreateDto {
     private String description;
 
     @NotNull
-    private byte[] image;
+    private String image;
 
     public String getDescription() {
         return description;
@@ -22,11 +22,11 @@ public class PhotoCreateDto {
         this.description = description;
     }
 
-    public byte[] getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(String image) {
         this.image = image;
     }
 
@@ -35,14 +35,12 @@ public class PhotoCreateDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PhotoCreateDto that = (PhotoCreateDto) o;
-        return getDescription().equals(that.getDescription()) && Arrays.equals(getImage(), that.getImage());
+        return getDescription().equals(that.getDescription()) && getImage().equals(that.getImage());
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(getDescription());
-        result = 31 * result + Arrays.hashCode(getImage());
-        return result;
+        return Objects.hash(getDescription(), getImage());
     }
 
     @Override
