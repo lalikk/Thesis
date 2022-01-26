@@ -1,5 +1,7 @@
 package cz.muni.fi.thesis.lalikova.dto;
 
+import cz.muni.fi.thesis.lalikova.entity.Coordinates;
+
 import java.util.Objects;
 
 public class PointDto {
@@ -10,7 +12,7 @@ public class PointDto {
 
     private String description;
 
-    private Long coordinatesId;
+    private CoordinatesDto coordinates;
 
     public Long getId() {
         return id;
@@ -36,12 +38,12 @@ public class PointDto {
         this.description = description;
     }
 
-    public Long getCoordinatesId() {
-        return coordinatesId;
+    public CoordinatesDto getCoordinates() {
+        return coordinates;
     }
 
-    public void setCoordinatesId(Long coordinatesId) {
-        this.coordinatesId = coordinatesId;
+    public void setCoordinates(CoordinatesDto coordinates) {
+        this.coordinates = coordinates;
     }
 
     @Override

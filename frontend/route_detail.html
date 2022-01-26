@@ -8,9 +8,7 @@
   <title>Virtual nature trail</title>
 
   <!-- Bootstrap core CSS -->
-  <link href="./assets/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <link href="./assets/css/starter.css" rel="stylesheet">
 
   <style>
     .bd-placeholder-img {
@@ -32,13 +30,11 @@
   <link href="headers.css" rel="stylesheet">
   <link href="sidebars.css" rel="stylesheet">
   <link href="colorscheme.css" rel="stylesheet">
-  <script src="galery.js"></script>
 </head>
 
 <body>
 
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
-  <script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
 
   <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
     <symbol id="location" viewBox="0 0 16 16">
@@ -66,7 +62,7 @@
                 </a>
               </li>
               <li>
-                <a href="#" class="nav-link text-white">
+                <a href="route_planning.html" class="nav-link text-white">
                   <svg class="bi d-block mx-auto mb-1" width="24" height="24">
                     <use xlink:href="#navigation" />
                   </svg>
@@ -98,6 +94,8 @@
       <div class="title-simple">
         <h1>Route name</h1>
       </div>
+
+      <table id='point-list' class="container table-responsive-md" style="margin-top: 6rem;"></table>
 
       <div class="text-body">
         <div class="clearfix">
@@ -168,6 +166,11 @@
       <p class="text-center text-muted">&copy; 2022</p>
     </footer>
   </div>
-  <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="node_modules/jquery/dist/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+  <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+  <script type="module" src="./route_detail.js"></script>
+  <script src="galery.js"></script> 
 </body>
 </html>

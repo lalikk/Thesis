@@ -52,7 +52,7 @@ public class TestData
         Point point5 = createPoint("Point 5", "Point 5", Set.of(pointTag1), Set.of(route2));
         Point point6 = createPoint("Point 6", "Point 6", Collections.EMPTY_SET, Set.of(route1));
 
-        Coordinates coordinates1 = createCoordinates(49.19458262392775, 16.599211022817716, point1);  
+        Coordinates coordinates1 = createCoordinates(49.19458262392775, 16.599211022817716, point1);
         Coordinates coordinates2 = createCoordinates(49.19912148092236, 16.606823348960095, point2);
         Coordinates coordinates3 = createCoordinates(49.191219940789175, 16.60763874071133, point3);
         Coordinates coordinates4 = createCoordinates(49.19277300502827, 16.566847708531117, point4);
