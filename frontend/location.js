@@ -1,5 +1,5 @@
 
-var center = SMap.Coords.fromWGS84(14.41790, 50.12655);
+var center = SMap.Coords.fromWGS84(16.6, 49.19);
 var m = new SMap(JAK.gel("m"), center, 13);
 
 
@@ -20,8 +20,6 @@ m.addLayer(layer);
 layer.enable();
 
 var options = {};
-var marker = new SMap.Marker(center, "myMarker", {url:znacka});
-layer.addMarker(marker);
 
 $.getJSON('http://localhost:8080/rest/coordinates', function(data, status) {
     console.log(data, status);
