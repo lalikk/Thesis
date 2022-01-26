@@ -90,10 +90,60 @@
         </div>
       </div>
     </div>
-    <div class="container page-top" style="padding-top: 8rem;"> 
+    <div class="container page-top" style="position: relative; padding-top: 8rem;"> 
       <div class="title-simple">
         <h1>Route name</h1>
       </div>
+
+
+      <button type="button" id='planning-button' class="btn btn-primary btn-lg px-4 gap-3" 
+        style="position: absolute; right: 1rem; top: 8rem;"> Add to route planning
+      </button>
+
+      <div id="route-planning" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">There is already a route planned</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Replace the route</button>
+              <button type="button" class="btn btn-primary" data-dismiss="modal">Add points to planned route</button>
+            </div>
+          </div>
+      
+        </div>
+      </div>
+
+      <!-- Modal -->
+      <!--div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              ...
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div-->
+
+
+
+
+
+
 
       <table id='point-list' class="container table-responsive-md" style="margin-top: 6rem;"></table>
 
@@ -169,8 +219,10 @@
   <script src="node_modules/jquery/dist/jquery.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
   <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>  
-  <script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
   <script type="module" src="./route_detail.js"></script>
   <script src="galery.js"></script> 
 </body>
 </html>
+
+
+

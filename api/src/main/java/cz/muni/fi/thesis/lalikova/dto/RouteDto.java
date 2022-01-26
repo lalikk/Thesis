@@ -1,12 +1,18 @@
 package cz.muni.fi.thesis.lalikova.dto;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class RouteDto {
 
     private Long id;
 
     private String description;
+
+    private Set<PointDto> points;
+
+    private List<Long> orderedPointIds;
 
     public Long getId() {
         return id;
@@ -22,6 +28,22 @@ public class RouteDto {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Set<PointDto> getPoints() {
+        return points;
+    }
+
+    public void setPoints(Set<PointDto> points) {
+        this.points = points;
+    }
+
+    public List<Long> getOrderedPointIds() {
+        return orderedPointIds;
+    }
+
+    public void setOrderedPointIds(List<Long> orderedPointIds) {
+        this.orderedPointIds = orderedPointIds;
     }
 
     @Override
