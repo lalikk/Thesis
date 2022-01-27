@@ -63,12 +63,12 @@ public class Photo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Photo photo = (Photo) o;
-        return Objects.equals(getDescription(), photo.getDescription()) && Objects.equals(getPoint(), photo.getPoint());
+        return getId().equals(photo.getId()) && getDescription().equals(photo.getDescription());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getDescription(), getPoint());
+        return Objects.hash(getId(), getDescription());
     }
 
     @Override

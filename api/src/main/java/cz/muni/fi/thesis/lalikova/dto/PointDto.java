@@ -1,8 +1,7 @@
 package cz.muni.fi.thesis.lalikova.dto;
 
-import cz.muni.fi.thesis.lalikova.entity.Coordinates;
-
 import java.util.Objects;
+import java.util.Set;
 
 public class PointDto {
 
@@ -13,6 +12,8 @@ public class PointDto {
     private String description;
 
     private CoordinatesDto coordinates;
+
+    private Set<PhotoDto> photos;
 
     public Long getId() {
         return id;
@@ -44,6 +45,14 @@ public class PointDto {
 
     public void setCoordinates(CoordinatesDto coordinates) {
         this.coordinates = coordinates;
+    }
+
+    public Set<PhotoDto> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(Set<PhotoDto> photos) {
+        this.photos = photos;
     }
 
     @Override

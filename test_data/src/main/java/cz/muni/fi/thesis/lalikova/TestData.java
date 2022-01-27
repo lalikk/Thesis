@@ -59,27 +59,27 @@ public class TestData
         Coordinates coordinates5 = createCoordinates(49.23120894717356, 16.580194378883252, point5);
         Coordinates coordinates6 = createCoordinates(49.23064865534206, 16.667938231869357, point6);
 
-        Photo photo1 = createPhoto("photo 1", "", point1);      // TODO get photo urls
-        Photo photo2 = createPhoto("photo 2", "", point2);
-        Photo photo2_1 = createPhoto("photo 2", "", point2);
-        Photo photo2_2 = createPhoto("photo 2", "", point2);
-        Photo photo2_3 = createPhoto("photo 2", "", point2);
-        Photo photo2_4 = createPhoto("photo 2", "", point2);
-        Photo photo2_5 = createPhoto("photo 2", "", point2);
-        Photo photo2_6 = createPhoto("photo 2", "", point2);
-        Photo photo3 = createPhoto("photo 3", "", point3);
-        Photo photo3_1 = createPhoto("photo 3", "", point3);
-        Photo photo3_2 = createPhoto("photo 3", "", point3);
-        Photo photo3_3 = createPhoto("photo 3", "", point3);
-        Photo photo4 = createPhoto("photo 4", "", point4);
-        Photo photo4_1 = createPhoto("photo 4", "", point4);
-        Photo photo4_2 = createPhoto("photo 4", "", point4);
-        Photo photo4_3 = createPhoto("photo 4", "", point4);
-        Photo photo4_4 = createPhoto("photo 4", "", point4);
-        Photo photo4_5 = createPhoto("photo 4", "", point4);
-        Photo photo4_6 = createPhoto("photo 4", "", point4);
-        Photo photo5 = createPhoto("photo 5", "", point5);
-        Photo photo6 = createPhoto("photo 6", "", point6);
+        Photo photo1 = createPhoto("photo 1", "https://images.pexels.com/photos/62307/air-bubbles-diving-underwater-blow-62307.jpeg?auto=compress&cs=tinysrgb&h=650&w=940", point1);
+        Photo photo2 = createPhoto("photo 2", "https://images.pexels.com/photos/38238/maldives-ile-beach-sun-38238.jpeg?auto=compress&cs=tinysrgb&h=650&w=940", point2);
+        Photo photo2_1 = createPhoto("photo 2", "https://images.pexels.com/photos/62307/air-bubbles-diving-underwater-blow-62307.jpeg?auto=compress&cs=tinysrgb&h=650&w=940", point2);
+        Photo photo2_2 = createPhoto("photo 2", "https://images.pexels.com/photos/158827/field-corn-air-frisch-158827.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", point2);
+        Photo photo2_3 = createPhoto("photo 2", "https://images.pexels.com/photos/1038002/pexels-photo-1038002.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", point2);
+        Photo photo2_4 = createPhoto("photo 2", "https://images.pexels.com/photos/414645/pexels-photo-414645.jpeg?auto=compress&cs=tinysrgb&h=650&w=940", point2);
+        Photo photo2_5 = createPhoto("photo 2", "https://images.pexels.com/photos/38238/maldives-ile-beach-sun-38238.jpeg?auto=compress&cs=tinysrgb&h=650&w=940", point2);
+        Photo photo2_6 = createPhoto("photo 2", "https://images.pexels.com/photos/62307/air-bubbles-diving-underwater-blow-62307.jpeg?auto=compress&cs=tinysrgb&h=650&w=940", point2);
+        Photo photo3 = createPhoto("photo 3", "https://images.pexels.com/photos/158827/field-corn-air-frisch-158827.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", point3);
+        Photo photo3_1 = createPhoto("photo 3", "https://images.pexels.com/photos/56005/fiji-beach-sand-palm-trees-56005.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", point3);
+        Photo photo3_2 = createPhoto("photo 3", "https://images.pexels.com/photos/1038002/pexels-photo-1038002.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", point3);
+        Photo photo3_3 = createPhoto("photo 3", "https://images.pexels.com/photos/62307/air-bubbles-diving-underwater-blow-62307.jpeg?auto=compress&cs=tinysrgb&h=650&w=940", point3);
+        Photo photo4 = createPhoto("photo 4", "https://images.pexels.com/photos/56005/fiji-beach-sand-palm-trees-56005.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", point4);
+        Photo photo4_1 = createPhoto("photo 4", "https://images.pexels.com/photos/38238/maldives-ile-beach-sun-38238.jpeg?auto=compress&cs=tinysrgb&h=650&w=940", point4);
+        Photo photo4_2 = createPhoto("photo 4", "https://images.pexels.com/photos/158827/field-corn-air-frisch-158827.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", point4);
+        Photo photo4_3 = createPhoto("photo 4", "https://images.pexels.com/photos/62307/air-bubbles-diving-underwater-blow-62307.jpeg?auto=compress&cs=tinysrgb&h=650&w=940", point4);
+        Photo photo4_4 = createPhoto("photo 4", "https://images.pexels.com/photos/414645/pexels-photo-414645.jpeg?auto=compress&cs=tinysrgb&h=650&w=940", point4);
+        Photo photo4_5 = createPhoto("photo 4", "https://images.pexels.com/photos/302804/pexels-photo-302804.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", point4);
+        Photo photo4_6 = createPhoto("photo 4", "https://images.pexels.com/photos/38238/maldives-ile-beach-sun-38238.jpeg?auto=compress&cs=tinysrgb&h=650&w=940", point4);
+        Photo photo5 = createPhoto("photo 5", "https://images.pexels.com/photos/62307/air-bubbles-diving-underwater-blow-62307.jpeg?auto=compress&cs=tinysrgb&h=650&w=940", point5);
+        Photo photo6 = createPhoto("photo 6", "https://images.pexels.com/photos/158827/field-corn-air-frisch-158827.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", point6);
 
     }
 

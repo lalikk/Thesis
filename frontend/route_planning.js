@@ -16,19 +16,19 @@ if (typeof ids == 'undefined') {
 
   let table = document.querySelector("#point-list");  
   var idsArray = JSON.parse(ids);
+  const urlPoint = new URL("http://localhost:3000/point_detail");
 
   $.getJSON('http://localhost:8080/rest/points', function(data, status) {
     console.log(data, status);
     let contents = "";
     for (let point of data) {
-      if( idsArray.includes(point.id) )
-        contents += `<tr data-point="${point.id}"><td>${point.title}</td><td>${point.description}</td><td>
+      if( idsArray.includes(point.id) ) {
+      urlPoint.search = new URLSearchParams({id:`${point.id}`});
+        contents += `<tr data-point="${point.id}"><td><a href=${urlPoint}>${point.title}</a></td><td>${point.description}</td><td>
         <span class="table-remove"
           ><button type="button" data-point="${point.id}" class="point-remove btn btn-danger btn-rounded btn-sm my-0">
-            Remove
-          </button></span
-        >
-      </td></tr>\n`;
+          Remove</button></span></td></tr>\n`;
+      }
     }
     table.innerHTML = contents;
 
@@ -36,26 +36,6 @@ if (typeof ids == 'undefined') {
         button.onclick = removePoint;
     }
 })
-
-
-
-  /*for (let element in idsArray) {
-    if (element == 0) { continue; }
-    await $.getJSON(`http://localhost:8080/rest/points/${element}`, function(data, status) {
-      console.log(data, status);
-      contents += `<tr data-point="${data.id}"><td>${data.title}</td><td>${data.description}</td><td>
-        <span class="table-remove"
-        ><button type="button" data-point="${data.id}" class="point-remove btn btn-danger btn-rounded btn-sm my-0">
-        Remove</button></span></td></tr>\n`;    
-    //await x;//onsole.log(x);
-  console.log(contents);
-  });
-  }
-  table.innerHTML = contents;
-
-  for (let button of document.querySelectorAll(".point-remove")) {
-    button.onclick = removePoint;
-  }*/
 }
 
 function removePoint(e) {

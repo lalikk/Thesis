@@ -4,10 +4,12 @@ $.getJSON('http://localhost:8080/rest/routes/1', function(data, status) {
     console.log(data, status);
     let table = document.querySelector("#point-list");
     let points = data.points;
+    const urlPoint = new URL("http://localhost:3000/point_detail");
 
     let contents = "";
     for (let point of points) {
-        contents += `<tr><td>${point.title}</td><td>${point.description}</td></tr>\n`;
+    urlPoint.search = new URLSearchParams({id:`${point.id}`});
+        contents += `<tr><td><a href=${urlPoint}>${point.title}</a></td><td>${point.description}</td></tr>\n`;
 
     }
     table.innerHTML = contents;
