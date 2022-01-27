@@ -91,7 +91,22 @@
       </div>
     </div>
 
-    <div id="point-contents" class="container page-top" style="padding-top: 8rem;"></div>
+    <div id="point-contents" class="container page-top" style="position: relative; padding-top: 8rem;"></div>
+
+    <div id="point-route-duplicate" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">This point is already on the planned route</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            </button>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
+             </div>
+        </div>
+      </div>
+    </div>
 
   </main>
 
@@ -109,6 +124,6 @@
   <script src="node_modules/jquery/dist/jquery.min.js"></script>
   <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>  
   <script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
-  <script src="point.js"></script>
+  <script type="module" src="point.js"></script>
 </body>
 </html>
