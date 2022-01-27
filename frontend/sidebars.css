@@ -123,6 +123,39 @@
   .outer-menu .hamburger > div:after {
 	top: 10px;
   }
+  .outer-menu .navigation {
+	position: absolute;
+	top: 70px;
+	left: 0;
+	z-index: 1;
+	width: 60px;
+	height: 60px;
+	padding: 0.5em 1em;
+	background: #25775e;
+	border-radius: 0 0.12em 0.12em 0;
+	cursor: pointer;
+	transition: box-shadow 0.4s ease;
+	-webkit-backface-visibility: hidden;
+			backface-visibility: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+  }
+  .outer-menu .planning {
+	position: absolute;
+	top: 70px;
+	left: 0;
+	z-index: 1;
+	width: 60px;
+	height: 60px;
+	padding: 0.5em 1em;
+	background: #25775e;
+	border-radius: 0 0.12em 0.12em 0;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+  }
   .outer-menu .menu {
 	position: fixed;
 	top: 0;

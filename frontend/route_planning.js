@@ -1,19 +1,12 @@
 import Cookies from './node_modules/js-cookie/dist/js.cookie.mjs'
 let contents = "";
 let ids = Cookies.get("route");
+console.log(ids);
+console.log(ids.length);
 if (typeof ids == 'undefined') {
-  let contents = `To start planning a route, either select an existing route or add any point.\n`;
-  contents += `<div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-  <button type="button" class="btn btn-primary btn-lg px-4 gap-3" onclick="location.href='route_list.html'">Take me to predefined routes</button>
-  <button type="button" class="btn btn-outline-secondary btn-lg px-4"onclick="location.href='location.html'">Find what is around me</button>
-  </div>`
-
-  console.log(contents);  
-
-  let textBody = document.querySelector('#empty-route');
-  textBody.innerHTML = contents;
+  displayEmpty();
 } else {
-
+console.log("ELSE");
   let table = document.querySelector("#point-list");  
   var idsArray = JSON.parse(ids);
   const urlPoint = new URL("http://localhost:3000/point_detail");
@@ -55,6 +48,22 @@ function removeIdFromCookie(id) {
     var arr = JSON.parse(ids);
     let index = arr.indexOf(parseInt(id));
     arr.splice(index, 1);    
-    ids = JSON.stringify(arr);
-    document.cookie = "route=" + ids;
+    if (arr.length == 0) {
+      displayEmpty();
+      Cookies.remove('route');
+    } else {
+      ids = JSON.stringify(arr);
+      document.cookie = "route=" + ids;
+    }
+}
+
+function displayEmpty() {
+  let contents = `To start planning a route, either select an existing route or add any point.\n`;
+  contents += `<div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+  <button type="button" class="btn btn-primary btn-lg px-4 gap-3" onclick="location.href='route_list.html'">Take me to predefined routes</button>
+  <button type="button" class="btn btn-outline-secondary btn-lg px-4"onclick="location.href='location.html'">Find what is around me</button>
+  </div>`
+  console.log(contents);  
+  let textBody = document.querySelector('#empty-route');
+  textBody.innerHTML = contents;
 }

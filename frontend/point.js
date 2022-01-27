@@ -11,19 +11,31 @@ $.getJSON(`http://localhost:8080/rest/points/${id}`, function(data, status) {
     contents += `<button type="button" id='add-to-planning' class="btn btn-primary btn-lg px-4 gap-3" 
                  style="position: absolute; right: 1rem; top: 8rem;"> Add to planned route
                  </button>`;
-    contents += `<div class="text-body"><div class="clearfix"><h4>${data.description}</h4></div></div>\n`
-    contents += `<div class="row">\n`
+    contents += `<div class="text-body"><div class="clearfix"><h4>${data.description}</h4></div></div>\n`;
+    contents += `<div class="row" style="position: relative;">\n
+                 <div id="more-pictures-info" style="position: absolute; top: 2rem; left: 2rem; pointer-events:none;">
+                 </div>\n`;
     for (let photo of data.photos) {
-        contents += `<div class="col-lg-3 col-md-4 col-xs-6 thumb">\n
+        console.log(photo);
+        if (count == 0) {
+            contents += `<div class="col-lg-3 col-md-4 col-xs-6 thumb">\n
+                         <a href="${photo.image}" rel="ligthbox" class="fancybox">\n
+                         <img src="${photo.image}" class="zoom img-fluid" alt="">\n         
+                         </a></div>`;           
+            ++count;
+            continue;
+        }
+        contents += `<div class="col-lg-3 col-md-4 col-xs-6 thumb"  style="display: none;">\n
                      <a href="${photo.image}" rel="ligthbox" class="fancybox">\n
                      <img src="${photo.image}" class="zoom img-fluid" alt="">\n         
-                     </a></div>`
+                     </a></div>`;
+        ++count;
     }
     contents += `</div>`;
-    //document.querySelector('#more-pictures').innerHTML="+"+`${count}`;
     div.innerHTML = contents;
+    --count;
+    document.querySelector('#more-pictures-info').innerHTML=`<h1  style="width: fit-content;">+${count}</h1>`;
     document.querySelector("#add-to-planning").onclick = addToPlanning;
-
 
     $(".fancybox").fancybox({
         openEffect: "none",
@@ -53,6 +65,18 @@ function addToPlanning(e) {
     window.location.href="route_planning.html";
 }
 
-
+/*     for (;count < data.photos.length; ++count) {
+        if (count == 0) {
+            contents += `<div class="col-lg-3 col-md-4 col-xs-6 thumb">\n
+                <a href="${data.photos[count].image}" rel="ligthbox" class="fancybox">\n
+                <img src="${data.photos[count].image}" class="zoom img-fluid" alt="">\n         
+                </a></div>`;           
+            continue;
+        }
+        contents += `<div class="col-lg-3 col-md-4 col-xs-6 thumb"  style="display: none;">\n
+                     <a href="${data.photos[count].image}" rel="ligthbox" class="fancybox">\n
+                     <img src="${data.photos[count].image}" class="zoom img-fluid" alt="">\n         
+                     </a></div>`;
+    } */
 
 

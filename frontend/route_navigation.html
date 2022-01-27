@@ -8,9 +8,12 @@
   <title>Virtual nature trail</title>
 
   <!-- Bootstrap core CSS -->
-  <link href="./assets/css/starter.css" rel="stylesheet">
- 
- <style>
+  <link href="./assets/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="./assets/css/starter.css" rel="stylesheet">  
+  <script type="text/javascript" src="https://api.mapy.cz/loader.js"></script>
+  <script type="text/javascript">Loader.load();</script>
+
+  <style>
     .bd-placeholder-img {
       font-size: 1.125rem;
       text-anchor: middle;
@@ -45,7 +48,7 @@
     </symbol>
   </svg>
 
-  <main>
+  <main style="height: 100vh;">
     <header>
       <div class="px-3 py-2 bg-dark text-white" style="position:absolute;left:0; right:0; top:0; height: 5rem;">
           <div class="d-flex justify-content-end">
@@ -70,6 +73,11 @@
           </div>
       </div>
     </header>
+
+    <div style="padding-top: 5rem; ">
+      <div id="m"></div>
+    </div>
+
     <div class="outer-menu">
       <input class="checkbox-toggle" type="checkbox" />
       <div class="hamburger">
@@ -86,37 +94,21 @@
           </div>
         </div>
       </div>
-      <div class="planning">
+      <div class="navigation">
         <div>
-          <a href="route_navigation.html" class="nav-link text-white">
-            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-map" viewBox="0 0 16 16">
-              <path fill-rule="evenodd" d="M15.817.113A.5.5 0 0 1 16 .5v14a.5.5 0 0 1-.402.49l-5 1a.502.502 0 0 1-.196 0L5.5 15.01l-4.902.98A.5.5 0 0 1 0 15.5v-14a.5.5 0 0 1 .402-.49l5-1a.5.5 0 0 1 .196 0L10.5.99l4.902-.98a.5.5 0 0 1 .415.103zM10 1.91l-4-.8v12.98l4 .8V1.91zm1 12.98 4-.8V1.11l-4 .8v12.98zm-6-.8V1.11l-4 .8v12.98l4-.8z"/>
+          <a href="route_planning.html" class="nav-link text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+              <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+              <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
             </svg>
           </a>
         </div>
       </div>
-    </div> 
-    
-    <!--script type="module" src="assets/js/starter.js"></script-->
-
-    <div id='empty-route' class="title-simple" style="margin-top: 6rem;"></div>
-
-    <table id='point-list' class="container table-responsive-md" style="margin-top: 6rem;"></table>
-
+    </div>
   </main>
-  <div class="container">
-    <footer class="py-3 my-4">
-      <ul class="nav justify-content-center border-bottom pb-3 mb-3">
-        <li class="nav-item"><a href="about.html" class="nav-link px-2 text-muted">About</a></li>
-        <li class="nav-item"><a href="contact.html" class="nav-link px-2 text-muted">Contact</a></li>
-        <li class="nav-item"><a href="login.html" class="nav-link px-2 text-muted">Login</a></li>
-      </ul>
-      <p class="text-center text-muted">&copy; 2022</p>
-    </footer>
-  </div>
+
   <script src="node_modules/jquery/dist/jquery.min.js"></script>
-  <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>  
-  <script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
-  <script type="module" src="./route_planning.js"></script>
+  <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="route_navigation.js"></script>
 </body>
 </html>
