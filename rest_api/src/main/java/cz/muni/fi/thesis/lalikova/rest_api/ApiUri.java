@@ -21,4 +21,5 @@ public class ApiUri {
 
     public static final String ROOT_URI_POINT = "/points/{id}";
     public static final String ROOT_URI_POINTS = "/points";
+    public static final String ROOT_URI_ROUTE_POINTS = "/route_points/{id}";
 }

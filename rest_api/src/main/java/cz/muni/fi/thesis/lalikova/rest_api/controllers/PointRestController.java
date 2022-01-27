@@ -36,6 +36,17 @@ public class PointRestController {
         }
     }
 
+    @GetMapping(value = ApiUri.ROOT_URI_ROUTE_POINTS, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<PointDto>> findByRoute(@PathVariable("id") Long id) {
+        log.info("findByRoute()");
+        try {
+            return ResponseEntity.ok(pointFacade.findByRoute(id));
+        } catch (Exception ex) {
+            log.error("Exception={}", ex.getCause(), ex);
+            return ResponseEntity.notFound().header("message", ex.getLocalizedMessage()).build();
+        }
+    }
+
     @GetMapping(value = ApiUri.ROOT_URI_POINT, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PointDto> findById(@PathVariable("id") Long id) {
         log.info("findById({})", id);

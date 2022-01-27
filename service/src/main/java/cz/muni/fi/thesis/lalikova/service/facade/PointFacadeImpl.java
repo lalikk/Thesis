@@ -46,6 +46,16 @@ public class PointFacadeImpl implements PointFacade {
     }
 
     @Override
+    public List<PointDto> findByRoute(@NonNull Long id) {
+        List<Point> point = pointService.findByRoute(id);
+        try {
+            return beanMappingService.mapTo(point, PointDto.class);
+        } catch (Exception e) {
+            throw new ServiceCallException("BeanMappingService Map To Exception with list of point: " + point, e);
+        }
+    }
+
+    @Override
     public List<PointDto> findAll() {
         List<Point> point = pointService.findAll();
         try {

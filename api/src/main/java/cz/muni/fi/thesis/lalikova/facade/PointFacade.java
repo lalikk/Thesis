@@ -10,6 +10,8 @@ public interface PointFacade {
 
     PointDto findById(Long id);
 
+    List<PointDto> findByRoute(Long id);
+
     List<PointDto> findAll();
 
     void update(PointDto point);

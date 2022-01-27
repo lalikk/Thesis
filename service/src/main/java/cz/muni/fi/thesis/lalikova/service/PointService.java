@@ -8,10 +8,11 @@ public interface PointService {
 
     Point findById(Long id);
 
+    List<Point> findByRoute(Long id);
+
     List<Point> findAll();
 
     void update(Point point);
 
     void removeById(Long id);
-
 }

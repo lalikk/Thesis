@@ -1,19 +1,25 @@
 package cz.muni.fi.thesis.lalikova.service;
 
 import cz.muni.fi.thesis.lalikova.dao.PointDao;
+import cz.muni.fi.thesis.lalikova.dao.RouteDao;
 import cz.muni.fi.thesis.lalikova.entity.Point;
+import cz.muni.fi.thesis.lalikova.entity.Route;
 import cz.muni.fi.thesis.lalikova.exceptions.DaoDataAccessException;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PointServiceImpl implements PointService{
 
     @Autowired
     private PointDao pointDao;
+
+    @Autowired
+    private RouteDao routeDao;
 
     @Override
     public void create(@NonNull Point point) {
@@ -30,6 +36,17 @@ public class PointServiceImpl implements PointService{
             return pointDao.findById(id);
         } catch (Exception ex) {
             throw new DaoDataAccessException("Point Dao Find by Id Exception with id: " + id, ex );
+        }
+    }
+
+    @Override
+    public List<Point> findByRoute(Long id) {
+        try {
+            Route route = routeDao.findById(id);
+            List<Point> points = pointDao.findAll();
+            return points.stream().filter(x -> x.getRoutes().contains(route)).collect(Collectors.toList());
+        } catch (Exception ex) {
+            throw new DaoDataAccessException("Point Dao Find by Route Exception with route id: " + id, ex );
         }
     }
 
