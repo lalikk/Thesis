@@ -31,6 +31,7 @@ function startPlanning(e){
             }
             var json_ids = JSON.stringify(ids);
             document.cookie = "route=" + json_ids;
+            window.location.href="route_planning.html";
             // TODO now go to route planning page
         })
     } else {
