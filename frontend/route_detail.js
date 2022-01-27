@@ -1,6 +1,8 @@
 import Cookies from './node_modules/js-cookie/dist/js.cookie.mjs'
+const urlParams = new URLSearchParams(window.location.search);
+const id = urlParams.get('id');
 
-$.getJSON('http://localhost:8080/rest/routes/1', function(data, status) {
+$.getJSON(`http://localhost:8080/rest/routes/${id}`, function(data, status) {
     console.log(data, status);
     let table = document.querySelector("#point-list");
     let points = data.points;
@@ -16,11 +18,15 @@ $.getJSON('http://localhost:8080/rest/routes/1', function(data, status) {
 
     document.querySelector("#planning-button").setAttribute('data-route', data.id);
     document.querySelector("#planning-button").onclick = startPlanning;
+
+    document.querySelector("#button-replace-route").setAttribute('data-route', data.id);
+    document.querySelector("#button-replace-route").onclick = replaceRoute;
+    document.querySelector("#button-extend-route").setAttribute('data-route', data.id);
+    document.querySelector("#button-extend-route").onclick = extendRoute;
 })
 
 function startPlanning(e){
     console.log(e);
-
     let ids = Cookies.get("route");
     console.log(ids);
     if (typeof ids == 'undefined') {
@@ -37,15 +43,25 @@ function startPlanning(e){
         })
     } else {
         $('#route-planning').modal('show')
-
-
-
     }
+}
 
+function replaceRoute(e) {
+    Cookies.remove('route');
+    startPlanning(e);  
+}
 
-    /*var ids = [];
-    var  json_ids = JSON.stringify(ids);
+function extendRoute(e) {
+    let ids = Cookies.get("route");
+    let idsArray = JSON.parse(ids);
+    $.getJSON(`http://localhost:8080/rest/route_points/${id}`, function(data, status) {
+        for (let point of data) { 
+            if (!idsArray.includes(parseInt(point.id))) {
+                idsArray.push(parseInt(point.id));  
+            }
+        }
+    var json_ids = JSON.stringify(idsArray);
     document.cookie = "route=" + json_ids;
-    ids.push(point.id);*/
-
+    window.location.href="route_planning.html";
+    }); 
 }
