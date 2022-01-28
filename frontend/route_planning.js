@@ -59,11 +59,11 @@ function removeIdFromCookie(id) {
       ids = JSON.stringify(arr);
       Cookies.set('route', ids);
     }
-    let visitedIds = JSON.parse(Cookies.get('visited'));
-    if (typeof visitedIds == 'undefined' || !visitedIds.includes(id)){
+    let visitedIds = Cookies.get('visited');
+    if (typeof visitedIds == 'undefined' || !JSON.parse(visitedIds).includes(id)){
       Cookies.set('navigationRecompute', 'true');
     }
-}
+  }
 
 function displayEmpty() {
   let contents = `To start planning a route, either select an existing route or add any point.\n`;

@@ -26,61 +26,96 @@ if (typeof visited != 'undefined') {
 
 initMap();
 
-function initMap() {
-  m.addDefaultLayer(SMap.DEF_BASE).enable();
-  m.addDefaultControls();
-  var sync = new SMap.Control.Sync({bottomSpace:0});
-  m.addControl(sync);
-  m.addLayer(layerMarkers);
-  m.addLayer(layerGeometry).enable();
-  layerMarkers.enable();
-  placeUser();
-}
-
-function placeUser() {
-  navigator.geolocation.watchPosition( function (position){
-    receiveCoords(position);
-    let locationAllowed = Cookies.get('locationAllowed');
-    if (typeof locationAllowed != 'undefined' && locationAllowed == 'true') {
-      let userLocation = JSON.parse(Cookies.get('userLocation'));
-      findUser(userLocation);  
-      $.getJSON('http://localhost:8080/rest/points', function(data, status) {     // TODO cleanup - super messy but this cannot
-        console.log(data, status);                                                // start before starting point is received    
-        var indexInRoute = 1;
-        for (let point of data) {
-          if( ids.includes(point.id) && !visitedIds.includes(point.id)) {
-            addPointToMap(point, indexInRoute);
-            indexInRoute++;
-          }
-        }
-        reactToMarkerClick();
-        displayPlannedRoute();
-    })
+let routePointsPromise = new Promise((success, error) => {
+  $.getJSON('http://localhost:8080/rest/points', (data) => {
+    console.log(data);  
+    let routePoints = [];
+    var indexInRoute = 1;
+    for (let point of data) {
+      if(ids.includes(point.id) && !visitedIds.includes(point.id)) {
+        point["indexInRoute"] = indexInRoute;
+        point["SMapCoords"] = SMap.Coords.fromWGS84(point.coordinates.latitude, point.coordinates.longitude);
+        routePoints.push(point);
+        indexInRoute++;
+      }
     }
-}, showError);
-}
+    success(routePoints)
+  }).fail(error);
+});
 
-function findUser(userLocation) {
-  let markers = layerMarkers.getMarkers();
-  var userOnMap = false;
-  for (var i = 0; i < markers.length; i++) {
-    if (markers[i].getId() == 'user_location') {
-      userOnMap = true;
-      break;
+let locationPromise = new Promise((success, error) => {
+  navigator.geolocation.getCurrentPosition((data) => {
+    data["SMapCoords"] = SMap.Coords.fromWGS84(data.coords.longitude, data.coords.latitude);
+    success(data);
+  }, error);
+});
+
+let routePromise = new Promise(async (success, error) => {
+  let recompute = Cookies.get('navigationRecompute');
+  // TODO: (?) Remove recompute flag and use existence of geometry instead.
+  if(recompute === "false") {
+    let g = window.localStorage.getItem('geometry');
+    let geometry = JSON.parse(g);
+    let coords = [];
+    for (let c of geometry.coords) {
+      coords.push(SMap.Coords.fromWGS84(c.x, c.y));
     }
-  }
-  if (userOnMap) {
-    moveUser(userLocation);
+    let newGeometry = new SMap.Geometry(geometry.type, null, coords, geometry.options);
+    success(newGeometry);
   } else {
-    addUserMarker(userLocation);
+    var coords = [];
+    // TODO: Handle case when location is not available (promis throws exception).
+    let userLocation = await locationPromise;
+    let userRoute = await routePointsPromise;
+    coords.push(userLocation.SMapCoords);
+    for (let routePoint of userRoute) {
+      coords.push(routePoint.SMapCoords);
+    }
+    console.log(coords);
+    // Add error handling
+    SMap.Route.route(coords, { geometry: true, itinerary:true }).then((route) => {
+      var coords = route.getResults().geometry;
+      console.log(route.getResults());
+      var g = new SMap.Geometry(SMap.GEOMETRY_POLYLINE, null, coords);
+      // slice geometry
+      storeGeometry(g);
+      success(g);
+    });
+  }
+});
+
+displayRoute(await routePromise, null);
+
+displayPointMarkers(await routePointsPromise);
+updateUserMarker(await locationPromise);
+displayRoute(await routePromise, await locationPromise);
+
+
+navigator.geolocation.watchPosition(function (position) {
+  position["SMapCoords"] = SMap.Coords.fromWGS84(position.coords.longitude, position.coords.latitude);
+  updateUserMarker(position);
+  receiveCoords(position);
+}, showError);
+
+function displayPointMarkers(points) {
+  for (let point of points) {
+    let location = JAK.mel("div");
+    let pic = JAK.mel("img", {src:SMap.CONFIG.img+"/marker/drop-red.png"});
+    location.appendChild(pic);
+    let text = JAK.mel("div", {}, {position:"absolute", left:"0px", top:"2px", textAlign:"center", width:"22px", color:"white", fontWeight:"bold"});
+    text.innerHTML = `${point.indexInRoute}`;
+    location.appendChild(text);
+    var marker = new SMap.Marker(point.SMapCoords, `${point.id}`, { url: location, title: point.title });
+    layerMarkers.addMarker(marker);
   }
 }
 
-function moveUser(userLocation) {
-  addUserMarker(userLocation);
+function displayRoute(routeGeometry, userLocation) {
+  layerGeometry.addGeometry(routeGeometry);
+  layerGeometry.redraw();
 }
 
-function addUserMarker(userLocation) {
+function updateUserMarker(userLocation) {
   let markers = layerMarkers.getMarkers();
   for (var i = 0; i < markers.length; i++) {
       if (markers[i].getId() == 'user_location') {
@@ -91,10 +126,22 @@ function addUserMarker(userLocation) {
   var location = JAK.mel("div");
   var pic = JAK.mel("img", {src:SMap.CONFIG.img+"/marker/drop-red.png"});
   location.appendChild(pic);
-  var userMarker = new SMap.Marker(SMap.Coords.fromWGS84(userLocation.longitude, userLocation.latitude), "user_location", {url:location, title:"You are standing here"});
+  var userMarker = new SMap.Marker(userLocation.SMapCoords, "user_location", {url:location, title:"You are standing here"});
+  //console.log("Update user marker", userMarker);
   layerMarkers.addMarker(userMarker);
 }
 
+
+function initMap() {
+  m.addDefaultLayer(SMap.DEF_BASE).enable();
+  m.addDefaultControls();
+  var sync = new SMap.Control.Sync({bottomSpace:0});
+  m.addControl(sync);
+  m.addLayer(layerMarkers);
+  m.addLayer(layerGeometry).enable();
+  layerMarkers.enable();
+  reactToMarkerClick();
+}
 
 function receiveCoords(position) {
   Cookies.set('locationAllowed', 'true');
@@ -120,24 +167,6 @@ function showError(error) {
   Cookies.set('locationAllowed', false);
 }
 
-
-
-
-
-
-function addPointToMap(point, indexInRoute) {
-  let coordinates = point.coordinates;
-  let location = JAK.mel("div");
-  let pic = JAK.mel("img", {src:SMap.CONFIG.img+"/marker/drop-red.png"});
-  location.appendChild(pic);
-  let text = JAK.mel("div", {}, {position:"absolute", left:"0px", top:"2px", textAlign:"center", width:"22px", color:"white", fontWeight:"bold"});
-  text.innerHTML = `${indexInRoute}`;
-  location.appendChild(text);
-  var marker = new SMap.Marker(SMap.Coords.fromWGS84(coordinates.latitude, coordinates.longitude), `${point.id}`, {url:location, title:point.title});
-  layerMarkers.addMarker(marker);
-  ++i;
-}
-
 function reactToMarkerClick() {
   m.getSignals().addListener(this, "marker-click", function(e) {
     var marker = e.target;
@@ -153,56 +182,9 @@ function reactToMarkerClick() {
   });
 }
 
-function displayPlannedRoute() {
-  let recompute = Cookies.get('navigationRecompute');
-  if (typeof recompute == 'undefined' || recompute == 'true') {
-    displayChangedRoute();
-  } else {
-    displayExistingRoute();
-  }
-}
-var coords = [];
-function displayChangedRoute() {  
-  let markers = layerMarkers.getMarkers();
-  for (var i = 0; i < markers.length; i++) {
-    if (markers[i].getId() == 'user_location') {
-      coords.push(markers[i]._coords);
-      break;
-    }
-  }
-  for (var i = 0; i < markers.length; i++) {
-      if (markers[i].getId() != 'user_location') {
-        coords.push(markers[i]._coords);
-    }
-  }
-  SMap.Route.route(coords, {
-  geometry: true
-  }).then(findRoute);  }
-
-function findRoute(route) {
-  var coords = route.getResults().geometry;
-  var cz = m.computeCenterZoom(coords);
-  m.setCenterZoom(cz[0], cz[1]);
-  var g = new SMap.Geometry(SMap.GEOMETRY_POLYLINE, null, coords);
-  layerGeometry.addGeometry(g);
-  storeGeometry(g);
-}
-
 function storeGeometry(g) {
   let geometry = {type: g.getType(), coords: g.getCoords(), options:g.getOptions()};
   let jsonGeometry = JSON.stringify(geometry);
   window.localStorage.setItem('geometry', jsonGeometry);
   Cookies.set('navigationRecompute', 'false');
-}
-
-function displayExistingRoute() {
-  let g = window.localStorage.getItem('geometry');
-  let geometry = JSON.parse(g);
-  let coords = [];
-  for (let c of geometry.coords) {
-    coords.push(SMap.Coords.fromWGS84(c.x, c.y));
-  }
-  let newGeometry = new SMap.Geometry(geometry.type, null, coords, geometry.options);
-  layerGeometry.addGeometry(newGeometry);
-  layerGeometry.redraw();
 }
