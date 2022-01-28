@@ -66,7 +66,8 @@ function addToPlanning(e) {
         ids = idsArray;
     }   
     var jsonIds = JSON.stringify(ids);
-    document.cookie = "route=" + jsonIds;
+    Cookies.set('route', jsonIds);
+    Cookies.set('navigationRecompute', 'true');
     window.location.href="route_planning.html";
 }
 
@@ -89,8 +90,12 @@ function changeVisitedCookie() {
             return;
         }
     }
+    console.log(typeof visitedIds);
     let jsonVisited = JSON.stringify(visitedIds);
-        Cookies.set("visited", jsonVisited);
+    console.log(jsonVisited);
+        Cookies.set('visited', jsonVisited);
+        Cookies.set('navigationRecompute', 'true');
+        console.log(JSON.parse(Cookies.get('visited')))
 }
 
 function changeLocationCookie() {
@@ -102,5 +107,6 @@ function changeLocationCookie() {
         let newLocation = {latitude: parseFloat(data.coordinates.latitude), longitude: parseFloat(data.coordinates.longitude)};
         let jsonLocation = JSON.stringify(newLocation);
         Cookies.set('userLocation', jsonLocation);    
+        Cookies.set('navigationRecompute', 'true');
     });
 }

@@ -43,7 +43,6 @@ function removePoint(e) {
     let row = document.querySelector(`tr[data-point="${id}"]`);
     console.log(row);
     row.classList.add("d-none");
-
     removeIdFromCookie(id);
 }
 
@@ -58,7 +57,11 @@ function removeIdFromCookie(id) {
       Cookies.remove('route');
     } else {
       ids = JSON.stringify(arr);
-      document.cookie = "route=" + ids;
+      Cookies.set('route', ids);
+    }
+    let visitedIds = JSON.parse(Cookies.get('visited'));
+    if (typeof visitedIds == 'undefined' || !visitedIds.includes(id)){
+      Cookies.set('navigationRecompute', 'true');
     }
 }
 

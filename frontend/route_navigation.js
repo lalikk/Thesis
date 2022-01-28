@@ -5,13 +5,14 @@ var center = SMap.Coords.fromWGS84(16.6, 49.19);
 var userLocation = SMap.Coords.fromWGS84(16.583476454501444, 49.205610336621596);
 var m = new SMap(JAK.gel("m"), center, 13);
 var layerMarkers = new SMap.Layer.Marker();
-var layerPlanning = m.addDefaultLayer(SMap.DEF_BASE).enable();
+var layerPlanning = m.addDefaultLayer(SMap.DEF_BASE).enable();  
+var layerGeometry = new SMap.Layer.Geometry();
+m.addLayer(layerGeometry).enable();
 var ids = JSON.parse(Cookies.get("route"));
 var visitedIds = JSON.parse(Cookies.get("visited"));
 var i = 1;
 
 initMap();
-
 
 $.getJSON('http://localhost:8080/rest/points', function(data, status) {
     console.log(data, status);
@@ -73,6 +74,15 @@ function reactToMarkerClick() {
 }
 
 function displayPlannedRoute() {
+  let recompute = Cookies.get('navigationRecompute');
+  if (typeof recompute == 'undefined' || recompute == 'true') {
+    displayChangedRoute();
+  } else {
+    displayExistingRoute();
+  }
+}
+
+function displayChangedRoute() {  
   var coords = [];
   let markers = layerMarkers.getMarkers();
   console.log(markers);
@@ -85,16 +95,36 @@ function displayPlannedRoute() {
   console.log(coords);
   SMap.Route.route(coords, {
   geometry: true
-  }).then(findRoute);  
-}
+  }).then(findRoute);  }
 
 function findRoute(route) {
-  var layerGeometry = new SMap.Layer.Geometry();
-  m.addLayer(layerGeometry).enable();
-
   var coords = route.getResults().geometry;
   var cz = m.computeCenterZoom(coords);
   m.setCenterZoom(cz[0], cz[1]);
   var g = new SMap.Geometry(SMap.GEOMETRY_POLYLINE, null, coords);
+  console.log(g);
   layerGeometry.addGeometry(g);
+  storeGeometry(g);
+}
+
+function storeGeometry(g) {
+  let geometry = {type: g.getType(), coords: g.getCoords(), options:g.getOptions()};
+  console.log(geometry);
+  let jsonGeometry = JSON.stringify(geometry);
+  window.localStorage.setItem('geometry', jsonGeometry);
+  Cookies.set('navigationRecompute', 'false');
+}
+
+function displayExistingRoute() {
+  let g = window.localStorage.getItem('geometry');
+  let geometry = JSON.parse(g);
+  let coords = [];
+  for (let c of geometry.coords) {
+    coords.push(SMap.Coords.fromWGS84(c.x, c.y));
+  }
+  let newGeometry = new SMap.Geometry(geometry.type, null, coords, geometry.options);
+  layerGeometry.addGeometry(newGeometry);
+  console.log(layerGeometry.getGeometries());
+  layerGeometry.redraw();
+  console.log(newGeometry);
 }

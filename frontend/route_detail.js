@@ -38,7 +38,8 @@ function startPlanning(e){
                 ids.push(point.id);
             }
             var json_ids = JSON.stringify(ids);
-            document.cookie = "route=" + json_ids;
+            Cookies.set('route', json_ids);
+            Cookies.set('navigationRecompute', 'true');
             window.location.href="route_planning.html";
         })
     } else {
@@ -61,7 +62,8 @@ function extendRoute(e) {
             }
         }
     var json_ids = JSON.stringify(idsArray);
-    document.cookie = "route=" + json_ids;
+    Cookies.set('route', json_ids);
+    Cookies.set('navigationRecompute', 'true');
     window.location.href="route_planning.html";
     }); 
 }
