@@ -94,7 +94,6 @@ function changeVisitedCookie() {
     let jsonVisited = JSON.stringify(visitedIds);
     console.log(jsonVisited);
         Cookies.set('visited', jsonVisited);
-        Cookies.set('navigationRecompute', 'true');
         console.log(JSON.parse(Cookies.get('visited')))
 }
 
@@ -107,6 +106,5 @@ function changeLocationCookie() {
         let newLocation = {latitude: parseFloat(data.coordinates.latitude), longitude: parseFloat(data.coordinates.longitude)};
         let jsonLocation = JSON.stringify(newLocation);
         Cookies.set('userLocation', jsonLocation);    
-        Cookies.set('navigationRecompute', 'true');
     });
 }
