@@ -1,12 +1,9 @@
 import Cookies from './node_modules/js-cookie/dist/js.cookie.mjs'
-let contents = "";
 let ids = Cookies.get("route");
 console.log(ids);
-console.log(ids.length);
 if (typeof ids == 'undefined') {
   displayEmpty();
 } else {
-console.log("ELSE");
   let table = document.querySelector("#point-list");  
   var idsArray = JSON.parse(ids);
   const urlPoint = new URL("http://localhost:3000/point_detail");
@@ -17,10 +14,18 @@ console.log("ELSE");
     for (let point of data) {
       if( idsArray.includes(point.id) ) {
       urlPoint.search = new URLSearchParams({id:`${point.id}`});
+      let visitedIds = Cookies.get('visited');
+      if (typeof visitedIds == 'undefined' || !visitedIds.includes(parseInt(point.id))) {
         contents += `<tr data-point="${point.id}"><td><a href=${urlPoint}>${point.title}</a></td><td>${point.description}</td><td>
         <span class="table-remove"
           ><button type="button" data-point="${point.id}" class="point-remove btn btn-danger btn-rounded btn-sm my-0">
           Remove</button></span></td></tr>\n`;
+      } else {
+        contents += `<tr data-point="${point.id}"><td><a href=${urlPoint}><p class="text-muted">${point.title}</p></a></td><td><p class="text-muted">${point.description}</p></td><td>
+          <span class="table-remove"
+            ><button type="button" data-point="${point.id}" class="point-remove btn btn-danger btn-rounded btn-sm my-0">
+            Remove</button></span></td></tr>\n`;         
+        }
       }
     }
     table.innerHTML = contents;

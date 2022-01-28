@@ -1,7 +1,10 @@
 import Cookies from './node_modules/js-cookie/dist/js.cookie.mjs'
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get('id');
+const present = urlParams.get('present');
 let count = 0;
+
+//http://localhost:3000/point_detail?id=1&present=true when accessed from given location
 
 $.getJSON(`http://localhost:8080/rest/points/${id}`, function(data, status) {
     console.log(data, status);
@@ -36,6 +39,9 @@ $.getJSON(`http://localhost:8080/rest/points/${id}`, function(data, status) {
     --count;
     document.querySelector('#more-pictures-info').innerHTML=`<h1  style="width: fit-content;">+${count}</h1>`;
     document.querySelector("#add-to-planning").onclick = addToPlanning;
+    if (present == "true") {
+        changeUserLocation();
+    }
 
     $(".fancybox").fancybox({
         openEffect: "none",
@@ -59,24 +65,42 @@ function addToPlanning(e) {
         }
         ids = idsArray;
     }   
-
-    var json_ids = JSON.stringify(ids);
-    document.cookie = "route=" + json_ids;
+    var jsonIds = JSON.stringify(ids);
+    document.cookie = "route=" + jsonIds;
     window.location.href="route_planning.html";
 }
 
-/*     for (;count < data.photos.length; ++count) {
-        if (count == 0) {
-            contents += `<div class="col-lg-3 col-md-4 col-xs-6 thumb">\n
-                <a href="${data.photos[count].image}" rel="ligthbox" class="fancybox">\n
-                <img src="${data.photos[count].image}" class="zoom img-fluid" alt="">\n         
-                </a></div>`;           
-            continue;
+function changeUserLocation() {
+    changeVisitedCookie();
+    changeLocationCookie();
+}
+
+function changeVisitedCookie() {
+    let visitedIds = Cookies.get('visited');
+    console.log(visitedIds);
+    if (typeof visitedIds == 'undefined') {
+        visitedIds = [parseInt(id)];
+        console.log(visitedIds);
+    } else {
+        visitedIds = JSON.parse(visitedIds);
+        if (!visitedIds.includes(parseInt(id))) {
+            visitedIds.push(parseInt(id));
+        } else {
+            return;
         }
-        contents += `<div class="col-lg-3 col-md-4 col-xs-6 thumb"  style="display: none;">\n
-                     <a href="${data.photos[count].image}" rel="ligthbox" class="fancybox">\n
-                     <img src="${data.photos[count].image}" class="zoom img-fluid" alt="">\n         
-                     </a></div>`;
-    } */
+    }
+    let jsonVisited = JSON.stringify(visitedIds);
+        Cookies.set("visited", jsonVisited);
+}
 
-
+function changeLocationCookie() {
+    let userLocation = Cookies.get("userLocation");
+    if (typeof userLocation != undefined) {
+        Cookies.remove('userLocation');
+    }
+    $.getJSON(`http://localhost:8080/rest/points/${id}`, function(data, status) {
+        let newLocation = {latitude: parseFloat(data.coordinates.latitude), longitude: parseFloat(data.coordinates.longitude)};
+        let jsonLocation = JSON.stringify(newLocation);
+        Cookies.set('userLocation', jsonLocation);    
+    });
+}

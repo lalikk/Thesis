@@ -7,6 +7,7 @@ var m = new SMap(JAK.gel("m"), center, 13);
 var layerMarkers = new SMap.Layer.Marker();
 var layerPlanning = m.addDefaultLayer(SMap.DEF_BASE).enable();
 var ids = JSON.parse(Cookies.get("route"));
+var visitedIds = JSON.parse(Cookies.get("visited"));
 var i = 1;
 
 initMap();
@@ -15,7 +16,7 @@ initMap();
 $.getJSON('http://localhost:8080/rest/points', function(data, status) {
     console.log(data, status);
     for (let point of data) {
-      if( ids.includes(point.id) ) {
+      if( ids.includes(point.id) && !visitedIds.includes(point.id)) {
         addPointToMap(point);
       }
     }
