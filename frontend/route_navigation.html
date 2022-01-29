@@ -77,7 +77,6 @@
     <div style="padding-top: 5rem; ">
       <div id="m"></div>
     </div>
-
     <div class="outer-menu">
       <input class="checkbox-toggle" type="checkbox" />
       <div class="hamburger">
@@ -105,6 +104,39 @@
         </div>
       </div>
     </div>
+    <div id="off-route" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">You appear to have left the planned route. Do you wish to recompute?</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            </button>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="button-recompute-off-route" class="btn btn-secondary" data-bs-dismiss="modal">Recompute the route</button>
+            <button type="button" id="button-ignore-route" class="btn btn-primary" data-bs-dismiss="modal">Ignore</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="point-nearby" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">There is a sight close by</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            </button>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="button-recompute-add-nearby" class="btn btn-secondary" data-bs-dismiss="modal">Add to the route</button>
+            <button type="button" id="button-ignore-nearby" class="btn btn-primary" data-bs-dismiss="modal">Ignore</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
   </main>
 
   <script src="node_modules/jquery/dist/jquery.min.js"></script>
