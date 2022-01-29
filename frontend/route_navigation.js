@@ -1,7 +1,6 @@
 import Cookies from './node_modules/js-cookie/dist/js.cookie.mjs'
 const urlPoint = new URL("http://localhost:3000/point_detail");
 
-
 /* Testing data */
 //const userLocationTEST = SMap.Coords.fromWGS84(16.583476454501444, 49.205610336621596);
 var center = SMap.Coords.fromWGS84(16.6, 49.19);  // TODO
@@ -13,10 +12,16 @@ var layerPlanning = m.addDefaultLayer(SMap.DEF_BASE).enable();
 var layerGeometry = new SMap.Layer.Geometry();
 
 /* Route planning data */
-var route = Cookies.get("route");
+var pointLocation;
+var ignoredNearby = [];
+var ignored = Cookies.get("ignoredPointsNearby");
+if (typeof ignored != 'undefined') {
+  ignoredNearby = JSON.parse(ignored);
+}
+var plannedRoute = Cookies.get("route");
 var ids = [];
-if (typeof route != 'undefined') {
-  ids = JSON.parse(route);
+if (typeof plannedRoute != 'undefined') {
+  ids = JSON.parse(plannedRoute);
 }
 var visited = Cookies.get("visited");
 var visitedIds = [];
@@ -25,6 +30,20 @@ if (typeof visited != 'undefined') {
 }
 
 initMap();
+
+let allPointsPromise = new Promise((success, error) => {
+  $.getJSON('http://localhost:8080/rest/points', (data) => {  
+    for (let point of data) {
+      point["SMapCoords"] = SMap.Coords.fromWGS84(point.coordinates.latitude, point.coordinates.longitude);
+    }
+    document.querySelector("#button-recompute-off-route").onclick = recomputeOffRoute;
+    document.querySelector("#button-ignore-route").onclick = ignoreOffRoute;
+
+    document.querySelector("#button-recompute-add-nearby").onclick = recomputeAddNearby;
+    document.querySelector("#button-ignore-nearby").onclick = ignoreAddNearby;
+    success(data) 
+  }, error);
+});
 
 let routePointsPromise = new Promise((success, error) => {
   $.getJSON('http://localhost:8080/rest/points', (data) => {
@@ -43,61 +62,75 @@ let routePointsPromise = new Promise((success, error) => {
   }).fail(error);
 });
 
-let locationPromise = new Promise((success, error) => {
+let locationPromise = createLocationPromise();
+
+function createLocationPromise() {
+  return new Promise((success, error) => {
   navigator.geolocation.getCurrentPosition((data) => {
     data["SMapCoords"] = SMap.Coords.fromWGS84(data.coords.longitude, data.coords.latitude);
     success(data);
   }, error);
 });
+}
 
-let routePromise = new Promise(async (success, error) => {
-  let recompute = Cookies.get('navigationRecompute');
-  // TODO: (?) Remove recompute flag and use existence of geometry instead.
-  if(recompute === "false") {
-    let g = window.localStorage.getItem('geometry');
-    let geometry = JSON.parse(g);
-    let geometries = [];
-    for (let g of geometry) {
-      let coords = [];
-      for (let c of g.coords) {
-        coords.push(SMap.Coords.fromWGS84(c.x, c.y));
+let routePromise = createRoutePromise();
+
+function createRoutePromise() {
+  return new Promise(async (success, error) => {
+    let recompute = Cookies.get('navigationRecompute');
+    // TODO: (?) Remove recompute flag and use existence of geometry instead.
+    console.log("recompute", recompute);
+    if(recompute === "false") {
+      let g = window.localStorage.getItem('geometry');
+      let geometry = JSON.parse(g);
+      let geometries = [];
+      for (let g of geometry) {
+        let coords = [];
+        for (let c of g.coords) {
+          coords.push(SMap.Coords.fromWGS84(c.x, c.y));
+        }
+        geometries.push(new SMap.Geometry(g.type, null, coords, g.options));
       }
-      geometries.push(new SMap.Geometry(g.type, null, coords, g.options));
+      success(geometries);
+    } else {
+      var coords = [];
+      // TODO: Handle case when location is not available (promis throws exception).
+      let userLocation = await locationPromise;
+      let userRoute = await routePointsPromise;
+      coords.push(userLocation.SMapCoords);
+      console.log("user location=", userLocation.SMapCoords);
+      for (let routePoint of userRoute) {
+        coords.push(routePoint.SMapCoords);
+      }
+      console.log(coords);
+      // Add error handling
+      SMap.Route.route(coords, { geometry: true, itinerary:true }).then((route) => {
+        var routeResults = route.getResults();
+        var coords = routeResults.geometry;
+        var g = new SMap.Geometry(SMap.GEOMETRY_POLYLINE, null, coords);
+        // slice geometry
+        let geometryPerSegments = sliceGeometry(g, routeResults.points);
+        storeGeometry(geometryPerSegments);
+        // which segment of route user is on, always start at beginning as user location = 1st point
+        Cookies.set('userProgress', '0');
+        success(geometryPerSegments);
+      });
     }
-    success(geometries);
-  } else {
-    var coords = [];
-    // TODO: Handle case when location is not available (promis throws exception).
-    let userLocation = await locationPromise;
-    let userRoute = await routePointsPromise;
-    coords.push(userLocation.SMapCoords);
-    for (let routePoint of userRoute) {
-      coords.push(routePoint.SMapCoords);
-    }
-    // Add error handling
-    SMap.Route.route(coords, { geometry: true, itinerary:true }).then((route) => {
-      var routeResults = route.getResults();
-      var coords = routeResults.geometry;
-      var g = new SMap.Geometry(SMap.GEOMETRY_POLYLINE, null, coords);
-      // slice geometry
-      let geometryPerSegments = sliceGeometry(g, routeResults.points);
-      storeGeometry(geometryPerSegments);
-      // which segment of route user is on, always start at beginning as user location = 1st point
-      Cookies.set('userProgress', '0');
-      success(geometryPerSegments);
-    });
-  }
-});
+  });
+}
 
 displayPointMarkers(await routePointsPromise);
-displayRoute(await routePromise, null);
+await displayRoute(await routePromise, null);
 updateUserMarker(await locationPromise);
-displayRoute(await routePromise, await locationPromise);
+await displayRoute(await routePromise, await locationPromise);
+saveLocations(await allPointsPromise);
 
-navigator.geolocation.watchPosition(function (position) {
+navigator.geolocation.watchPosition(async function (position) {
   position["SMapCoords"] = SMap.Coords.fromWGS84(position.coords.longitude, position.coords.latitude);
   updateUserMarker(position);
   receiveCoords(position);
+  await displayRoute(await routePromise, position);
+  checkPointsAround(position);
 }, showError);
 
 function displayPointMarkers(points) {
@@ -113,32 +146,71 @@ function displayPointMarkers(points) {
   }
 }
 
-function displayRoute(routeGeometry, userLocation) {
+async function displayRoute(routeGeometry, userLocation) {
+  let recompute = Cookies.get('navigationRecompute');
+  if (typeof recompute == 'undefined' || JSON.parse(recompute) == true) {
+    console.log("*****recompute =", recompute);
+    let promiseUser = createLocationPromise();
+    console.log(promiseUser);
+    userLocation = await promiseUser;
+    console.log("userLocation received promise=", userLocation);
+    let promiseRoute = createRoutePromise();
+    routeGeometry = await promiseRoute;
+    console.log("routeGeometry received promise=", routeGeometry);
+    console.log(routeGeometry);
+  }      
   if (userLocation != null) {
     changeRouteProgress(routeGeometry, userLocation);   
   }
   for (let g of routeGeometry) {
     layerGeometry.addGeometry(g);
   }
+  layerGeometry.clear();
   layerGeometry.redraw();
+  Cookies.remove('ignoreOffRoute');
 }
 
-function changeRouteProgress(routeGeometry, userLocation) {
+async function changeRouteProgress(routeGeometry, userLocation) {
   let segmentProgress = Cookies.get('userProgress');
   for (let i = 0; i < segmentProgress; ++i) {
     routeGeometry[i]._options.color = 'gray';
   }
+  if (checkGoalReached(routeGeometry, userLocation)) {
+    if (segmentProgress+1 == plannedRoute.length) {
+      plannedRoute = [];
+      Cookies.remove('route');
+      layerGeometry.removeAll();
+      // TODO modal route is over
+    } else {
+      visitedIds.push(plannedRoute[segmentProgress]);
+      Cookies.set('visited', JSON.stringify(visitedIds));
+      segmentProgress++;
+    }
+  }
   let closestPoint = findUserOnRoute(routeGeometry[segmentProgress].getCoords(), userLocation);
+  if (closestPoint == -1 ) {
+    await informUserOffRoute(userLocation); 
+    return;
+  }
   let visitedPart = routeGeometry[segmentProgress]._coords.splice(0, closestPoint+1);
   let visitedGeometry = new SMap.Geometry(routeGeometry[segmentProgress].getType(), null, visitedPart, routeGeometry[segmentProgress].getOptions());
   visitedGeometry._options.color='gray';
   routeGeometry.splice(segmentProgress, 0, visitedGeometry);
 }
 
+function checkGoalReached(route, user){
+  if (calcDistance(user, route[route.length -1]) < 0.05) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 function findUserOnRoute(route, user) {
   if (route.length == 0) {
     return 0;
   }
+  console.log(user);
   let firstPointDistance = calcDistance(user.SMapCoords, route[0]);
   var smallestDistance = {index:0, distance:firstPointDistance}
   for (let i =0; i < route.length; ++i) {
@@ -148,7 +220,12 @@ function findUserOnRoute(route, user) {
       smallestDistance.distance = distance;
     }
   }
-  return smallestDistance.index;
+  //console.log(smallestDistance.distance);
+  if (smallestDistance.distance > 0.05) {
+    return -1;
+  } else {
+    return smallestDistance.index;
+  }
 }
 
 function calcDistance(coords1, coords2) {
@@ -171,6 +248,34 @@ function calcDistance(coords1, coords2) {
 	}
 }
 
+async function informUserOffRoute(userLocation) {
+  let ignoreOffRoute = Cookies.get('ignoreOffRoute');
+  //console.log(ignoreOffRoute);
+  if (typeof ignoreOffRoute == 'undefined'){
+    document.querySelector("#button-recompute-off-route").setAttribute('data-userLocation', JSON.stringify(userLocation));
+    console.log(userLocation);
+    console.log(JSON.stringify(userLocation));
+    $('#off-route').modal('show');
+  }
+  // TODO: if ignoring, add option to recompute later
+}
+
+async function recomputeOffRoute (e) {
+  console.log(e);
+  Cookies.set('navigationRecompute', 'true');
+  Cookies.set('ignoreOffRoute', 'true');
+  //console.log(e.target.dataset['userlocation']);
+  let location = JSON.parse(e.target.dataset['userlocation']);
+  let smapCoords = SMap.Coords.fromWGS84(location.SMapCoords.x, location.SMapCoords.y);
+  console.log("button click =", location);
+  //console.log(smapCoords);
+  await displayRoute(null,null);//{SMapCoords:smapCoords});
+  console.log("display finished");
+}
+
+function ignoreOffRoute () {
+  Cookies.set('ignoreOffRoute', 'true');
+}
 
 function updateUserMarker(userLocation) {
   let markers = layerMarkers.getMarkers();
@@ -184,7 +289,7 @@ function updateUserMarker(userLocation) {
   var pic = JAK.mel("img", {src:SMap.CONFIG.img+"/marker/drop-red.png"});
   location.appendChild(pic);
   var userMarker = new SMap.Marker(userLocation.SMapCoords, "user_location", {url:location, title:"You are standing here"});
-  //console.log("Update user marker", userMarker);
+  console.log("Update user marker", userMarker);
   layerMarkers.addMarker(userMarker);
 }
 
@@ -274,4 +379,37 @@ function createGeometries(geometrySegments, geometry) {
     routeGeometry.push(new SMap.Geometry(geometry.getType(), null, segment, geometry.getOptions()));
   }
   return routeGeometry;
+}
+
+function saveLocations (points) {
+  pointLocation = points;
+}
+
+function checkPointsAround(userLocation) {
+  for (let point of pointLocation) {
+    if (!ignoredNearby.includes(point.id) && !visitedIds.includes(point.id)){
+      if (calcDistance(userLocation.SMapCoords, point.SMapCoords) < 0.1) {
+        document.querySelector("#button-ignore-nearby").setAttribute('data-nearbyPoint', point.id);
+        document.querySelector("#button-recompute-add-nearby").setAttribute('data-nearbyPoint', point.id);
+        $('#off-route').modal('show');
+      }
+    }
+  }
+}
+
+function recomputeAddNearby(e) {
+  Cookies.set('navigationRecompute', 'true');
+  let nextPoint = Cookies.get('userProgress');
+  console.log(plannedRoute);
+  plannedRoute.splice(nextPoint, 0, e.target.dataset['nearbyPoint']);
+  console.log(plannedRoute);
+  Cookies.set('route', JSON.stringify(plannedRoute));
+  // ignore, do not recommend again
+  ignoreAddNearby(e);
+
+}
+
+function ignoreAddNearby(e) {
+  ignoredNearby.push(e.target.dataset['nearbyPoint']);
+  Cookies.set('ignoredPointsNearby', JSON.stringify(ignoredNearby));
 }
