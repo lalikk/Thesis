@@ -105,6 +105,7 @@ function createRoutePromise(userLocation, userRoute) {
       // Add error handling
       SMap.Route.route(coords, { geometry: true, itinerary:true }).then((route) => {
         var routeResults = route.getResults();
+        console.log("route results", routeResults);
         var coords = routeResults.geometry;
         var g = new SMap.Geometry(SMap.GEOMETRY_POLYLINE, null, coords);
         // slice geometrydisplayPointMarkers
@@ -131,6 +132,7 @@ globalRoute = await createRoutePromise(globalLocation, globalPoints);
 updateUserMarker(globalLocation);
 await displayRoute(globalRoute, globalLocation);
 saveLocations(await allPointsPromise);
+console.log("all points", allPointsPromise);
 
 navigator.geolocation.watchPosition(function (position) {
   position["SMapCoords"] = SMap.Coords.fromWGS84(position.coords.longitude, position.coords.latitude);
