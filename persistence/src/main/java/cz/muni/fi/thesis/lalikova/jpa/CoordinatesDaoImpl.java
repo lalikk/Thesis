@@ -39,7 +39,7 @@ public class CoordinatesDaoImpl implements CoordinatesDao {
     }
 
     @Override
-    public void remove(Coordinates coordinates) {
+    public void remove(@NonNull Coordinates coordinates) {
         entityManager.remove(findById(coordinates.getId()));
     }
 }

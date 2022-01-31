@@ -10,6 +10,9 @@ public class ApiUri {
     public static final String ROOT_URI_COORDINATE = "/coordinates/{id}";
     public static final String ROOT_URI_COORDINATES = "/coordinates";
 
+    public static final String ROOT_URI_DISTANCE = "/distances/{id}";
+    public static final String ROOT_URI_DISTANCES = "/distances";
+
     public static final String ROOT_URI_PHOTO = "/photos/{id}";
     public static final String ROOT_URI_PHOTOS = "/photos";
 

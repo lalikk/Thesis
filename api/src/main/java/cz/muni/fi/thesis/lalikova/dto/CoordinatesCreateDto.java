@@ -1,7 +1,6 @@
 package cz.muni.fi.thesis.lalikova.dto;
 
 import javax.validation.constraints.NotNull;
-
 import java.util.Objects;
 
 public class CoordinatesCreateDto {

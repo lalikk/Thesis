@@ -4,11 +4,11 @@ import java.util.Objects;
 
 public class CoordinatesDto {
 
-    Long id;
+    private Long id;
 
-    Double latitude;
+    private Double latitude;
 
-    Double longitude;
+    private Double longitude;
 
     public Long getId() {
         return id;

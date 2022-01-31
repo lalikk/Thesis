@@ -1,7 +1,6 @@
 package cz.muni.fi.thesis.lalikova.dao;
 
 import cz.muni.fi.thesis.lalikova.entity.Coordinates;
-
 import java.util.List;
 
 public interface CoordinatesDao {
