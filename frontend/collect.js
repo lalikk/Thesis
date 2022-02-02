@@ -1,5 +1,6 @@
-let distances = [];
+import Cookies from './node_modules/js-cookie/dist/js.cookie.mjs'
 
+let distances = [];
 
 let allPointsPromise = new Promise((success, error) => {
     $.getJSON('http://localhost:8080/rest/points', (data) => {  
@@ -13,6 +14,8 @@ let allPointsPromise = new Promise((success, error) => {
   let points = await allPointsPromise;
   console.log(points);
 
+function distancePromise(){
+  return new Promise((success, error) => {
   for (let i=0; i < points.length-1; ++i) {
       for (let j=i+1; j<points.length; ++j) {
           let coords = [points[i].SMapCoords, points[j].SMapCoords];
@@ -22,12 +25,54 @@ let allPointsPromise = new Promise((success, error) => {
               console.log(i,j);
               let distanceObj = {pointAId:points[i].id, pointBId:points[j].id, distance:routeResults.length};
               distances.push(distanceObj);
-              $.post('http://localhost:8080/rest/distances', JSON.stringify(distanceObj), null, "json");
+              //$.post('http://localhost:8080/rest/distances', JSON.stringify(distanceObj), null, "json");
           })
       }
   }
-  
-  console.log(distances);
+  success(distances)});
+}
+ 
+async function computeDistances () {
+  let distances = await createDistancePromiseAll();
+  let distanceData = [];
+  console.log("promise all",distances);
+  for (let d of distances) {
+
+  }
+}
+
+function createDistancePromiseAll () {
+  let promises = [];
+  for (let i=0; i < points.length-1; ++i) {
+    for (let j=i+1; j<points.length; ++j) {
+        let coords = [points[i].SMapCoords, points[j].SMapCoords];
+        console.log(i,j);
+        promises.push(SMap.Route.route(coords, {}));
+    }
+  }
+  return Promise.all(promises);
+}
+
+function createDistancePromise (coords) {
+  return new Promise((success, error) => {
+    SMap.Route.route(coords, {});
+  }
+  )
+}
+
+//console.log(distances);
+let d = await distancePromise();
+console.log("d:",d);
+Cookies.set('distances', JSON.stringify(d));
+
+function stateChange() {
+  setTimeout(function () {
+    Cookies.set('distances', JSON.stringify(d));
+  }, 5000);
+}
+
+stateChange();
+
 
   /*for (let i=0; i < distances.length; ++i) {
       $.postJson('http://localhost:8080/rest/distances', JSON.stringify(distances[i]));
