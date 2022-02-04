@@ -68,6 +68,7 @@ function addToPlanning(e) {
     var jsonIds = JSON.stringify(ids);
     Cookies.set('route', jsonIds);
     Cookies.set('navigationRecompute', 'true');
+    Cookies.set('displayRecommend', 'true');
     window.location.href="route_planning.html";
 }
 

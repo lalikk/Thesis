@@ -64,6 +64,7 @@ function extendRoute(e) {
     var json_ids = JSON.stringify(idsArray);
     Cookies.set('route', json_ids);
     Cookies.set('navigationRecompute', 'true');
+    Cookies.set('displayRecommend', 'true');
     window.location.href="route_planning.html";
     }); 
 }
