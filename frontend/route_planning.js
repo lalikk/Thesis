@@ -109,7 +109,7 @@ function clearEmptyRoute() {
 }
 
 function displayEmpty() {
-  let contents = `To start planning a route, either select an existing route or add any point.\n`;
+  let contents = `<div><h2>To start planning a route, either select an existing route or add any point.\n</h2></div>`;
   contents += `<div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
   <button type="button" class="btn btn-primary btn-lg px-4 gap-3" onclick="location.href='route_list.html'">Take me to predefined routes</button>
   <button type="button" class="btn btn-outline-secondary btn-lg px-4"onclick="location.href='location.html'">Find what is around me</button>
