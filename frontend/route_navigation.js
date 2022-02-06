@@ -28,6 +28,7 @@ var visitedIds = [];
 if (typeof visited != 'undefined') {
   visitedIds = JSON.parse(visited);
 }
+var remainingPoints = new Map();
 
 initMap();
 
@@ -49,19 +50,35 @@ let routePointsPromise = createRoutePointsPromise();
 function createRoutePointsPromise(){
   return new Promise((success, error) => {
   $.getJSON('http://localhost:8080/rest/points', (data) => {
-    let routePoints = [];
-    var indexInRoute = 1;
-    for (let point of data) {
-      if(plannedRoute.includes(point.id) && !visitedIds.includes(point.id)) {
-        point["indexInRoute"] = indexInRoute;
-        point["SMapCoords"] = SMap.Coords.fromWGS84(point.coordinates.latitude, point.coordinates.longitude);
-        routePoints.push(point);
-        indexInRoute++;
-      }
+    for (let id of plannedRoute) {
+      if(!visitedIds.includes(parseInt(id))) {
+        for (let point of data) {
+            if (point.id == id) {
+              remainingPoints.set(point.id, point); 
+            }
+        }
+      }      
     }
-    success(routePoints)
+    let routePoints = computeRoutePoints();
+    console.log("routePoints",routePoints);
+    success(routePoints);
   }).fail(error);
 });}
+
+function computeRoutePoints() {
+  var indexInRoute = 1;
+  let routePoints = [];
+  for (let id of plannedRoute) {
+    if (!visitedIds.includes(id)) {
+      let point = remainingPoints.get(id);
+      point["indexInRoute"] = indexInRoute;
+      point["SMapCoords"] = SMap.Coords.fromWGS84(point.coordinates.latitude, point.coordinates.longitude);
+      routePoints.push(point);
+      indexInRoute++;
+    }
+  }
+  return routePoints;
+}
 
 let locationPromise = createLocationPromise();
 
@@ -78,7 +95,6 @@ function createRoutePromise(userLocation, userRoute) {
   return new Promise(async (success, error) => {
     let recompute = Cookies.get('navigationRecompute');
     // TODO: (?) Remove recompute flag and use existence of geometry instead.
-    console.log("Start route promise. Recompute:", recompute);
     if(recompute === "false") {
       let g = window.localStorage.getItem('geometry');
       let geometry = JSON.parse(g);
@@ -92,16 +108,14 @@ function createRoutePromise(userLocation, userRoute) {
       }
       success(geometries);
     } else if (userLocation != null && userRoute != null) {
-      console.log("recompute:", recompute);
+      console.log("user route", userRoute);
       var coords = [];
       // TODO: Handle case when location is not available (promis throws exception).
-      //let userLocation = await locationPromise;
-      //let userRoute = await routePointsPromise;
-      console.log("route points:", userRoute);
       coords.push(userLocation.SMapCoords);
       for (let routePoint of userRoute) {
         coords.push(routePoint.SMapCoords);
       }
+      console.log("coords",coords);
       // Add error handling
       SMap.Route.route(coords, { geometry: true, itinerary:true }).then((route) => {
         var routeResults = route.getResults();
@@ -122,6 +136,7 @@ function createRoutePromise(userLocation, userRoute) {
 }
 
 let globalPoints = await routePointsPromise;
+console.log("global points:", globalPoints);
 displayPointMarkers(globalPoints);
 let globalRoute = await createRoutePromise(null, globalPoints);
 if (globalRoute != null) {
@@ -132,7 +147,6 @@ globalRoute = await createRoutePromise(globalLocation, globalPoints);
 updateUserMarker(globalLocation);
 await displayRoute(globalRoute, globalLocation);
 saveLocations(await allPointsPromise);
-console.log("all points", allPointsPromise);
 
 navigator.geolocation.watchPosition(function (position) {
   position["SMapCoords"] = SMap.Coords.fromWGS84(position.coords.longitude, position.coords.latitude);
@@ -233,14 +247,14 @@ function createGeometryCopy(routeGeometry) {
 }
 
 function checkGoalReached(route, user){
-  console.log("Check goal",route, user);
+  //console.log("Check goal",route, user);
   let userSMap = SMap.Coords.fromWGS84(user.SMapCoords.x, user.SMapCoords.y);
   let routeEndSMap = SMap.Coords.fromWGS84(route._coords[route._coords.length-1].x, route._coords[route._coords.length-1].y);
   //console.log()
   //if (calcDistance(user, route[route.length -1]) < 0.05) {
-  console.log(userSMap);
-  console.log(routeEndSMap);
-  console.log(userSMap.distance(routeEndSMap));
+  //console.log(userSMap);
+  //console.log(routeEndSMap);
+  //console.log(userSMap.distance(routeEndSMap));
   if (userSMap.distance(routeEndSMap) < 100){
     console.log("checkpoint reached");
     return true;
@@ -379,8 +393,6 @@ function storeGeometry(g) {
 }
 
 function sliceGeometry(geometry, points) {
-  console.log("Slice geometry input:", geometry, points);
-
   let geometrySegments = [];
   var partingIndex = 0;
   // skip leading zeroes
@@ -414,9 +426,9 @@ function saveLocations (points) {
 function checkPointsAround(userLocation) {
   for (let point of pointLocation) {
     if (!ignoredNearby.includes(point.id) && !visitedIds.includes(point.id) && !plannedRoute.includes(point.id)){
-      console.log("nearest sight distance", userLocation.SMapCoords.distance(point.SMapCoords));
+      //console.log("nearest sight distance", userLocation.SMapCoords.distance(point.SMapCoords));
       if (userLocation.SMapCoords.distance(point.SMapCoords) < 200) {
-        console.log("Point nearby", userLocation, point, userLocation.SMapCoords.distance(point.SMapCoords));
+        //console.log("Point nearby", userLocation, point, userLocation.SMapCoords.distance(point.SMapCoords));
         document.querySelector("#button-ignore-nearby").setAttribute('data-nearbyPoint', point.id);
         document.querySelector("#button-recompute-add-nearby").setAttribute('data-nearbyPoint', point.id);
         $('#point-nearby').modal('show');
@@ -428,16 +440,16 @@ function checkPointsAround(userLocation) {
 function recomputeAddNearby(e) {
   Cookies.set('navigationRecompute', 'true');
   let nextPoint = Cookies.get('userProgress');
-  console.log(e.target.dataset);
+  //console.log(e.target.dataset);
   plannedRoute.splice(nextPoint, 0, parseInt(e.target.dataset['nearbypoint']));
-  console.log(plannedRoute);
+  //console.log(plannedRoute);
   Cookies.set('route', JSON.stringify(plannedRoute));
   createRoutePointsPromise().then((points) => {
     globalPoints = points;
     displayPointMarkers(points);
     updateUserMarker(globalLocation);
     createRoutePromise(globalLocation, points).then((route) => {
-      console.log("Route recomputed!!!.");
+      //console.log("Route recomputed!!!.");
       globalRoute = route;
       displayRoute(route, globalLocation);
     })

@@ -28,6 +28,7 @@ if (typeof ids == 'undefined') {
         }
       }      
     }
+    console.log(remainingPoints);
     buildTable(idsArray);
   })
 }

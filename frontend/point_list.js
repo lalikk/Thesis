@@ -11,7 +11,7 @@ $.getJSON(`http://localhost:8080/rest/points`, function(data, status) {
             <div class="card">
             <svg class="bd-placeholder-img card-img-top" width="100%" height="200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Image cap" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"/><text x="50%" y="50%" fill="#dee2e6" dy=".3em">Image cap</text></svg>
             <div class="card-body">
-            <h5 class="card-title">${point.title}</h5>
+            <h5 class="card-title"><a href=${urlPoint}>${point.title}</a></h5>
             <p class="card-text">${point.description}</p>
             </div>
             </div>

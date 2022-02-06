@@ -42,7 +42,7 @@
   }
   .outer-menu .checkbox-toggle {
 	position: absolute;
-	top: 210px;
+	top: 250px;
 	left: 0;
 	z-index: 2;
 	cursor: pointer;
