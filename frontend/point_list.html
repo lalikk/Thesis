@@ -1,13 +1,13 @@
 <!doctype html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!--link rel="stylesheet" href="assets/css/starter.css"-->
   <title>Virtual nature trail</title>
 
-  <!-- Bootstrap core CSS -->
+  <!-- Bootstrap core CSS -->    
+  <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/masonry/">
   <link href="./assets/css/starter.css" rel="stylesheet">
   <script type="text/javascript" src="https://api.mapy.cz/loader.js"></script>
   <script type="text/javascript">Loader.load();</script>
@@ -19,13 +19,11 @@
       -webkit-user-select: none;
       -moz-user-select: none;
       user-select: none;
+      background-image: url("https://images.pexels.com/photos/38238/maldives-ile-beach-sun-38238.jpeg?auto=compress&cs=tinysrgb&h=650&w=940");              
+      height:auto;
+      width: auto;
     }
 
-    @media (min-width: 768px) {
-      .bd-placeholder-img-lg {
-        font-size: 3.5rem;
-      }
-    }
   </style>
 
   <!-- Custom styles for this template -->
@@ -95,12 +93,31 @@
           </div>
         </div>
       </div>
+
     </div> 
     
+    <div class="container py-5">
+      <div id="mansonry" class="row" data-masonry='{"percentPosition": true }'>
+        <div class="col-sm-6 col-lg-4 mb-4">
+          <div class="card">
+            <svg class="bd-placeholder-img card-img-top" width="100%" height="200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Image cap" 
+                preserveAspectRatio="xMidYMid slice" focusable="false">
+                <title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"/>
+            </svg>
+            <div class="card-body">
+              <h5 class="card-title">Card title</h5>
+              <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </main>
   <script src="node_modules/jquery/dist/jquery.min.js"></script>
   <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>  
   <script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
-  <script type="module" src="./route_planning.js"></script>
+  <script async src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"></script>
+  <script type="module" src="./point_list.js"></script>
 </body>
 </html>
