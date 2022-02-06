@@ -42,7 +42,7 @@
   }
   .outer-menu .checkbox-toggle {
 	position: absolute;
-	top: 0;
+	top: 210px;
 	left: 0;
 	z-index: 2;
 	cursor: pointer;
@@ -50,15 +50,15 @@
 	height: 60px;
 	opacity: 0;
   }
-  .outer-menu .checkbox-toggle:checked + .hamburger > div {
+  .outer-menu .checkbox-toggle:checked + .more-a > div {
 	transform: rotate(135deg);
   }
-  .outer-menu .checkbox-toggle:checked + .hamburger > div:before,
-  .outer-menu .checkbox-toggle:checked + .hamburger > div:after {
+  .outer-menu .checkbox-toggle:checked + .more-a > div:before,
+  .outer-menu .checkbox-toggle:checked + .more-a > div:after {
 	top: 0;
 	transform: rotate(90deg);
   }
-  .outer-menu .checkbox-toggle:checked + .hamburger > div:after {
+  .outer-menu .checkbox-toggle:checked + .more-a > div:after {
 	opacity: 0;
   }
   .outer-menu .checkbox-toggle:checked ~ .menu {
@@ -73,10 +73,10 @@
 	opacity: 1;
 	transition: opacity 0.4s ease 0.4s;
   }
-  .outer-menu .checkbox-toggle:hover + .hamburger {
+  .outer-menu .checkbox-toggle:hover + .more-a {
 	box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
   }
-  .outer-menu .checkbox-toggle:checked:hover + .hamburger > div {
+  .outer-menu .checkbox-toggle:checked:hover + .more-a > div {
 	transform: rotate(225deg);
   }
   .outer-menu .hamburger {
@@ -123,7 +123,7 @@
   .outer-menu .hamburger > div:after {
 	top: 10px;
   }
-  .outer-menu .navigation {
+  .outer-menu .location {
 	position: absolute;
 	top: 70px;
 	left: 0;
@@ -141,15 +141,81 @@
 	align-items: center;
 	justify-content: center;
   }
-  .outer-menu .planning {
+  .outer-menu .route {
 	position: absolute;
-	top: 70px;
+	top: 140px;
 	left: 0;
 	z-index: 1;
 	width: 60px;
 	height: 60px;
 	padding: 0.5em 1em;
 	background: #25775e;
+	border-radius: 0 0.12em 0.12em 0;
+	cursor: pointer;
+	transition: box-shadow 0.4s ease;
+	-webkit-backface-visibility: hidden;
+			backface-visibility: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+  }
+  .outer-menu .navigation {
+	position: absolute;
+	top: 210px;
+	left: 0;
+	z-index: 1;
+	width: 60px;
+	height: 60px;
+	padding: 0.5em 1em;
+	background: #319e7d;
+	border-radius: 0 0.12em 0.12em 0;
+	cursor: pointer;
+	transition: box-shadow 0.4s ease;
+	-webkit-backface-visibility: hidden;
+			backface-visibility: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+  }
+  .outer-menu .planning {
+	position: absolute;
+	top: 210px;
+	left: 0;
+	z-index: 1;
+	width: 60px;
+	height: 60px;
+	padding: 0.5em 1em;
+	background: #319e7d;
+	border-radius: 0 0.12em 0.12em 0;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+  }
+  .outer-menu .more-a {
+	position: absolute;
+	top: 210px;
+	left: 0;
+	z-index: 1;
+	width: 60px;
+	height: 60px;
+	padding: 0.5em 1em;
+	background: #65b69e;
+	border-radius: 0 0.12em 0.12em 0;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+  }
+  .outer-menu .more-b {
+	position: absolute;
+	top: 280px;
+	left: 0;
+	z-index: 1;
+	width: 60px;
+	height: 60px;
+	padding: 0.5em 1em;
+	background: #65b69e;
 	border-radius: 0 0.12em 0.12em 0;
 	cursor: pointer;
 	display: flex;
@@ -175,8 +241,8 @@
   .outer-menu .menu > div {
 	width: 200vw;
 	height: 200vw;
-	color: #FEFEFE;
-	background: #25775e;
+	color: rgb(66, 66, 66);
+	background: #65b69e;
 	border-radius: 50%;
 	transition: all 0.4s ease;
 	flex: none;
@@ -235,5 +301,41 @@
 	height: 2px;
 	background: #e5e5e5;
 	transition: width 0.4s ease;
+  }
+  
+  .dot-typing {
+	position: relative;
+	left: -9998px;
+	width: 6px;
+	height: 6px;
+	border-radius: 5px;
+	background-color: #FEFEFE;
+	color: #FEFEFE;
+	box-shadow: 9988px 0 0 0 #FEFEFE, 9998px 0 0 0 #FEFEFE, 10008px 0 0 0 #FEFEFE;
+	animation: dotTyping 1.5s linear;
+  }
+  
+  @keyframes dotTyping {
+	0% {
+	  box-shadow: 9988px 0 0 0 #FEFEFE, 9998px 0 0 0 #FEFEFE, 10008px 0 0 0 #FEFEFE;
+	}
+	16.667% {
+	  box-shadow: 9988px -10px 0 0 #FEFEFE, 9998px 0 0 0 #FEFEFE, 10008px 0 0 0 #FEFEFE;
+	}
+	33.333% {
+	  box-shadow: 9988px 0 0 0 #FEFEFE, 9998px 0 0 0 #FEFEFE, 10008px 0 0 0 #FEFEFE;
+	}
+	50% {
+	  box-shadow: 9988px 0 0 0 #FEFEFE, 9998px -10px 0 0 #FEFEFE, 10008px 0 0 0 #FEFEFE;
+	}
+	66.667% {
+	  box-shadow: 9988px 0 0 0 #FEFEFE, 9998px 0 0 0 #FEFEFE, 10008px 0 0 0 #FEFEFE;
+	}
+	83.333% {
+	  box-shadow: 9988px 0 0 0 #FEFEFE, 9998px 0 0 0 #FEFEFE, 10008px -10px 0 0 #FEFEFE;
+	}
+	100% {
+	  box-shadow: 9988px 0 0 0 #FEFEFE, 9998px 0 0 0 #FEFEFE, 10008px 0 0 0 #FEFEFE;
+	}
   }
   
