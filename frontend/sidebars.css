@@ -40,9 +40,42 @@
 	left: 0;
 	z-index: 1;
   }
+
+  .outer-menu .side-menu {
+	position: absolute;
+	top: 0;
+	left: 0;
+  }
+
+  .outer-menu .side-menu .side-menu-extra {
+	overflow: hidden;
+	transition-property: max-height;
+	transition-duration: 0.3s;
+	transition-timing-function: ease;
+	max-height: 300px;
+  }
+
+  .outer-menu .side-menu .side-menu-extra.zero-height {
+	  max-height: 0px;
+  }
+
+  .outer-menu .side-menu .side-button {
+	z-index: 1;
+	width: 60px;
+	height: 60px;
+	padding: 0.5em 1em;
+	border-radius: 0 0.12em 0.12em 0;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 10px;
+	position: relative;
+  }
+
   .outer-menu .checkbox-toggle {
 	position: absolute;
-	top: 250px;
+	top: 0;
 	left: 0;
 	z-index: 2;
 	cursor: pointer;
@@ -50,6 +83,10 @@
 	height: 60px;
 	opacity: 0;
   }
+  .outer-menu .checkbox-toggle:checked {
+	animation: dotTyping 1.5s linear;
+  }
+
   .outer-menu .checkbox-toggle:checked + .more-a > div {
 	transform: rotate(135deg);
   }
@@ -61,10 +98,26 @@
   .outer-menu .checkbox-toggle:checked + .more-a > div:after {
 	opacity: 0;
   }
-  .outer-menu .checkbox-toggle:checked ~ .menu {
+  .outer-menu .checkbox-toggle:active ~ .menu {
 	pointer-events: auto;
 	visibility: visible;
   }
+
+  .outer-menu .menu.active {
+	pointer-events: auto;
+	visibility: visible;
+  }
+
+  .outer-menu .menu.active > div {
+	transform: scale(1);
+	transition-duration: 0.75s;
+  }
+
+  .outer-menu .menu.active > div > div {
+	opacity: 1;
+	transition: opacity 0.4s ease 0.4s;
+  }
+
   .outer-menu .checkbox-toggle:checked ~ .menu > div {
 	transform: scale(1);
 	transition-duration: 0.75s;
@@ -80,22 +133,7 @@
 	transform: rotate(225deg);
   }
   .outer-menu .hamburger {
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 1;
-	width: 60px;
-	height: 60px;
-	padding: 0.5em 1em;
 	background: #194f3e;
-	border-radius: 0 0.12em 0.12em 0;
-	cursor: pointer;
-	transition: box-shadow 0.4s ease;
-	-webkit-backface-visibility: hidden;
-			backface-visibility: hidden;
-	display: flex;
-	align-items: center;
-	justify-content: center;
   }
   .outer-menu .hamburger > div {
 	position: relative;
@@ -124,103 +162,22 @@
 	top: 10px;
   }
   .outer-menu .location {
-	position: absolute;
-	top: 70px;
-	left: 0;
-	z-index: 1;
-	width: 60px;
-	height: 60px;
-	padding: 0.5em 1em;
 	background: #25775e;
-	border-radius: 0 0.12em 0.12em 0;
-	cursor: pointer;
-	transition: box-shadow 0.4s ease;
-	-webkit-backface-visibility: hidden;
-			backface-visibility: hidden;
-	display: flex;
-	align-items: center;
-	justify-content: center;
   }
   .outer-menu .route {
-	position: absolute;
-	top: 140px;
-	left: 0;
-	z-index: 1;
-	width: 60px;
-	height: 60px;
-	padding: 0.5em 1em;
 	background: #25775e;
-	border-radius: 0 0.12em 0.12em 0;
-	cursor: pointer;
-	transition: box-shadow 0.4s ease;
-	-webkit-backface-visibility: hidden;
-			backface-visibility: hidden;
-	display: flex;
-	align-items: center;
-	justify-content: center;
   }
   .outer-menu .navigation {
-	position: absolute;
-	top: 210px;
-	left: 0;
-	z-index: 1;
-	width: 60px;
-	height: 60px;
-	padding: 0.5em 1em;
 	background: #319e7d;
-	border-radius: 0 0.12em 0.12em 0;
-	cursor: pointer;
-	transition: box-shadow 0.4s ease;
-	-webkit-backface-visibility: hidden;
-			backface-visibility: hidden;
-	display: flex;
-	align-items: center;
-	justify-content: center;
   }
   .outer-menu .planning {
-	position: absolute;
-	top: 210px;
-	left: 0;
-	z-index: 1;
-	width: 60px;
-	height: 60px;
-	padding: 0.5em 1em;
 	background: #319e7d;
-	border-radius: 0 0.12em 0.12em 0;
-	cursor: pointer;
-	display: flex;
-	align-items: center;
-	justify-content: center;
   }
   .outer-menu .more-a {
-	position: absolute;
-	top: 210px;
-	left: 0;
-	z-index: 1;
-	width: 60px;
-	height: 60px;
-	padding: 0.5em 1em;
 	background: #65b69e;
-	border-radius: 0 0.12em 0.12em 0;
-	cursor: pointer;
-	display: flex;
-	align-items: center;
-	justify-content: center;
   }
   .outer-menu .more-b {
-	position: absolute;
-	top: 280px;
-	left: 0;
-	z-index: 1;
-	width: 60px;
-	height: 60px;
-	padding: 0.5em 1em;
 	background: #65b69e;
-	border-radius: 0 0.12em 0.12em 0;
-	cursor: pointer;
-	display: flex;
-	align-items: center;
-	justify-content: center;
   }
   .outer-menu .menu {
 	position: fixed;
@@ -303,6 +260,11 @@
 	transition: width 0.4s ease;
   }
   
+  .hidden-element {
+	  visibility: hidden;
+  }
+
+
   .dot-typing {
 	position: relative;
 	left: -9998px;
@@ -311,7 +273,10 @@
 	border-radius: 5px;
 	background-color: #FEFEFE;
 	color: #FEFEFE;
-	box-shadow: 9988px 0 0 0 #FEFEFE, 9998px 0 0 0 #FEFEFE, 10008px 0 0 0 #FEFEFE;
+	box-shadow: 9988px 0 0 0 #FEFEFE, 9998px 0 0 0 #FEFEFE, 10008px 0 0 0 #FEFEFE;  
+  }
+
+  .more-a:focus .dot-typing {
 	animation: dotTyping 1.5s linear;
   }
   
@@ -339,3 +304,12 @@
 	}
   }
   
+
+/* TODO: Move me home */
+
+.card-img-top {
+	object-fit: cover; /* Do not scale the image */
+	object-position: center; /* Center the image within the element */
+	width: 100%;
+	max-height: 250px;
+  }

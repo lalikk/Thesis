@@ -12,17 +12,6 @@
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
-  <style>
-    .bd-placeholder-img {
-      font-size: 1.125rem;
-      text-anchor: middle;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      user-select: none;
-    }
-
-  </style>
-
   <!-- Custom styles for this template -->
   <link href="headers.css" rel="stylesheet">
   <link href="sidebars.css" rel="stylesheet">
@@ -44,9 +33,38 @@
 
   <main>    
     <div class="outer-menu">
-      <input class="checkbox-toggle" type="checkbox" />
-      <div class="hamburger">
-        <div></div>
+      <div class="side-menu">
+        <div class="hamburger side-button" onclick="document.querySelector('.side-menu-extra').classList.toggle('zero-height')">
+          <div></div>
+        </div>
+        <div class="side-menu-extra  zero-height">
+          <div class="location side-button">
+            <div>
+              <a href="location.html" class="nav-link text-white">
+                <svg class="bi d-block mx-auto mb-1" width="30" height="30">
+                  <use xlink:href="#location" />
+                </svg>
+              </a>
+            </div>
+          </div>
+          <div class="route side-button">
+            <div>
+              <a href="route_planning.html" class="nav-link text-white">
+                <svg class="bi d-block mx-auto mb-1" width="30" height="30">
+                  <use xlink:href="#navigation" />
+                </svg>
+              </a>
+            </div>
+          </div>
+          <div class="more-a side-button" tabindex="0" onclick="document.querySelector('.menu').classList.toggle('active')">
+            <div>
+                <!--<svg id="moreSvg" class="bi d-block mx-auto mb-1 text-white" width="30" height="30">
+                  <use xlink:href="#more" />
+                </svg>-->
+              <div class="dot-typing"></div>              
+            </div>
+          </div>
+        </div>
       </div>
       <div class="menu">
         <div>
@@ -64,24 +82,6 @@
               <p class="text-center">&copy; 2022</p>
             </ul>
           </div>
-        </div>
-      </div>
-      <div class="location">
-        <div>
-          <a href="location.html" class="nav-link text-white">
-            <svg class="bi d-block mx-auto mb-1" width="30" height="30">
-              <use xlink:href="#location" />
-            </svg>
-          </a>
-        </div>
-      </div>
-      <div class="route">
-        <div>
-          <a href="route_planning.html" class="nav-link text-white">
-            <svg class="bi d-block mx-auto mb-1" width="30" height="30">
-              <use xlink:href="#navigation" />
-            </svg>
-          </a>
         </div>
       </div>
     </div> 

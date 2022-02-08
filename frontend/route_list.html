@@ -10,22 +10,6 @@
   <!-- Bootstrap core CSS -->
   <link href="./assets/css/starter.css" rel="stylesheet">
 
-  <style>
-    .bd-placeholder-img {
-      font-size: 1.125rem;
-      text-anchor: middle;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      user-select: none;
-    }
-
-    @media (min-width: 768px) {
-      .bd-placeholder-img-lg {
-        font-size: 3.5rem;
-      }
-    }
-  </style>
-
   <!-- Custom styles for this template -->
   <link href="headers.css" rel="stylesheet">
   <link href="sidebars.css" rel="stylesheet">
@@ -46,34 +30,39 @@
   </svg>
 
   <main>
-    <header>
-      <div class="px-3 py-2 bg-dark text-white" style="position:absolute;left:0; right:0; top:0; height: 5rem;">
-          <div class="d-flex justify-content-end">
-            <ul class="nav col-auto my-2 my-md-0 text-small">
-              <li>
-                <a href="location.html" class="nav-link text-white">
-                  <svg class="bi d-block mx-auto mb-1" width="24" height="24">
-                    <use xlink:href="#location" />
-                  </svg>
-                  My location
-                </a>
-              </li>
-              <li>
-                <a href="route_planning.html" class="nav-link text-white">
-                  <svg class="bi d-block mx-auto mb-1" width="24" height="24">
-                    <use xlink:href="#navigation" />
-                  </svg>
-                  My route
-                </a>
-              </li>
-            </ul>
-          </div>
-      </div>
-    </header>
     <div class="outer-menu">
-      <input class="checkbox-toggle" type="checkbox" />
-      <div class="hamburger">
-        <div></div>
+      <div class="side-menu">
+        <div class="hamburger side-button" onclick="document.querySelector('.side-menu-extra').classList.toggle('zero-height')">
+          <div></div>
+        </div>
+        <div class="side-menu-extra zero-height">
+          <div class="location side-button">
+            <div>
+              <a href="location.html" class="nav-link text-white">
+                <svg class="bi d-block mx-auto mb-1" width="30" height="30">
+                  <use xlink:href="#location" />
+                </svg>
+              </a>
+            </div>
+          </div>
+          <div class="route side-button">
+            <div>
+              <a href="route_planning.html" class="nav-link text-white">
+                <svg class="bi d-block mx-auto mb-1" width="30" height="30">
+                  <use xlink:href="#navigation" />
+                </svg>
+              </a>
+            </div>
+          </div>
+          <div class="more-a side-button" tabindex="0" onclick="document.querySelector('.menu').classList.toggle('active')">
+            <div>
+                <!--<svg id="moreSvg" class="bi d-block mx-auto mb-1 text-white" width="30" height="30">
+                  <use xlink:href="#more" />
+                </svg>-->
+              <div class="dot-typing"></div>              
+            </div>
+          </div>
+        </div>
       </div>
       <div class="menu">
         <div>
@@ -91,24 +80,6 @@
               <p class="text-center">&copy; 2022</p>
             </ul>
           </div>
-        </div>
-      </div>
-      <div class="location">
-        <div>
-          <a href="location.html" class="nav-link text-white">
-            <svg class="bi d-block mx-auto mb-1" width="30" height="30">
-              <use xlink:href="#location" />
-            </svg>
-          </a>
-        </div>
-      </div>
-      <div class="route">
-        <div>
-          <a href="route_planning.html" class="nav-link text-white">
-            <svg class="bi d-block mx-auto mb-1" width="30" height="30">
-              <use xlink:href="#navigation" />
-            </svg>
-          </a>
         </div>
       </div>
     </div> 

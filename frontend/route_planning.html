@@ -11,22 +11,6 @@
   <link href="./assets/css/starter.css" rel="stylesheet">
   <script type="text/javascript" src="https://api.mapy.cz/loader.js"></script>
   <script type="text/javascript">Loader.load();</script>
- 
- <style>
-    .bd-placeholder-img {
-      font-size: 1.125rem;
-      text-anchor: middle;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      user-select: none;
-    }
-
-    @media (min-width: 768px) {
-      .bd-placeholder-img-lg {
-        font-size: 3.5rem;
-      }
-    }
-  </style>
 
   <!-- Custom styles for this template -->
   <link href="headers.css" rel="stylesheet">
@@ -45,37 +29,54 @@
       <path
         d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z" />
     </symbol>
+    <symbol id="map" viewBox="0 0 16 16">
+      <path fill-rule="evenodd" d="M15.817.113A.5.5 0 0 1 16 .5v14a.5.5 0 0 1-.402.49l-5 1a.502.502 0 0 1-.196 0L5.5 15.01l-4.902.98A.5.5 0 0 1 0 15.5v-14a.5.5 0 0 1 .402-.49l5-1a.5.5 0 0 1 .196 0L10.5.99l4.902-.98a.5.5 0 0 1 .415.103zM10 1.91l-4-.8v12.98l4 .8V1.91zm1 12.98 4-.8V1.11l-4 .8v12.98zm-6-.8V1.11l-4 .8v12.98l4-.8z"/>
+    </symbol>
   </svg>
 
   <main>
-    <header>
-      <div class="px-3 py-2 bg-dark text-white" style="position:absolute;left:0; right:0; top:0; height: 5rem;">
-          <div class="d-flex justify-content-end">
-            <ul class="nav col-auto my-2 my-md-0 text-small">
-              <li>
-                <a href="location.html" class="nav-link text-white">
-                  <svg class="bi d-block mx-auto mb-1" width="24" height="24">
-                    <use xlink:href="#location" />
-                  </svg>
-                  My location
-                </a>
-              </li>
-              <li>
-                <a href="route_planning.html" class="nav-link text-white">
-                  <svg class="bi d-block mx-auto mb-1" width="24" height="24">
-                    <use xlink:href="#navigation" />
-                  </svg>
-                  My route
-                </a>
-              </li>
-            </ul>
-          </div>
-      </div>
-    </header>
     <div class="outer-menu">
-      <input class="checkbox-toggle" type="checkbox" />
-      <div class="hamburger">
-        <div></div>
+      <div class="side-menu">
+        <div class="hamburger side-button" onclick="document.querySelector('.side-menu-extra').classList.toggle('zero-height')">
+          <div></div>
+        </div>
+        <div class="side-menu-extra zero-height">
+          <div class="location side-button">
+            <div>
+              <a href="location.html" class="nav-link text-white">
+                <svg class="bi d-block mx-auto mb-1" width="30" height="30">
+                  <use xlink:href="#location" />
+                </svg>
+              </a>
+            </div>
+          </div>
+          <div class="route side-button">
+            <div>
+              <a href="route_planning.html" class="nav-link text-white">
+                <svg class="bi d-block mx-auto mb-1" width="30" height="30">
+                  <use xlink:href="#navigation" />
+                </svg>
+              </a>
+            </div>
+          </div>
+          <div class="navigation side-button">
+            <div>
+              <a href="route_navigation.html" class="nav-link text-white">
+                <svg class="bi d-block mx-auto mb-1" width="30" height="30">
+                  <use xlink:href="#map" />
+                </svg>
+              </a>
+            </div>
+          </div>
+          <div class="more-a side-button" tabindex="0" onclick="document.querySelector('.menu').classList.toggle('active')">
+            <div>
+                <!--<svg id="moreSvg" class="bi d-block mx-auto mb-1 text-white" width="30" height="30">
+                  <use xlink:href="#more" />
+                </svg>-->
+              <div class="dot-typing"></div>              
+            </div>
+          </div>
+        </div>
       </div>
       <div class="menu">
         <div>
@@ -83,7 +84,8 @@
             <ul>
               <li><a href="index.html">Home</a></li>
               <li><a href="route_list.html">Routes</a></li>
-              <li><a href="point_list.html">Sights</a></li>              <li><a></a></li>
+              <li><a href="point_list.html">Sights</a></li>
+              <li><a></a></li>
               <ul class="nav justify-content-center border-bottom pb-3 mb-3">
                 <li class="nav-item"><a href="about.html"  class="nav-link px-2">About</a></li>
                 <li class="nav-item"><a href="contact.html"  class="nav-link px-2">Contact</a></li>
@@ -92,33 +94,6 @@
               <p class="text-center">&copy; 2022</p>
             </ul>
           </div>
-        </div>
-      </div>
-      <div class="location">
-        <div>
-          <a href="location.html" class="nav-link text-white">
-            <svg class="bi d-block mx-auto mb-1" width="30" height="30">
-              <use xlink:href="#location" />
-            </svg>
-          </a>
-        </div>
-      </div>
-      <div class="route">
-        <div>
-          <a href="route_planning.html" class="nav-link text-white">
-            <svg class="bi d-block mx-auto mb-1" width="30" height="30">
-              <use xlink:href="#navigation" />
-            </svg>
-          </a>
-        </div>
-      </div>
-      <div class="planning">
-        <div>
-          <a href="route_navigation.html" class="nav-link text-white">
-            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-map" viewBox="0 0 16 16">
-              <path fill-rule="evenodd" d="M15.817.113A.5.5 0 0 1 16 .5v14a.5.5 0 0 1-.402.49l-5 1a.502.502 0 0 1-.196 0L5.5 15.01l-4.902.98A.5.5 0 0 1 0 15.5v-14a.5.5 0 0 1 .402-.49l5-1a.5.5 0 0 1 .196 0L10.5.99l4.902-.98a.5.5 0 0 1 .415.103zM10 1.91l-4-.8v12.98l4 .8V1.91zm1 12.98 4-.8V1.11l-4 .8v12.98zm-6-.8V1.11l-4 .8v12.98l4-.8z"/>
-            </svg>
-          </a>
         </div>
       </div>
     </div> 

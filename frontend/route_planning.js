@@ -175,14 +175,13 @@ async function findClosestToUser() {
 }
 
 function findClosestPoint(pointId,unusedPoints) {
-  //console.log(points);
   console.log("pointId:", pointId);
   console.log("unusedPoints:", unusedPoints);
   let minDistance = {distance:Number.MAX_VALUE, id:-1};
   console.log(minDistance);
   console.log("distances:", distances); 
   for (let d of distances) {
-    //console.log(d);
+    console.log(d);
     if ((d.pointAId == pointId || d.pointBId == pointId) && d.distance < minDistance.distance) {
       if (unusedPoints.includes(d.pointAId) || unusedPoints.includes(d.pointBId)){
         minDistance.distance = d.distance;
@@ -190,7 +189,7 @@ function findClosestPoint(pointId,unusedPoints) {
         minDistance.id = closestId;
       }
     }
-    //console.log("min distance:", minDistance);
+    console.log("min distance:", minDistance);
   }
   unusedPoints = unusedPoints.splice(unusedPoints.indexOf(minDistance.id), 1);
   return minDistance.id;
