@@ -62,7 +62,7 @@ function startPlanning(e){
 function replaceRoute(e) {
     Cookies.remove('route');
     Cookies.remove('visited');
-    Cookies.ser('userProgress', 0);
+    Cookies.set('userProgress', 0);
     Cookies.set('displayRecommend', 'true');
     startPlanning(e);  
 }

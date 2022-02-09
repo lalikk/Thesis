@@ -63,8 +63,9 @@ function createDistancePromise (coords) {
 //console.log(distances);
 let d = await distancePromise();
 console.log("d:",d);
-Cookies.set('distances', JSON.stringify(d));
-
+if (typeof Cookies.get('distances') == undefined) {
+  Cookies.set('distances', JSON.stringify(d));
+}
 function stateChange() {
   setTimeout(function () {
     Cookies.set('distances', JSON.stringify(d));

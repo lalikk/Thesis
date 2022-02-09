@@ -3,6 +3,7 @@ import Cookies from './node_modules/js-cookie/dist/js.cookie.mjs'
 let distances = JSON.parse(Cookies.get('distances'));
 console.log("distances:", distances);
 var remainingPoints = new Map();
+var allPoints = new Map();
 
 let ids = Cookies.get("route");
 let visited = Cookies.get('visited');
@@ -20,14 +21,16 @@ if (typeof ids == 'undefined') {
   $.getJSON('http://localhost:8080/rest/points', function(data, status) {
     console.log(data, status)
     for (let id of idsArray) {
-      if(!visitedIds.includes(parseInt(id))) {
-        for (let point of data) {
-            if (point.id == id) {
-              remainingPoints.set(point.id, point); 
-            }
+      for (let point of data) {
+        if (point.id == id) {
+          allPoints.set(point.id, point); 
+          if(!visitedIds.includes(parseInt(id))) {
+            remainingPoints.set(point.id, point);
+          }  
         }
-      }      
+      }
     }
+    console.log(allPoints);
     console.log(remainingPoints);
     buildTable(idsArray);
   })
@@ -48,13 +51,13 @@ function buildTable(idsArray) {
         ><button type="button" data-point="${id}" class="point-remove btn btn-danger btn-rounded btn-sm my-0">
         Remove</button></span></td></tr>\n`;
     } else {
-      contents += `<tr data-point="${id}"><td><a href=${urlPoint}><p class="text-muted">${remainingPoints.get(id).title}</p></a></td><td><p class="text-muted">${remainingPoints.get(id).description}</p></td><td>
+      contents += `<tr data-point="${id}"><td><a href=${urlPoint}><p class="text-muted">${allPoints.get(id).title}</p></a></td><td><p class="text-muted">${allPoints.get(id).description}</p></td><td>
         <span class="table-remove"
           ><button type="button" data-point="${id}" class="point-remove btn btn-danger btn-rounded btn-sm my-0">
           Remove</button></span></td></tr>\n`;         
     }
   }
-  if (typeof displayRecommendButton != undefined && displayRecommendButton == 'true') {
+  if (typeof displayRecommendButton != undefined && displayRecommendButton == 'true' && idsArray.length > 1) {
     contents+= `<div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
       <button type="button" id="button-order-route" class="btn btn-primary btn-lg px-4 gap-3">Recommend route</button></div>`;
     table.innerHTML = contents;
@@ -76,6 +79,7 @@ function removePoint(e) {
     console.log(row);
     row.classList.add("d-none");
     removeIdFromCookie(id);
+    //Cookies.set('displayRecommend', 'false');    
 }
 
 function removeIdFromCookie(id) {
