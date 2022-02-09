@@ -1,9 +1,25 @@
 import Cookies from './node_modules/js-cookie/dist/js.cookie.mjs'
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get('id');
+const storageName = 'route' + id;
+let route = window.localStorage.getItem(storageName);
+var receivedData;
 
-$.getJSON(`http://localhost:8080/rest/routes/${id}`, function(data, status) {
-    console.log(data, status);
+if (route == null) {
+    $.getJSON(`http://localhost:8080/rest/routes/${id}`, function(data, status) {
+        console.log(data, status);
+        window.localStorage.setItem(storageName, JSON.stringify(data));
+        console.log("original data",data);
+        receivedData = data;
+        displayRoute(data);
+    })
+} else {
+    receivedData = JSON.parse(route);
+    console.log("parsed data", receivedData);
+    displayRoute(receivedData);
+}
+
+function displayRoute(data) {
     let table = document.querySelector("#point-list");
     let points = data.points;
     const urlPoint = new URL("http://localhost:3000/point_detail");
@@ -11,7 +27,7 @@ $.getJSON(`http://localhost:8080/rest/routes/${id}`, function(data, status) {
     let contents = "";
     //contents += `<div class="title-simple"><h1>${data.title}</h1></div>\n`;
     contents += `<div class="text-body"><div class="clearfix"><h4>${data.description}</h4></div></div>\n`;
-    
+    contents += `<div  class="row" data-masonry='{"percentPosition": true }'>`;
     for (let point of points) {
         urlPoint.search = new URLSearchParams({id:`${point.id}`});
         contents += `<div class="col-sm-6 col-lg-4 mb-4">
@@ -25,6 +41,7 @@ $.getJSON(`http://localhost:8080/rest/routes/${id}`, function(data, status) {
             </div>`;
         //contents += `<tr><td><a href=${urlPoint}>${point.title}</a></td><td>${point.description}</td></tr>\n`;
     }
+    contents += `</div>`;
     table.innerHTML = contents;
 
     document.querySelector("#planning-button").setAttribute('data-route', data.id);
@@ -34,26 +51,24 @@ $.getJSON(`http://localhost:8080/rest/routes/${id}`, function(data, status) {
     document.querySelector("#button-replace-route").onclick = replaceRoute;
     document.querySelector("#button-extend-route").setAttribute('data-route', data.id);
     document.querySelector("#button-extend-route").onclick = extendRoute;
-})
+}
 
 function startPlanning(e){
     console.log(e);
-    let ids = Cookies.get("route");
+    let idsCookie = Cookies.get("route");
     console.log(ids);
-    if (typeof ids == 'undefined') {
-        let id = e.target.dataset['route'];
-        $.getJSON(`http://localhost:8080/rest/routes/${id}`, function(data, status) {
-            console.log(data, status);
-            var ids = [];
-            for (let point of data.points) {
-                ids.push(point.id);
-            }
-            var json_ids = JSON.stringify(ids);
-            Cookies.set('route', json_ids);
-            Cookies.set('navigationRecompute', 'true');
-            Cookies.set('displayRecommend', 'true');
-            window.location.href="route_planning.html";
-        })
+    if (typeof idsCookie == 'undefined') {
+        //$.getJSON(`http://localhost:8080/rest/routes/${id}`, function(data, status) {
+        var ids = [];
+        for (let point of receivedData.points) {
+            ids.push(point.id);
+        }
+        var json_ids = JSON.stringify(ids);
+        Cookies.set('route', json_ids);
+        Cookies.set('navigationRecompute', 'true');
+        Cookies.set('displayRecommend', 'true');
+        window.location.href="route_planning.html";
+        //})
     } else {
         $('#route-planning').modal('show')
     }
@@ -70,8 +85,8 @@ function replaceRoute(e) {
 function extendRoute(e) {
     let ids = Cookies.get("route");
     let idsArray = JSON.parse(ids);
-    $.getJSON(`http://localhost:8080/rest/route_points/${id}`, function(data, status) {
-        for (let point of data) { 
+    //$.getJSON(`http://localhost:8080/rest/route_points/${id}`, function(data, status) {
+        for (let point of receivedData.points) { 
             if (!idsArray.includes(parseInt(point.id))) {
                 idsArray.push(parseInt(point.id));  
             }
@@ -81,5 +96,5 @@ function extendRoute(e) {
     Cookies.set('navigationRecompute', 'true');
     Cookies.set('displayRecommend', 'true');
     window.location.href="route_planning.html";
-    }); 
+    //}); 
 }

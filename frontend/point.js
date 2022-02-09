@@ -1,13 +1,40 @@
 import Cookies from './node_modules/js-cookie/dist/js.cookie.mjs'
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get('id');
+const storageName = 'point' + id;
 const present = urlParams.get('present');
 let count = 0;
+let point = window.localStorage.getItem(storageName);
+console.log(storageName);
+console.log(point);
 
 //http://localhost:3000/point_detail?id=1&present=true when accessed from given location
 
-$.getJSON(`http://localhost:8080/rest/points/${id}`, function(data, status) {
-    console.log(data, status);
+if (point == null) {
+    try {
+    $.getJSON(`http://localhost:8080/rest/points/${id}`, function(data, status) {
+        console.log(data, status);
+        window.localStorage.setItem(storageName, JSON.stringify(data));
+        displayPoint(data);
+    })}
+    catch (error) {             // todo doesn't work, just an idea for a solution
+        console.log(error);
+        let pointsJson = window.localStorage.getItem('pointsRequest');
+        if (pointsJson != null) {
+            let points = JSON.parse(pointsJson);
+            for (let point of points) {
+                displayPoint(point);
+                break;
+            }
+        }
+    }
+} else {
+    let data = JSON.parse(point);
+    console.log("data from storage");
+    displayPoint(data);
+}
+
+function displayPoint(data) {
     let div = document.querySelector("#point-contents");
     let contents = "";
     contents += `<div class="title-simple"><h1>${data.title}</h1></div>\n`;
@@ -47,7 +74,8 @@ $.getJSON(`http://localhost:8080/rest/points/${id}`, function(data, status) {
         openEffect: "none",
         closeEffect: "none"
     });
-})
+}
+
 
 function addToPlanning(e) {
     console.log(e);
@@ -98,7 +126,7 @@ function changeVisitedCookie() {
         console.log(JSON.parse(Cookies.get('visited')))
 }
 
-function changeLocationCookie() {
+/*function changeLocationCookie() {
     let userLocation = Cookies.get("userLocation");
     if (typeof userLocation != undefined) {
         Cookies.remove('userLocation');
@@ -108,4 +136,4 @@ function changeLocationCookie() {
         let jsonLocation = JSON.stringify(newLocation);
         Cookies.set('userLocation', jsonLocation);    
     });
-}
+}*/

@@ -1,7 +1,20 @@
 const urlPoint = new URL("http://localhost:3000/point_detail");
 
-$.getJSON(`http://localhost:8080/rest/points`, function(data, status) {
-    console.log(data, status);
+let points = window.localStorage.getItem('pointsRequest');
+if (points == null) {
+    $.getJSON(`http://localhost:8080/rest/points`, function(data, status) {
+        console.log(data, status);
+        console.log("new request");
+        window.localStorage.setItem('pointsRequest', JSON.stringify(data));
+        displayData(data);
+    })
+} else {
+    let data = JSON.parse(points);
+    console.log("reuse data");
+    displayData(data);
+}
+
+function displayData(data) {
     let div = document.querySelector("#mansonry");
     let contents = "";
 
@@ -18,4 +31,4 @@ $.getJSON(`http://localhost:8080/rest/points`, function(data, status) {
             </div>`;
     }
     div.innerHTML = contents;
-})
+}

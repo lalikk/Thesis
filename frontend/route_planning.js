@@ -6,34 +6,46 @@ var remainingPoints = new Map();
 var allPoints = new Map();
 
 let ids = Cookies.get("route");
+var idsArray = [];
 let visited = Cookies.get('visited');
 var visitedIds = [];
 if (typeof visited != 'undefined') {
   visitedIds = JSON.parse(visited);
 }
+let points = window.localStorage.getItem('pointsRequest');
 
 if (typeof ids == 'undefined') {
   clearTable();
   displayEmpty();
 } else {
   clearEmptyRoute();
-  var idsArray = JSON.parse(ids);
-  $.getJSON('http://localhost:8080/rest/points', function(data, status) {
-    console.log(data, status)
-    for (let id of idsArray) {
-      for (let point of data) {
-        if (point.id == id) {
-          allPoints.set(point.id, point); 
-          if(!visitedIds.includes(parseInt(id))) {
-            remainingPoints.set(point.id, point);
-          }  
-        }
+  if (points == null) {
+    $.getJSON('http://localhost:8080/rest/points', function(data, status) {
+      console.log(data, status)
+      window.localStorage.setItem('pointsRequest', JSON.stringify(data));
+      displayRoute(data);
+    })
+  } else {
+    let data = JSON.parse(points);
+    displayRoute(data);
+  }
+}
+
+function displayRoute(data) {
+  idsArray = JSON.parse(ids);
+  for (let id of idsArray) {
+    for (let point of data) {
+      if (point.id == id) {
+        allPoints.set(point.id, point); 
+        if(!visitedIds.includes(parseInt(id))) {
+          remainingPoints.set(point.id, point);
+        }  
       }
     }
-    console.log(allPoints);
-    console.log(remainingPoints);
-    buildTable(idsArray);
-  })
+  }
+  console.log(allPoints);
+  console.log(remainingPoints);
+  buildTable(idsArray);
 }
 
 function buildTable(idsArray) {
@@ -127,7 +139,7 @@ function displayEmpty() {
 async function computeRouteOrder() {
   let startingPoint = await findClosestToUser();
   let orderedRoute = [startingPoint];
-  console.log(idsArray);
+  //console.log(idsArray);
   let unusedPoints = JSON.parse(JSON.stringify(idsArray));
   unusedPoints.splice(unusedPoints.indexOf(startingPoint), 1);
   console.log("closestId:", startingPoint);

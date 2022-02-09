@@ -29,41 +29,46 @@ if (typeof visited != 'undefined') {
   visitedIds = JSON.parse(visited);
 }
 var remainingPoints = new Map();
+var allPoints = window.localStorage.getItem('pointsRequest');
 
 initMap();
 
-let allPointsPromise = new Promise((success, error) => {
-  $.getJSON('http://localhost:8080/rest/points', (data) => {  
-    for (let point of data) {
-      point["SMapCoords"] = SMap.Coords.fromWGS84(point.coordinates.latitude, point.coordinates.longitude);
-    }
-    document.querySelector("#button-recompute-off-route").onclick = recomputeOffRoute;
-    document.querySelector("#button-ignore-route").onclick = ignoreOffRoute;
+var allPointsPromise;
+if (allPoints == null) {
+  allPointsPromise = new Promise((success, error) => {
+    $.getJSON('http://localhost:8080/rest/points', (data) => {  
+      processData(data);
+      window.localStorage.setItem('pointsRequest', JSON.stringify(data));
+      success(data) 
+    }, error);
+  });
+}
 
-    document.querySelector("#button-recompute-add-nearby").onclick = recomputeAddNearby;
-    document.querySelector("#button-ignore-nearby").onclick = ignoreAddNearby;
-    success(data) 
-  }, error);
-});
+function processData(data) {
+  for (let point of data) {
+    point["SMapCoords"] = SMap.Coords.fromWGS84(point.coordinates.latitude, point.coordinates.longitude);
+  }
+  document.querySelector("#button-recompute-off-route").onclick = recomputeOffRoute;
+  document.querySelector("#button-ignore-route").onclick = ignoreOffRoute;
+
+  document.querySelector("#button-recompute-add-nearby").onclick = recomputeAddNearby;
+  document.querySelector("#button-ignore-nearby").onclick = ignoreAddNearby;
+}
 
 let routePointsPromise = createRoutePointsPromise();
 function createRoutePointsPromise(){
   return new Promise((success, error) => {
-  $.getJSON('http://localhost:8080/rest/points', (data) => {
-    for (let id of plannedRoute) {
-      if(!visitedIds.includes(parseInt(id))) {
-        for (let point of data) {
-            if (point.id == id) {
-              remainingPoints.set(point.id, point); 
-            }
-        }
-      }      
+    if (allPoints == null) {
+      $.getJSON('http://localhost:8080/rest/points', (data) => {
+        window.localStorage.setItem('pointsRequest', JSON.stringify(data));
+        success(prepareRoutePoints(data));
+      }).fail(error); 
+    } else {
+      let data = JSON.parse(allPoints);
+      success(prepareRoutePoints(data));
     }
-    let routePoints = computeRoutePoints();
-    console.log("routePoints",routePoints);
-    success(routePoints);
-  }).fail(error);
-});}
+  });
+}
 
 function computeRoutePoints() {
   var indexInRoute = 1;
@@ -79,6 +84,22 @@ function computeRoutePoints() {
   }
   return routePoints;
 }
+
+function prepareRoutePoints(data) {
+  for (let id of plannedRoute) {
+    if(!visitedIds.includes(parseInt(id))) {
+      for (let point of data) {
+          if (point.id == id) {
+            remainingPoints.set(point.id, point); 
+          }
+      }
+    }      
+  }
+  let routePoints = computeRoutePoints();
+  console.log("routePoints",routePoints);
+  return routePoints;
+}
+
 
 let locationPromise = createLocationPromise();
 
@@ -146,7 +167,10 @@ let globalLocation = await locationPromise;
 globalRoute = await createRoutePromise(globalLocation, globalPoints);
 updateUserMarker(globalLocation);
 await displayRoute(globalRoute, globalLocation);
-saveLocations(await allPointsPromise);
+if (allPoints == null) {
+  saveLocations(await allPointsPromise)
+} else {
+  saveLocations(JSON.parse(allPoints))};
 
 navigator.geolocation.watchPosition(function (position) {
   position["SMapCoords"] = SMap.Coords.fromWGS84(position.coords.longitude, position.coords.latitude);
@@ -388,7 +412,7 @@ function storeGeometry(g) {
   if (x == null) {
     x = "";
   }
-  window.localStorage.setItem('updated', x + "1");
+  //window.localStorage.setItem('updated', x + "1");
   Cookies.set('navigationRecompute', 'false');
 }
 
@@ -425,6 +449,7 @@ function saveLocations (points) {
 
 function checkPointsAround(userLocation) {
   for (let point of pointLocation) {
+    //console.log(userLocation, pointLocation);
     if (!ignoredNearby.includes(point.id) && !visitedIds.includes(point.id) && !plannedRoute.includes(point.id)){
       //console.log("nearest sight distance", userLocation.SMapCoords.distance(point.SMapCoords));
       if (userLocation.SMapCoords.distance(point.SMapCoords) < 200) {
