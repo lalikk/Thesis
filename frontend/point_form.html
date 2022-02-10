@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--link rel="stylesheet" href="assets/css/starter.css"-->
+  <title>Virtual nature trail</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="./assets/css/starter.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="headers.css" rel="stylesheet">
+  <link href="sidebars.css" rel="stylesheet">
+  <link href="colorscheme.css" rel="stylesheet">
+</head>
+
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    <symbol id="location" viewBox="0 0 16 16">
+      <path
+        d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
+    </symbol>
+
+    <symbol id="navigation" viewBox="0 0 16 16">
+      <path
+        d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z" />
+    </symbol>
+  </svg>
+
+  <main>
+    <div class="outer-menu">
+      <div class="side-menu">
+        <div class="hamburger side-button" onclick="document.querySelector('.side-menu-extra').classList.toggle('zero-height')">
+          <div></div>
+        </div>
+        <div class="side-menu-extra zero-height">
+          <div class="location side-button">
+            <div>
+              <a href="location.html" class="nav-link text-white">
+                <svg class="bi d-block mx-auto mb-1" width="30" height="30">
+                  <use xlink:href="#location" />
+                </svg>
+              </a>
+            </div>
+          </div>
+          <div class="route side-button">
+            <div>
+              <a href="route_planning.html" class="nav-link text-white">
+                <svg class="bi d-block mx-auto mb-1" width="30" height="30">
+                  <use xlink:href="#navigation" />
+                </svg>
+              </a>
+            </div>
+          </div>
+          <div class="more-a side-button" tabindex="0" onclick="document.querySelector('.menu').classList.toggle('active')">
+            <div>
+                <!--<svg id="moreSvg" class="bi d-block mx-auto mb-1 text-white" width="30" height="30">
+                  <use xlink:href="#more" />
+                </svg>-->
+              <div class="dot-typing"></div>              
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="menu">
+        <div>
+          <div>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="route_list.html">Routes</a></li>
+              <li><a href="point_list.html">Sights</a></li>
+              <li><a></a></li>
+              <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+                <li class="nav-item"><a href="about.html"  class="nav-link px-2">About</a></li>
+                <li class="nav-item"><a href="contact.html"  class="nav-link px-2">Contact</a></li>
+                <li class="nav-item"><a href="login.html"  class="nav-link px-2">Login</a></li>
+              </ul>
+              <p class="text-center">&copy; 2022</p>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div> 
+
+    <div class="container">
+        <main>
+          <div style="margin-top: 5rem;"><h2 >Create new point page</h2></div>
+          <div class="row g-5" style="margin-top: 1rem;">
+            <div class="col-md-7 col-lg-8">
+              <form class="needs-validation" novalidate>
+                <div class="row g-3">
+                  <div class="col-sm-6">
+                    <label for="pointTitle" class="form-label">Title</label>
+                    <input type="text" class="form-control" id="pointTitle" placeholder="" value="" required>
+                    <div class="invalid-feedback">
+                      Valid title is required.
+                    </div>
+                  </div>
+      
+                  <div class="col-12">
+                    <label for="pointDescription" class="form-label">Additional Information</label>
+                    <div class="input-group has-validation">
+                      <textarea class="form-control" id="pointDescription" rows="16" required></textarea>
+                      <div class="invalid-feedback">
+                        At least a short informaion about the point is required.
+                      </div>
+                    </div>
+                  </div>
+      
+                  <div class="col-sm-6">
+                    <label for="latitude" class="form-label">Latitude</label>
+                    <input type="text" class="form-control" id="latitude" placeholder="" value="" required>
+                    <div class="invalid-feedback">
+                      Valid latitude is required.
+                    </div>
+                  </div>
+      
+                  <div class="col-sm-6">
+                    <label for="longitude" class="form-label">Longitude</label>
+                    <input type="text" class="form-control" id="longitude" placeholder="" value="" required>
+                    <div class="invalid-feedback">
+                      Valid longitude is required.
+                    </div>
+                  </div>
+
+                <hr class="my-4">
+                  <h4>Please check all applicable tags</h4>
+
+                  <div id="point-tags"></div>
+
+                <!--        TODO: use javascript to add checkbox for all existing tags
+                    <div class="form-check">
+                  <input type="checkbox" class="form-check-input" id="same-address">
+                  <label class="form-check-label" for="same-address">Shipping address is the same as my billing address</label>
+                </div>
+      
+                <div class="form-check">
+                  <input type="checkbox" class="form-check-input" id="save-info">
+                  <label class="form-check-label" for="save-info">Save this information for next time</label>
+                </div>
+      
+                -->
+                <hr class="my-4">
+      
+                <button class="w-100 btn btn-primary btn-lg" type="submit">Create new point</button>
+              </form>
+            </div>
+          </div>
+        </main>
+      </div>
+
+
+
+  
+  </main>
+  <script src="node_modules/jquery/dist/jquery.min.js"></script>
+  <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>  
+  <!--script type="module" src="./editable_list_points.js"></script-->
+</body>
+</html>
