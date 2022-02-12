@@ -1,8 +1,7 @@
-import { URL_POINT_LIST } from "./constants.js";
+import { URL_POINT_LIST, MILLIS_IN_DAY } from "./constants.js";
 
 const POINT_DATA_KEY = "POINT_DATA";
 const POINT_DATA_AGE_KEY = "POINT_DATA_AGE";
-const MILLIS_IN_DAY = 1000 * 60 * 60 * 24;
 
 class PointData {
     #points = null;

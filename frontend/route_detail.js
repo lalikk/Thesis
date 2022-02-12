@@ -1,5 +1,5 @@
-import Cookies from './node_modules/js-cookie/dist/js.cookie.mjs'
 import ROUTE_DATA from './js-modules/route-data.js';
+import { CURRENT_ROUTE } from './js-modules/current-route.js';
 import { MAKE_POINT_URL } from './js-modules/constants.js';
 
 $(async () => {
@@ -52,48 +52,31 @@ function displayRoute(data) {
     extendRouteButton.onclick = extendRoute;
 }
 
-function startPlanning(e){
-    console.log(e);
-    let idsCookie = Cookies.get("route");
-    console.log(ids);
-    if (typeof idsCookie == 'undefined') {
-        //$.getJSON(`http://localhost:8080/rest/routes/${id}`, function(data, status) {
-        var ids = [];
-        for (let point of receivedData.points) {
-            ids.push(point.id);
-        }
-        var json_ids = JSON.stringify(ids);
-        Cookies.set('route', json_ids);
-        Cookies.set('navigationRecompute', 'true');
-        Cookies.set('displayRecommend', 'true');
-        window.location.href="route_planning.html";
-        //})
+async function extractRoutePoints(element) {
+    let routeId = element.getAttribute('data-route');
+    let route = await ROUTE_DATA.getRoute(routeId);
+    let routePoints = [];
+    for (let point of route.points) {
+        routePoints.push(point.id);
+    }
+    return routePoints;
+}
+
+async function startPlanning(e) {
+    if (CURRENT_ROUTE.isEmpty()) {
+        CURRENT_ROUTE.append(await extractRoutePoints(e.target));
+        window.location.href="./route_planning.html";
     } else {
-        $('#route-planning').modal('show')
+        $('#route-planning').modal('show');
     }
 }
 
-function replaceRoute(e) {
-    Cookies.remove('route');
-    Cookies.remove('visited');
-    Cookies.set('userProgress', 0);
-    Cookies.set('displayRecommend', 'true');
-    startPlanning(e);  
+async function replaceRoute(e) {
+    CURRENT_ROUTE.refresh(await extractRoutePoints(e.target));
+    window.location.href="./route_planning.html";
 }
 
-function extendRoute(e) {
-    let ids = Cookies.get("route");
-    let idsArray = JSON.parse(ids);
-    //$.getJSON(`http://localhost:8080/rest/route_points/${id}`, function(data, status) {
-        for (let point of receivedData.points) { 
-            if (!idsArray.includes(parseInt(point.id))) {
-                idsArray.push(parseInt(point.id));  
-            }
-        }
-    var json_ids = JSON.stringify(idsArray);
-    Cookies.set('route', json_ids);
-    Cookies.set('navigationRecompute', 'true');
-    Cookies.set('displayRecommend', 'true');
-    window.location.href="route_planning.html";
-    //}); 
+async function extendRoute(e) {
+    CURRENT_ROUTE.append(await extractRoutePoints(e.target));
+    window.location.href="./route_planning.html"; 
 }

@@ -1,3 +1,5 @@
+export const MILLIS_IN_DAY = 1000 * 60 * 60 * 24;
+
 export const URL_POINT_LIST = new URL("http://localhost:8080/rest/points");
 export const URL_ROUTE_LIST = new URL("http://localhost:8080/rest/routes");
 
@@ -14,4 +16,30 @@ export function MAKE_ROUTE_URL(id) {
     let url = new URL(URL_ROUTE_DETAIL_PREFIX.toString());
     url.search = new URLSearchParams({ 'id': id });
     return url;
+}
+
+export function SANITIZE_ID(id) {
+    if (typeof id === "string") {
+        id = parseInt(id);
+        if(isNaN(id)) {
+            return undefined;
+        }
+    }
+    if (typeof id === "number") {
+        return id;
+    }
+    return undefined;
+}
+
+export function ENSURE_ID_ARRAY(ids) {
+    let id = SANITIZE_ID(ids);
+    if (id === undefined) {
+        if (typeof ids.length === "number") {
+            return ids;
+        } else {
+            return undefined;
+        }
+    } else {
+        return [id];
+    }
 }

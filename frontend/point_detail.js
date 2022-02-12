@@ -1,5 +1,5 @@
 import POINT_DATA from './js-modules/point-data.js';
-import Cookies from './node_modules/js-cookie/dist/js.cookie.mjs'
+import { VISITED_POINTS, CURRENT_ROUTE } from './js-modules/current-route.js';
 
 $(async () => {
     let urlParams = new URLSearchParams(window.location.search);
@@ -14,15 +14,11 @@ $(async () => {
 
     let present = urlParams.get('present');
     if (present === "true") {
-        markAsVisited(id);
+        VISITED_POINTS.markAsVisited(id);
     }
 })
 
-
 // http://localhost:3000/point_detail?id=1&present=true when accessed from given location
-function markAsVisited(id) {
-    // TODO: Update vitied points.
-}
 
 function displayPoint(point) {
     let div = document.querySelector("#point-contents");
@@ -71,48 +67,11 @@ function renderGalleryPhoto(photo, classes = "") {
     `;
 }
 
-
 window.addToPlanning = function(element) {
-    console.log(element);
     let id = element.getAttribute("data-id");
-    let ids = Cookies.get("route");
-    if (typeof ids == 'undefined') {
-        console.log(id);
-        ids = [parseInt(id)];
+    if (!CURRENT_ROUTE.append(id)) {
+        $('#point-route-duplicate').modal('show');
     } else {
-        let idsArray = JSON.parse(ids);
-        if (!idsArray.includes(parseInt(id))) {
-            idsArray.push(parseInt(id));
-        } else {
-            $('#point-route-duplicate').modal('show')
-            return
-        }
-        ids = idsArray;
-    }   
-    var jsonIds = JSON.stringify(ids);
-    Cookies.set('route', jsonIds);
-    Cookies.set('navigationRecompute', 'true');
-    Cookies.set('displayRecommend', 'true');
-    window.location.href="route_planning.html";
-}
-
-function changeVisitedCookie() {
-    let visitedIds = Cookies.get('visited');
-    console.log(visitedIds);
-    if (typeof visitedIds == 'undefined') {
-        visitedIds = [parseInt(id)];
-        console.log(visitedIds);
-    } else {
-        visitedIds = JSON.parse(visitedIds);
-        if (!visitedIds.includes(parseInt(id))) {
-            visitedIds.push(parseInt(id));
-        } else {
-            return;
-        }
+        window.location.href="./route_planning.html";
     }
-    console.log(typeof visitedIds);
-    let jsonVisited = JSON.stringify(visitedIds);
-    console.log(jsonVisited);
-        Cookies.set('visited', jsonVisited);
-        console.log(JSON.parse(Cookies.get('visited')))
 }

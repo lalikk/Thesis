@@ -1,4 +1,5 @@
 import Cookies from './node_modules/js-cookie/dist/js.cookie.mjs'
+import { VISITED_POINTS } from './js-modules/current-route.js'
 
 let distances = JSON.parse(Cookies.get('distances'));
 console.log("distances:", distances);

@@ -1,8 +1,7 @@
-import { URL_ROUTE_LIST } from "./constants.js";
+import { URL_ROUTE_LIST, MILLIS_IN_DAY } from "./constants.js";
 
 const ROUTE_DATA_KEY = "ROUTE_DATA";
 const ROUTE_DATA_AGE_KEY = "ROUTE_DATA_AGE";
-const MILLIS_IN_DAY = 1000 * 60 * 60 * 24;
 
 class RouteData {
     #routes = null;
