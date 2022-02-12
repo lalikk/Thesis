@@ -1,143 +1,70 @@
 import Cookies from './node_modules/js-cookie/dist/js.cookie.mjs'
-import { VISITED_POINTS } from './js-modules/current-route.js'
+import POINT_DATA from './js-modules/point-data.js';
+import { VISITED_POINTS, CURRENT_ROUTE } from './js-modules/current-route.js'
+import { MAKE_POINT_URL } from './js-modules/constants.js'
+
+$(async () => {
+  await displayCurrentRoute();
+});
+
+async function displayCurrentRoute() {
+  let currentRoute = CURRENT_ROUTE.getRoutePoints();
+  displayEmptyMessage(currentRoute.length == 0);
+  displayReorderButton(!CURRENT_ROUTE.isSorted());
+  renderTable(await POINT_DATA.getPoints(currentRoute));
+}
+
+function renderTable(currentRoute) {
+  let table = document.querySelector("#point-list");  
+  let contents = "";
+
+  for (let point of currentRoute) {
+    contents += renderTableRow(point, VISITED_POINTS.isVisited(point.id));
+  }
+
+  table.innerHTML = contents;
+}
+
+function renderTableRow(point, visited) {
+  return `
+    <tr data-point="${point.id}">
+      <td>
+        <a href=${MAKE_POINT_URL(point.id)} class="${visited ? "text-muted" : ""}">${point.title}</a>
+      </td>
+      <td>
+        <span class="table-remove">
+          <button type="button" data-point="${point.id}" onclick="window.removePoint(this)" class="point-remove btn btn-danger btn-rounded btn-sm my-0">Remove</button>
+        </span>
+      </td>
+    </tr>
+  `;
+}
+
+window.removePoint = function(element) {
+  let pointId = element.dataset['point'];
+  let row = document.querySelector(`tr[data-point="${pointId}"]`);
+  row.parentNode.removeChild(row);
+  CURRENT_ROUTE.remove(pointId);
+  displayEmptyMessage(CURRENT_ROUTE.isEmpty());
+  displayReorderButton(!CURRENT_ROUTE.isSorted()); 
+}
+
+function displayEmptyMessage(visible) {
+  document.querySelector('#empty-route').classList.toggle("d-none", !visible);
+}
+
+function displayReorderButton(visible) {
+  document.querySelector('#button-order-route').classList.toggle("d-none", !visible);
+}
+
+
+///////////// Optimal distances
 
 let distances = JSON.parse(Cookies.get('distances'));
 console.log("distances:", distances);
-var remainingPoints = new Map();
-var allPoints = new Map();
-
-let ids = Cookies.get("route");
-var idsArray = [];
-let visited = Cookies.get('visited');
-var visitedIds = [];
-if (typeof visited != 'undefined') {
-  visitedIds = JSON.parse(visited);
-}
-let points = window.localStorage.getItem('pointsRequest');
-
-if (typeof ids == 'undefined') {
-  clearTable();
-  displayEmpty();
-} else {
-  clearEmptyRoute();
-  if (points == null) {
-    $.getJSON('http://localhost:8080/rest/points', function(data, status) {
-      console.log(data, status)
-      window.localStorage.setItem('pointsRequest', JSON.stringify(data));
-      displayRoute(data);
-    })
-  } else {
-    let data = JSON.parse(points);
-    displayRoute(data);
-  }
-}
-
-function displayRoute(data) {
-  idsArray = JSON.parse(ids);
-  for (let id of idsArray) {
-    for (let point of data) {
-      if (point.id == id) {
-        allPoints.set(point.id, point); 
-        if(!visitedIds.includes(parseInt(id))) {
-          remainingPoints.set(point.id, point);
-        }  
-      }
-    }
-  }
-  console.log(allPoints);
-  console.log(remainingPoints);
-  buildTable(idsArray);
-}
-
-function buildTable(idsArray) {
-  let table = document.querySelector("#point-list");  
-  let contents = "";
-  let displayRecommendButton = Cookies.get('displayRecommend');
-  const urlPoint = new URL("http://localhost:3000/point_detail");
-
-  for (let id of idsArray) {
-    urlPoint.search = new URLSearchParams({id:`${id}`});
-    if (!visitedIds.includes(id)) {
-      //console.log(typeof remainingPoints.get(id), remainingPoints.get(id), id);
-      contents += `<tr data-point="${id}"><td><a href=${urlPoint}>${remainingPoints.get(id).title}</a></td><td>${remainingPoints.get(id).description}</td><td>
-      <span class="table-remove"
-        ><button type="button" data-point="${id}" class="point-remove btn btn-danger btn-rounded btn-sm my-0">
-        Remove</button></span></td></tr>\n`;
-    } else {
-      contents += `<tr data-point="${id}"><td><a href=${urlPoint}><p class="text-muted">${allPoints.get(id).title}</p></a></td><td><p class="text-muted">${allPoints.get(id).description}</p></td><td>
-        <span class="table-remove"
-          ><button type="button" data-point="${id}" class="point-remove btn btn-danger btn-rounded btn-sm my-0">
-          Remove</button></span></td></tr>\n`;         
-    }
-  }
-  if (typeof displayRecommendButton != undefined && displayRecommendButton == 'true' && idsArray.length > 1) {
-    contents+= `<div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-      <button type="button" id="button-order-route" class="btn btn-primary btn-lg px-4 gap-3">Recommend route</button></div>`;
-    table.innerHTML = contents;
-    document.querySelector("#button-order-route").onclick = computeRouteOrder;
-  } else {
-    table.innerHTML = contents;
-  }
-  for (let button of document.querySelectorAll(".point-remove")) {
-    button.onclick = removePoint;
-  }
-}
 
 
-function removePoint(e) {
-    console.log(e.target);
-    console.log(e.target.dataset['point']);
-    let id = e.target.dataset['point'];
-    let row = document.querySelector(`tr[data-point="${id}"]`);
-    console.log(row);
-    row.classList.add("d-none");
-    removeIdFromCookie(id);
-    //Cookies.set('displayRecommend', 'false');    
-}
-
-function removeIdFromCookie(id) {
-    console.log(id);
-    var ids = Cookies.get("route");
-    var arr = JSON.parse(ids);
-    let index = arr.indexOf(parseInt(id));
-    arr.splice(index, 1);    
-    if (arr.length == 0) {
-      displayEmpty();
-      Cookies.remove('route');
-    } else {
-      ids = JSON.stringify(arr);
-      Cookies.set('route', ids);
-    }
-    let visitedIds = Cookies.get('visited');
-    if (typeof visitedIds == 'undefined' || !JSON.parse(visitedIds).includes(id)){
-      Cookies.set('navigationRecompute', 'true');
-    }
-  }
-
-function clearTable() {
-  let contents = "";
-  let textBody = document.querySelector('#point-list');
-  textBody.innerHTML = contents;
-}
-
-function clearEmptyRoute() {
-  let contents = "";
-  let textBody = document.querySelector('#empty-route');
-  textBody.innerHTML = contents;  
-}
-
-function displayEmpty() {
-  let contents = `<div><h2>To start planning a route, either select an existing route or add any point.\n</h2></div>`;
-  contents += `<div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-  <button type="button" class="btn btn-primary btn-lg px-4 gap-3" onclick="location.href='route_list.html'">Take me to predefined routes</button>
-  <button type="button" class="btn btn-outline-secondary btn-lg px-4"onclick="location.href='location.html'">Find what is around me</button>
-  </div>`
-  console.log(contents);  
-  let textBody = document.querySelector('#empty-route');
-  textBody.innerHTML = contents;
-}
-
-async function computeRouteOrder() {
+window.computeRouteOrder = async function() {
   let startingPoint = await findClosestToUser();
   let orderedRoute = [startingPoint];
   //console.log(idsArray);

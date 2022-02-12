@@ -108,6 +108,10 @@ class CurrentRoute {
         }
     }
 
+    getRoutePoints() {
+        return this.#readRoute();
+    }
+
     refresh(idsArg, sorted = false) {
         let ids = ENSURE_ID_ARRAY(idsArg);
         if (ids === undefined) {

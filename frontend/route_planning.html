@@ -100,10 +100,19 @@
     
     <!--script type="module" src="assets/js/starter.js"></script-->
 
-    <div id='empty-route' class="title-simple" style="margin-top: 6rem;"></div>
+    <div id='empty-route' style="margin-top: 6rem; text-align: center;">
+      <h2 class="my-3">To start planning a route, either select an existing route or add any point.</h2>
+      <div class="gap-2 d-sm-flex justify-content-sm-center">
+        <button type="button" class="btn btn-primary btn-lg px-4 gap-3 my-2" onclick="location.href='route_list.html'">Take me to predefined routes</button>
+        <button type="button" class="btn btn-outline-secondary btn-lg px-4 my-2" onclick="location.href='location.html'">Find what is around me</button>
+      </div>
+    </div>
 
-    <table id='point-list' class="container table-responsive-md" style="margin-top: 6rem;"></table>
+    <table id='point-list' class="container table-responsive-md" style="margin-top: 6rem; margin-bottom: 6rem;"></table>
 
+    <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+      <button type="button" id="button-order-route" class="btn btn-primary btn-lg px-4 gap-3" onclick="window.computeRouteOrder()">Recommend route</button>
+    </div>
   </main>
   <script src="node_modules/jquery/dist/jquery.min.js"></script>
   <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>  

@@ -1,4 +1,4 @@
-import { URL_POINT_LIST, MILLIS_IN_DAY } from "./constants.js";
+import { URL_POINT_LIST, MILLIS_IN_DAY, SANITIZE_ID, ENSURE_ID_ARRAY } from "./constants.js";
 
 const POINT_DATA_KEY = "POINT_DATA";
 const POINT_DATA_AGE_KEY = "POINT_DATA_AGE";
@@ -15,6 +15,24 @@ class PointData {
         return this.#points;
     }
 
+    async getPoints(idsArg) {
+        await this.#ensurePoints();
+        let ids = ENSURE_ID_ARRAY(idsArg);
+        if (ids === undefined) {
+            throw new Error("Invalid id list: "+idsArg);
+        }
+        let result = [];
+        for (let id of ids) {
+            let point = this.#points[id];
+            if (point === undefined) {
+                // TODO: Handle this in caller.
+                throw new Error("Missing point with id "+id);
+            }
+            result.push(point);
+        }
+        return result;
+    }
+
     /**
      * Get point by ID, fetching data from server if necessary.
      * 
@@ -23,6 +41,7 @@ class PointData {
      */
     async getPoint(id) {
         await this.#ensurePoints();
+        // TODO: SANITIZE_ID
         if (typeof id === "string") {
             id = parseInt(id);
             if(isNaN(id)) {
