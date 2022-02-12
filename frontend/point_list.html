@@ -7,15 +7,15 @@
   <title>Virtual nature trail</title>
 
   <!-- Bootstrap core CSS -->    
-  <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/masonry/">
   <link href="./assets/css/starter.css" rel="stylesheet">
-  <script type="text/javascript" src="https://api.mapy.cz/loader.js"></script>
-  <script type="text/javascript">Loader.load();</script>
 
   <!-- Custom styles for this template -->
-  <link href="headers.css" rel="stylesheet">
   <link href="sidebars.css" rel="stylesheet">
-  <link href="colorscheme.css" rel="stylesheet">
+
+  <script src="./node_modules/jquery/dist/jquery.min.js"></script>
+  <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="./node_modules/masonry-layout/dist/masonry.pkgd.min.js"></script>
+  <script type="module" src="./point_list.js"></script>
 </head>
 
 <body>
@@ -86,15 +86,10 @@
       </div>
     </div>     
     <div class="container py-5">
-      <div id="mansonry" class="row" data-masonry='{"percentPosition": true }'>
+      <div id="masonry" class="row" data-masonry='{"percentPosition": true }'>
       </div>
     </div>
 
   </main>
-  <script src="node_modules/jquery/dist/jquery.min.js"></script>
-  <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>  
-  <script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
-  <script async src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"></script>
-  <script type="module" src="./point_list.js"></script>
 </body>
 </html>

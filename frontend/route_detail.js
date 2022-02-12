@@ -1,56 +1,55 @@
 import Cookies from './node_modules/js-cookie/dist/js.cookie.mjs'
-const urlParams = new URLSearchParams(window.location.search);
-const id = urlParams.get('id');
-const storageName = 'route' + id;
-let route = window.localStorage.getItem(storageName);
-var receivedData;
+import ROUTE_DATA from './js-modules/route-data.js';
+import { MAKE_POINT_URL } from './js-modules/constants.js';
 
-if (route == null) {
-    $.getJSON(`http://localhost:8080/rest/routes/${id}`, function(data, status) {
-        console.log(data, status);
-        window.localStorage.setItem(storageName, JSON.stringify(data));
-        console.log("original data",data);
-        receivedData = data;
-        displayRoute(data);
-    })
-} else {
-    receivedData = JSON.parse(route);
-    console.log("parsed data", receivedData);
-    displayRoute(receivedData);
-}
+$(async () => {
+    let urlParams = new URLSearchParams(window.location.search);
+    let id = urlParams.get('id');
+    if(typeof id !== "string") {
+        window.location.href="./route_list.html";
+        return;
+    }
+    
+    let route = await ROUTE_DATA.getRoute(id);
+    displayRoute(route);
+})
 
 function displayRoute(data) {
     let table = document.querySelector("#point-list");
     let points = data.points;
-    const urlPoint = new URL("http://localhost:3000/point_detail");
 
     let contents = "";
     //contents += `<div class="title-simple"><h1>${data.title}</h1></div>\n`;
     contents += `<div class="text-body"><div class="clearfix"><h4>${data.description}</h4></div></div>\n`;
     contents += `<div  class="row" data-masonry='{"percentPosition": true }'>`;
     for (let point of points) {
-        urlPoint.search = new URLSearchParams({id:`${point.id}`});
-        contents += `<div class="col-sm-6 col-lg-4 mb-4">
-            <div class="card">
-            <img class="card-img-top" src="${point.photos[0].image}" width="100%" height="200" focusable="false"/>
-            <div class="card-body">
-            <h5 class="card-title"><a href=${urlPoint}>${point.title}</a></h5>
-            <p class="card-text">${point.description}</p>
+        contents += `
+            <div class="col-sm-6 col-lg-4 mb-4">
+                <div class="card">
+                    <img class="card-img-top" src="${point.photos[0].image}" width="100%" height="200" focusable="false"/>
+                    <div class="card-body">
+                        <h5 class="card-title"><a href=${MAKE_POINT_URL(point.id)}>${point.title}</a></h5>
+                        <p class="card-text">${point.description}</p>
+                    </div>
+                </div>
             </div>
-            </div>
-            </div>`;
+        `;
         //contents += `<tr><td><a href=${urlPoint}>${point.title}</a></td><td>${point.description}</td></tr>\n`;
     }
     contents += `</div>`;
     table.innerHTML = contents;
 
-    document.querySelector("#planning-button").setAttribute('data-route', data.id);
-    document.querySelector("#planning-button").onclick = startPlanning;
+    let planningButton = document.querySelector("#planning-button");
+    planningButton.setAttribute('data-route', data.id);
+    planningButton.onclick = startPlanning;
 
-    document.querySelector("#button-replace-route").setAttribute('data-route', data.id);
-    document.querySelector("#button-replace-route").onclick = replaceRoute;
-    document.querySelector("#button-extend-route").setAttribute('data-route', data.id);
-    document.querySelector("#button-extend-route").onclick = extendRoute;
+    let replaceRouteButton = document.querySelector("#button-replace-route");
+    replaceRouteButton.setAttribute('data-route', data.id);
+    replaceRouteButton.onclick = replaceRoute;
+
+    let extendRouteButton = document.querySelector("#button-extend-route");
+    extendRouteButton.setAttribute('data-route', data.id);
+    extendRouteButton.onclick = extendRoute;
 }
 
 function startPlanning(e){

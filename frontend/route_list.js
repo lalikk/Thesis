@@ -1,24 +1,24 @@
-let routes = window.localStorage.getItem('routesRequest');
+import ROUTE_DATA from './js-modules/route-data.js';
+import { URL_ROUTE_DETAIL_PREFIX } from './js-modules/constants.js';
 
-if (routes == null) {
-    $.getJSON('http://localhost:8080/rest/routes', function(data, status) {
-        console.log(data, status);
-        window.localStorage.setItem('routesRequest', JSON.stringify(data));
-        displayRoutes(data);
-    })
-} else {
-    let data = JSON.parse(routes);
-    displayRoutes(data);
-}
+$(async () => {
+    let routes = await ROUTE_DATA.getAllRoutes();
 
-function displayRoutes(data) {
-    let table = document.querySelector("#route-list");
-    const urlRoute = new URL("http://localhost:3000/route_detail");
-    let contents = "";
-
-    for (let route of data) {
-    urlRoute.search = new URLSearchParams({id:`${route.id}`});
-        contents += `<tr><td><a href=${urlRoute}>${route.description}</a></td></tr>\n`;
+    let table = "";
+    for (let id in routes) {
+        let route = routes[id];
+        table += renderRouteTableRow(route);
     }
-    table.innerHTML = contents;
+
+    document.querySelector("#route-list").innerHTML = table;
+})
+
+function renderRouteTableRow(route) {
+    let url = new URL(URL_ROUTE_DETAIL_PREFIX.toString());
+    url.search = new URLSearchParams({ id: route.id });
+    return `
+        <tr>
+            <td><a href="${url}">${route.description}</a></td>
+        </tr>
+    `;
 }

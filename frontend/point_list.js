@@ -1,34 +1,26 @@
-const urlPoint = new URL("http://localhost:3000/point_detail");
+import POINT_DATA from "./js-modules/point-data.js";
+import { MAKE_POINT_URL } from './js-modules/constants.js';
 
-let points = window.localStorage.getItem('pointsRequest');
-if (points == null) {
-    $.getJSON(`http://localhost:8080/rest/points`, function(data, status) {
-        console.log(data, status);
-        console.log("new request");
-        window.localStorage.setItem('pointsRequest', JSON.stringify(data));
-        displayData(data);
-    })
-} else {
-    let data = JSON.parse(points);
-    console.log("reuse data");
-    displayData(data);
-}
-
-function displayData(data) {
-    let div = document.querySelector("#mansonry");
+$(async () => {
+    let points = await POINT_DATA.getAllPoints();
+    let div = document.querySelector("#masonry");
     let contents = "";
 
-    for (let point of data) {
-    urlPoint.search = new URLSearchParams({id:`${point.id}`});
-        contents += `<div class="col-sm-6 col-lg-4 mb-4">
-            <div class="card">
-            <img class="card-img-top" src="${point.photos[0].image}" width="100%" height="200" focusable="false"/>
-            <div class="card-body">
-            <h5 class="card-title"><a href="${urlPoint}">${point.title}</a></h5>
-            <p class="card-text">${point.description}</p>
-            </div>
-            </div>
-            </div>`;
+    for (let id in points) {
+        let point = points[id];
+        contents += renderPointCard(point);
     }
     div.innerHTML = contents;
+})
+
+function renderPointCard(point) {
+    return `<div class="col-sm-6 col-lg-4 mb-4">
+                <div class="card">
+                    <img class="card-img-top" src="${point.photos[0].image}" width="100%" height="200" focusable="false"/>
+                    <div class="card-body">
+                        <h5 class="card-title"><a href="${MAKE_POINT_URL(point.id)}">${point.title}</a></h5>
+                        <p class="card-text">${point.description}</p>
+                    </div>
+                </div>
+            </div>`;
 }
