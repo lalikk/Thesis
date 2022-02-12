@@ -42,7 +42,7 @@
   <main style="height: 100vh;">
 
     <div>
-      <div id="m"></div>
+      <div id="map"></div>
     </div>
     <div class="outer-menu">
       <div class="side-menu">
@@ -116,8 +116,8 @@
             </button>
           </div>
           <div class="modal-footer">
-            <button type="button" id="button-recompute-off-route" class="btn btn-secondary" data-bs-dismiss="modal">Recompute the route</button>
-            <button type="button" id="button-ignore-route" class="btn btn-primary" data-bs-dismiss="modal">Ignore</button>
+            <button type="button" id="button-recompute-off-route" class="btn btn-secondary" data-bs-dismiss="modal" onclick="window.recomputeOffRoute()">Recompute the route</button>
+            <button type="button" id="button-ignore-route" class="btn btn-primary" data-bs-dismiss="modal" onclick="window.ignoreOffRoute()">Ignore</button>
           </div>
         </div>
       </div>
@@ -132,8 +132,8 @@
             </button>
           </div>
           <div class="modal-footer">
-            <button type="button" id="button-recompute-add-nearby" class="btn btn-secondary" data-bs-dismiss="modal">Add to the route</button>
-            <button type="button" id="button-ignore-nearby" class="btn btn-primary" data-bs-dismiss="modal">Ignore</button>
+            <button type="button" id="button-recompute-add-nearby" class="btn btn-secondary" data-bs-dismiss="modal" onclick="window.recomputeNearby(this)">Add to the route</button>
+            <button type="button" id="button-ignore-nearby" class="btn btn-primary" data-bs-dismiss="modal" onclick="window.ignoreNearby(this)">Ignore</button>
           </div>
         </div>
       </div>

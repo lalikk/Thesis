@@ -1,59 +1,62 @@
-import Cookies from './node_modules/js-cookie/dist/js.cookie.mjs'
-const urlPoint = new URL("http://localhost:3000/point_detail");
+import { MapView, Navigation } from "./js-modules/navigation.js";
+import POINT_DATA from './js-modules/point-data.js';
+import { VISITED_POINTS, CURRENT_ROUTE } from "./js-modules/current-route.js";
+import { MAKE_POINT_URL } from './js-modules/constants.js';
 
-/* Testing data */
-//const userLocationTEST = SMap.Coords.fromWGS84(16.583476454501444, 49.205610336621596);
-var center = SMap.Coords.fromWGS84(16.6, 49.19);  // TODO
+var MAP = null;
+var NAVIGATION = null;
 
-/* Map objects */
-var m = new SMap(JAK.gel("m"), center, 13);
-var layerMarkers = new SMap.Layer.Marker();
-var layerPlanning = m.addDefaultLayer(SMap.DEF_BASE).enable();  
-var layerGeometry = new SMap.Layer.Geometry();
+$(async () => {
+  MAP = new MapView("map");
+  NAVIGATION = new Navigation(MAP);
 
-/* Route planning data */
+  // Open point detail on marker click.
+  MAP.addMarkerClickListener(onPointMarkerClick);
+
+  let routePointIds = CURRENT_ROUTE.getRoutePoints();
+  let routePoints = await POINT_DATA.getPoints(routePointIds);
+
+  syncMarkersWithRoute(MAP, routePoints);
+});
+
+window.recomputeOffRoute = function() {
+  console.log("Recompute off route.");
+}
+
+window.ignoreOffRoute = function() {
+  console.log("Ignore off route.");
+}
+
+window.recomputeNearby = function(element) {
+  console.log("Recompute add nearby.", element);
+}
+
+window.ignoreNearby = function(element) {
+  console.log("Ignore add nearby.", element);
+}
+
+function syncMarkersWithRoute(map, routePoints) {
+  map.removePointMarkers();
+  for (let i = 0; i < routePoints.length; i++) {
+    map.addPointMarker(routePoints[i], i+1);
+  }
+}
+
+function onPointMarkerClick(marker) {
+  if (marker.getId().startsWith("point-")) {
+    let id = marker.getId().substring(6);
+    window.location.href = MAKE_POINT_URL(id); 
+  }
+}
+
+/*
 var pointLocation;
 var ignoredNearby = [];
 var ignored = Cookies.get("ignoredPointsNearby");
 if (typeof ignored != 'undefined') {
   ignoredNearby = JSON.parse(ignored);
 }
-var routeIds = Cookies.get("route");
-var plannedRoute = [];
-if (typeof routeIds != 'undefined') {
-  plannedRoute = JSON.parse(routeIds);
-}
-var visited = Cookies.get("visited");
-var visitedIds = [];
-if (typeof visited != 'undefined') {
-  visitedIds = JSON.parse(visited);
-}
-var remainingPoints = new Map();
-var allPoints = window.localStorage.getItem('pointsRequest');
 
-initMap();
-
-var allPointsPromise;
-if (allPoints == null) {
-  allPointsPromise = new Promise((success, error) => {
-    $.getJSON('http://localhost:8080/rest/points', (data) => {  
-      processData(data);
-      window.localStorage.setItem('pointsRequest', JSON.stringify(data));
-      success(data) 
-    }, error);
-  });
-}
-
-function processData(data) {
-  for (let point of data) {
-    point["SMapCoords"] = SMap.Coords.fromWGS84(point.coordinates.latitude, point.coordinates.longitude);
-  }
-  document.querySelector("#button-recompute-off-route").onclick = recomputeOffRoute;
-  document.querySelector("#button-ignore-route").onclick = ignoreOffRoute;
-
-  document.querySelector("#button-recompute-add-nearby").onclick = recomputeAddNearby;
-  document.querySelector("#button-ignore-nearby").onclick = ignoreAddNearby;
-}
 
 let routePointsPromise = createRoutePointsPromise();
 function createRoutePointsPromise(){
@@ -180,20 +183,6 @@ navigator.geolocation.watchPosition(function (position) {
   displayRoute(globalRoute, position);
   checkPointsAround(position);
 }, showError);
-
-function displayPointMarkers(points) {
-  layerMarkers.removeAll();
-  for (let point of points) {
-    let location = JAK.mel("div");
-    let pic = JAK.mel("img", {src:SMap.CONFIG.img+"/marker/drop-red.png"});
-    location.appendChild(pic);
-    let text = JAK.mel("div", {}, {position:"absolute", left:"0px", top:"2px", textAlign:"center", width:"22px", color:"white", fontWeight:"bold"});
-    text.innerHTML = `${point.indexInRoute}`;
-    location.appendChild(text);
-    var marker = new SMap.Marker(point.SMapCoords, `${point.id}`, { url: location, title: point.title });
-    layerMarkers.addMarker(marker);
-  }
-}
 
 function displayRoute(routeGeometry, userLocation) {
   var currentGeometry;
@@ -351,22 +340,6 @@ function updateUserMarker(userLocation) {
   layerMarkers.addMarker(userMarker);
 }
 
-function initMap() {
-  m.addDefaultLayer(SMap.DEF_BASE).enable();
-  m.addDefaultControls();
-  var sync = new SMap.Control.Sync({bottomSpace:0});
-  m.addControl(sync);
-  m.addLayer(layerMarkers);
-  m.addLayer(layerGeometry).enable();
-  layerMarkers.enable();
-  reactToMarkerClick();
-}
-
-function receiveCoords(position) {
-  Cookies.set('locationAllowed', 'true');
-  Cookies.set('userLocation', JSON.stringify({latitude:position.coords.latitude, longitude:position.coords.longitude}));
-}
-
 function showError(error) {
   var x;
   switch(error.code) {
@@ -384,21 +357,6 @@ function showError(error) {
       break;
   }
   Cookies.set('locationAllowed', false);
-}
-
-function reactToMarkerClick() {
-  m.getSignals().addListener(this, "marker-click", function(e) {
-    var marker = e.target;
-    var id = marker.getId();
-    let markers = layerMarkers.getMarkers();
-    for (var i = 0; i < markers.length; i++) {
-        if (markers[i].getId() == id) {
-            urlPoint.search = new URLSearchParams({id:`${id}`});  
-            window.location.href=urlPoint;             
-        break;
-      }
-    }
-  });
 }
 
 function storeGeometry(g) {
@@ -488,3 +446,4 @@ function ignoreAddNearby(e) {
   ignoredNearby.push(e.target.dataset['nearbypoint']);
   Cookies.set('ignoredPointsNearby', JSON.stringify(ignoredNearby));
 }
+*/
