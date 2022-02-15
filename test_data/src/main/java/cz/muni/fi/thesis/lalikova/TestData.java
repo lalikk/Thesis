@@ -52,12 +52,12 @@ public class TestData
         Point point5 = createPoint("Point 5", "Point 5", Set.of(pointTag1), Set.of(route2));
         Point point6 = createPoint("Point 6", "Point 6", Collections.EMPTY_SET, Set.of(route1));
 
-        Coordinates coordinates1 = createCoordinates(49.19458262392775, 16.599211022817716, point1);
-        Coordinates coordinates2 = createCoordinates(49.19912148092236, 16.606823348960095, point2);
-        Coordinates coordinates3 = createCoordinates(49.191219940789175, 16.60763874071133, point3);
-        Coordinates coordinates4 = createCoordinates(49.19277300502827, 16.566847708531117, point4);
-        Coordinates coordinates5 = createCoordinates(49.23120894717356, 16.580194378883252, point5);
-        Coordinates coordinates6 = createCoordinates(49.23064865534206, 16.667938231869357, point6);
+        Coordinates coordinates1 = createCoordinates(16.599211022817716,49.19458262392775,  point1);
+        Coordinates coordinates2 = createCoordinates(16.606823348960095,49.19912148092236,  point2);
+        Coordinates coordinates3 = createCoordinates(16.60763874071133,49.191219940789175,  point3);
+        Coordinates coordinates4 = createCoordinates(16.566847708531117,49.19277300502827,  point4);
+        Coordinates coordinates5 = createCoordinates(16.580194378883252,49.23120894717356,  point5);
+        Coordinates coordinates6 = createCoordinates(16.667938231869357,49.23064865534206,  point6);
 
         Photo photo1 = createPhoto("photo 1", "https://images.pexels.com/photos/62307/air-bubbles-diving-underwater-blow-62307.jpeg?auto=compress&cs=tinysrgb&h=650&w=940", point1);
         Photo photo2 = createPhoto("photo 2", "https://images.pexels.com/photos/38238/maldives-ile-beach-sun-38238.jpeg?auto=compress&cs=tinysrgb&h=650&w=940", point2);

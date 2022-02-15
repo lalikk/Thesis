@@ -7,6 +7,7 @@ const ROUTE_IDS_KEY = "ROUTE_POINTS";
 const ROUTE_IDS_AGE_KEY = "ROUTE_POINTS_AGE";
 const ROUTE_SORTED_KEY = "ROUTE_SORTED";
 const ROUTE_GEOMETRY_KEY = "ROUTE_GEOMETRY";
+const ROUTE_URL_KEY = "ROUTE_URL";
 
 class VisitedPoints {
 
@@ -189,8 +190,37 @@ class CurrentRoute {
         }
     }
 
+    setGeometry(geometry) {
+        this.#writeGeometry(geometry);
+    }
+
+    getGeometry() {
+        return this.#readGeometry();
+    }
+
+    /**
+     * Returns -1 if current route is empty, or if every point is visited.
+     */
     getActiveSegment() {
-        //TODO
+        let visited = VISITED_POINTS.getAllPoints();
+        let route = this.#readRoute();
+        if (route.length == 0) {
+            return -1;
+        }
+        if (visited.includes(route[route.length - 1])) {
+            return -1;
+        }
+        for (let i = route.length - 2; i >= 0; i--) {
+            if (visited.includes(route[i])) {
+                return i + 1;
+            }
+        }
+        return 0;
+    }
+
+
+    getRouteUrl() {
+        // TODO
     }
 
     #clearSorted() {
@@ -242,6 +272,37 @@ class CurrentRoute {
             console.error("Invalid route points.", error);
             return [];
         }
+    }
+
+    #writeGeometry(geometry) {
+        try {
+            window.localStorage.setItem(ROUTE_GEOMETRY_KEY, JSON.stringify(geometry));
+        } catch (error) {
+            console.error("Cannot write geometry to storage.", error);
+        }
+    }
+
+    #readGeometry() {
+        try {
+            let geoData = window.localStorage.getItem(ROUTE_GEOMETRY_KEY);
+            if (geoData === null) {
+                // Missing geometry.
+                return null;
+            } else {
+                return JSON.parse(geoData);
+            }
+        } catch (error) {
+            console.error("Cannot read geometry from local storage.", error);
+            return null;
+        }
+    }
+
+    #writeRouteUrl() {
+        // TODO
+    }
+
+    #readRouteUrl() {
+        // TODO
     }
 
 }
