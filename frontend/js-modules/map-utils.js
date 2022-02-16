@@ -58,7 +58,29 @@ export function FIND_CLOSEST(source, targets, limit) {
     }
 }
 
-// TODO fix latitude/longitude switching problem so simple function can be used everywhere
+/**
+ * Compute a subset of target coordinates that have distance from source at most limit
+ * If none satisfy this condition, returns empty array
+ */
+ export function FIND_IN_RANGE(source, targets, limit) {
+     console.log("FIND IN RANGE INPUTS:", source, targets);
+     console.log("Targets", targets);  
+    if (targets.length == 0) {
+        return null;
+    }
+    console.log("source",source);
+    source = TRANSFORM_COORDINATES(source);
+    let closePoints = [];
+    console.log(source);
+    for (let i = 0; i < targets.length; ++i) {
+        let distance = source.distance(TRANSFORM_COORDINATES(targets[i]));
+        if (distance < limit) {
+            closePoints.push(i);
+        }
+    }
+    return closePoints;
+}
+
 /**
  * 
  * @param {*} coordinates Location as either { latitude: number, longitude: number }, or { x: number, y: number }
@@ -83,6 +105,53 @@ export function TRANSFORM_ALL_COORDINATES(array) {
         result.push(TRANSFORM_COORDINATES(point));
     }
     return result;
+}
+
+/**
+ * For an array of points returns an array of coordinates. Respects the order.
+ * Expects [ point { coordinates: {} }] or [ point {coords: {} }], otherwise returns null
+ * @param {*} points 
+ */
+export function EXTRACT_COORDINATES(points) {
+    if (typeof points === null || points.length ==  0){
+        return null;
+    }
+    let result = [];
+    if(points[0].coordinates !== undefined) {
+        for (let point of points) {
+            result.push(TRANSFORM_COORDINATES(point.coordinates));
+        }
+        return result;
+    }
+    if(points[0].coords !== undefined) {
+        for (let point of points) {
+            result.push(TRANSFORM_COORDINATES(point.coords));
+        }
+        return result;
+    }
+    return null
+}
+
+/**
+ * Expects two arrays, first of any Objects, second with indices. If any is empty, or there is an index 
+ * greater than length of array of objects, returns null.
+ * Otherwise returns subset of objects array with only objects on indices given by second array.
+ * Order of objects in the new array is the same as order of indices, duplicates are allowed
+ */
+export function SUBSET_WITH_INDICES(objects, indices) {
+    if (objects === null || indices === null) {
+        return null;
+    }
+    let resultArray = [];
+    let limit = objects.length;
+    for (let index of indices) {
+        if (index >= limit) {
+            return null;
+        } else {
+            resultArray.push(objects[index]);
+        }
+    }
+    return resultArray;
 }
 
 /**

@@ -1,4 +1,10 @@
-import { TRANSFORM_COORDINATES, TRANSFORM_ALL_COORDINATES, FIND_CLOSEST } from "./map-utils.js";
+import { TRANSFORM_COORDINATES, TRANSFORM_ALL_COORDINATES, FIND_CLOSEST, EXTRACT_COORDINATES, FIND_IN_RANGE, SUBSET_WITH_INDICES } from "./map-utils.js";
+import { RANGE_ON_POINT, RANGE_POINT_NEARBY, RANGE_OFF_ROUTE, MILLIS_IN_DAY } from "./constants.js";
+import { CURRENT_ROUTE, VISITED_POINTS } from "./current-route.js";
+import POINT_DATA from "./point-data.js";
+
+const IGNORED_IDS_KEY = "IGNORED_POINTS";
+const IGNORED_IDS_AGE_KEY = "IGNORED_POINTS_AGE";
 
 export class MapView {
     #map = null;
@@ -118,10 +124,14 @@ export class MapView {
 }
 
 export class Navigation {
-    #map = null;
 
-    constructor(map) {
-        this.#map = map;
+    #ignoredPoints = new IgnoredPoints();
+
+    constructor() {
+    }
+
+    markAsIgnored(id) {
+        this.#ignoredPoints.markAsIgnored(id);
     }
 
     async getUserCoordinates() {
@@ -140,15 +150,177 @@ export class Navigation {
     }
 
     monitorPointsNearby(callback) {
-        navigator.geolocation.watchPosition((position) => {
-            // TODO: Find points...
-            // callback(point);
+        navigator.geolocation.watchPosition(async (position) => {
+            let allPoints = await POINT_DATA.getAllPoints();
+            let allCoordinates = EXTRACT_COORDINATES(Object.values(allPoints));
+            let closeIds = FIND_IN_RANGE(position.coords, allCoordinates, RANGE_POINT_NEARBY);
+            if (closeIds.length == 0) {
+                //callback();
+                return;
+            }
+            let closePoints = SUBSET_WITH_INDICES(allPoints, closeIds);
+            let closeCoordinates = SUBSET_WITH_INDICES(allCoordinates, closeIds);
+            // Arrived at points
+            let foundCoordinates = FIND_IN_RANGE(position.coords, closeCoordinates, RANGE_ON_POINT);
+            let foundPoints = SUBSET_WITH_INDICES(closePoints, foundCoordinates);
+            if (foundCoordinates !== null && foundCoordinates.length != 0) {
+                // Points in proximity for possible route alteration 
+                let closePointsOnly = closePoints.filter(x => !foundPoints.includes(x));
+                closePointsOnly = this.#filterUntracked(closePointsOnly);
+                foundPoints = this.#filterUntracked(foundPoints)
+                //checkGoalsAchieved(foundPoints);
+                callback(closePointsOnly, foundPoints);
+            } else {
+                callback(closePoints);
+            }
         });
     }
 
     monitorOffRoute(callback) {
-        // TODO.
+        navigator.geolocation.watchPosition((position) => {
+            let geometryPoints = CURRENT_ROUTE.getGeometry();
+            if (geometryPoints == null) {
+                return;
+            }
+            let coords = [];
+            for (let g of geometryPoints) {
+                coords.push(g.points);
+            }
+            console.log(coords, coords.flat())
+            let inUserRange = FIND_IN_RANGE(position.coords, coords.flat(),  RANGE_OFF_ROUTE);
+            if (inUserRange.length == 0) {
+                callback(true);
+            }
+        });
     }
 
+    #filterUntracked(points) {
+        let visitedIds = VISITED_POINTS.getAllPoints();
+        let ignoredIds = this.#ignoredPoints.getAllPoints();
+        return points.filter(x => !visitedIds.includes(x.id) && !ignoredIds.includes(x.id));
+    }
 }
 
+
+
+
+
+
+
+
+
+
+function checkPointsAround(userLocation) {
+    for (let point of pointLocation) {
+      //console.log(userLocation, pointLocation);
+      if (!ignoredNearby.includes(point.id) && !visitedIds.includes(point.id) && !plannedRoute.includes(point.id)){
+        //console.log("nearest sight distance", userLocation.SMapCoords.distance(point.SMapCoords));
+        if (userLocation.SMapCoords.distance(point.SMapCoords) < 200) {
+          //console.log("Point nearby", userLocation, point, userLocation.SMapCoords.distance(point.SMapCoords));
+          document.querySelector("#button-ignore-nearby").setAttribute('data-nearbyPoint', point.id);
+          document.querySelector("#button-recompute-add-nearby").setAttribute('data-nearbyPoint', point.id);
+          $('#point-nearby').modal('show');
+        }
+      }
+    }
+  }
+  
+
+  function checkGoalReached(route, user){
+    //console.log("Check goal",route, user);
+    let userSMap = SMap.Coords.fromWGS84(user.SMapCoords.x, user.SMapCoords.y);
+    let routeEndSMap = SMap.Coords.fromWGS84(route._coords[route._coords.length-1].x, route._coords[route._coords.length-1].y);
+    //console.log()
+    //if (calcDistance(user, route[route.length -1]) < 0.l05) {
+    //console.log(userSMap);
+    //console.log(routeEndSMap);
+    //console.log(userSMap.distance(routeEndSMap));
+    if (userSMap.distance(routeEndSMap) < 100){
+      console.log("checkpoint reached");
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
+
+class IgnoredPoints {
+
+    getAllPoints() {
+        return this.#readStorage();
+    }
+
+    clear() {
+        this.#writeStorage([]);
+    }
+
+    markAsIgnored(idArg) {
+        let id = SANITIZE_ID(idArg);
+        if (id === undefined) {
+            throw new Error("Invalid point id: " + idArg);
+        } else {
+            let ids = this.#readStorage();
+            if(!ids.includes(id)) {
+                ids.push(id);
+                this.#writeStorage(ids);
+            }
+        }
+    }
+
+    removeFromIgnored(idArg) {
+        let id = SANITIZE_ID(idArg);
+        if (id === undefined) {
+            throw new Error("Invalid point id: " + idArg);
+        } else {
+            let ids = this.#readStorage();
+            var index = ids.indexOf(id);
+            if (index !== -1) {
+                ids.splice(index, 1);
+                this.#writeStorage(ids);
+            }
+        }
+    }
+
+    isVisited(idArg) {
+        let id = SANITIZE_ID(idArg);
+        if (id === undefined) {
+            throw new Error("Invalid point id: " + idArg);
+        } else {
+            let ids = this.#readStorage();
+            return ids.includes(id);
+        }
+    }
+
+    #writeStorage(ids) {
+        try {
+            window.localStorage.setItem(IGNORED_IDS_KEY, JSON.stringify(ids));
+            window.localStorage.setItem(IGNORED_IDS_AGE_KEY, Date.now());
+        } catch (error) {
+            console.error("Cannot write ignored points.", error);
+        }
+    }
+
+    #readStorage() {
+        let lastModified = window.localStorage.getItem(IGNORED_IDS_AGE_KEY);
+        if(lastModified == null || Date.now() - lastModified > MILLIS_IN_DAY) {
+            this.clear();
+            return [];
+        }
+
+        let idData = window.localStorage.getItem(IGNORED_IDS_KEY);
+        if(idData == null) {
+            return [];
+        }
+        try {
+            let ignored = JSON.parse(idData);
+            if (typeof ignored.length === "number") {
+                return ignored;
+            } else {
+                console.error("Invalid ignored points.", ignored);
+            }
+        } catch (error) {
+            console.error("Invalid ignored points.", error);
+            return [];
+        }
+    }
+}  

@@ -1,5 +1,9 @@
 export const MILLIS_IN_DAY = 1000 * 60 * 60 * 24;
 
+export const RANGE_ON_POINT = 20;      
+export const RANGE_POINT_NEARBY = 500;
+export const RANGE_OFF_ROUTE = 50;
+
 export const URL_POINT_LIST = new URL("http://localhost:8080/rest/points");
 export const URL_ROUTE_LIST = new URL("http://localhost:8080/rest/routes");
 

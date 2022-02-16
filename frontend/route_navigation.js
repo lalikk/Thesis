@@ -9,7 +9,7 @@ var NAVIGATION = null;
 
 $(async () => {
   MAP = new MapView("map");
-  NAVIGATION = new Navigation(MAP);
+  NAVIGATION = new Navigation();
 
   // Open point detail on marker click.
   MAP.addMarkerClickListener(onPointMarkerClick);
@@ -19,7 +19,7 @@ $(async () => {
 
   syncMarkersWithRoute(MAP, routePoints);
 
-  MAP.drawRouteGeometry(await ensureGeometry(), CURRENT_ROUTE.getActiveSegment());
+  MAP.drawRouteGeometry(await ensureGeometry(routePoints), CURRENT_ROUTE.getActiveSegment());
   let userLocation = await NAVIGATION.getUserCoordinates();
   MAP.refreshUserMarker(userLocation);
   let geometry = await ensureGeometry();
@@ -28,19 +28,23 @@ $(async () => {
 
   NAVIGATION.monitorUserCoordinates(async (userLocation) => {
     MAP.refreshUserMarker(userLocation);
-    MAP.drawRouteGeometry(await ensureGeometry(), CURRENT_ROUTE.getActiveSegment(), userLocation.coordinates);
+    MAP.drawRouteGeometry(await ensureGeometry(routePoints), CURRENT_ROUTE.getActiveSegment(), userLocation.coordinates);
   }, (locationError) => {
     // TODO: Handle location error.
     showLocationError(locationError);
   });
 
-  NAVIGATION.monitorPointsNearby((point) => {
+  NAVIGATION.monitorPointsNearby((pointsReached, pointsNearby) => {
+    document.querySelector("#button-ignore-nearby").setAttribute('data-nearbyPoint', point.id);
+    document.querySelector("#button-recompute-add-nearby").setAttribute('data-nearbyPoint', point.id);
+    //document.querySelector("button-display-reached").
+    $('#point-nearby').modal('show');
     // TODO: Handle points nearby.
-    // TODO: Mark point as visited if part of route.
   });
 
   NAVIGATION.monitorOffRoute(() => {
-    // TODO: Handle off route.
+    // Only triggered when not ignored
+    $('#off-route').modal('show');
   });
   
 });
@@ -59,7 +63,7 @@ function onPointMarkerClick(marker) {
   }
 }
 
-async function ensureGeometry() {
+async function ensureGeometry(routePoints) {
   let cachedGeometry = CURRENT_ROUTE.getGeometry();
   if (cachedGeometry != null) {
     // Initially draw cached geometry while waiting for location if possible.
@@ -80,6 +84,9 @@ window.recomputeOffRoute = function() {
 }
 
 window.ignoreOffRoute = function() {
+    // TODO: set information somewhere
+    // TODO: if ignoring, add option to recompute later
+    // TODO: if ignoring, redraw differently
   console.log("Ignore off route.");
 }
 
@@ -89,7 +96,8 @@ window.recomputeNearby = function(element) {
 }
 
 window.ignoreNearby = function(element) {
-  console.log("Ignore add nearby.", element);
+  // TODO error handling??
+  NAVIGATION.markAsIgnored(element.getAttribute("data-id"));
 }
 
 function showLocationError(error) {
@@ -111,31 +119,7 @@ function showLocationError(error) {
   Cookies.set('locationAllowed', false);
 }
 
-
-
 /*
-var ignoredNearby = [];
-var ignored = Cookies.get("ignoredPointsNearby");
-if (typeof ignored != 'undefined') {
-  ignoredNearby = JSON.parse(ignored);
-}
-
-function checkGoalReached(route, user){
-  //console.log("Check goal",route, user);
-  let userSMap = SMap.Coords.fromWGS84(user.SMapCoords.x, user.SMapCoords.y);
-  let routeEndSMap = SMap.Coords.fromWGS84(route._coords[route._coords.length-1].x, route._coords[route._coords.length-1].y);
-  //console.log()
-  //if (calcDistance(user, route[route.length -1]) < 0.05) {
-  //console.log(userSMap);
-  //console.log(routeEndSMap);
-  //console.log(userSMap.distance(routeEndSMap));
-  if (userSMap.distance(routeEndSMap) < 100){
-    console.log("checkpoint reached");
-    return true;
-  } else {
-    return false;
-  }
-}
 
 function informUserOffRoute(userLocation) {
   let ignoreOffRoute = Cookies.get('ignoreOffRoute');
@@ -160,21 +144,6 @@ function recomputeOffRoute (e) {
 
 function ignoreOffRoute () {
   Cookies.set('ignoreOffRoute', 'true');
-}
-
-function checkPointsAround(userLocation) {
-  for (let point of pointLocation) {
-    //console.log(userLocation, pointLocation);
-    if (!ignoredNearby.includes(point.id) && !visitedIds.includes(point.id) && !plannedRoute.includes(point.id)){
-      //console.log("nearest sight distance", userLocation.SMapCoords.distance(point.SMapCoords));
-      if (userLocation.SMapCoords.distance(point.SMapCoords) < 200) {
-        //console.log("Point nearby", userLocation, point, userLocation.SMapCoords.distance(point.SMapCoords));
-        document.querySelector("#button-ignore-nearby").setAttribute('data-nearbyPoint', point.id);
-        document.querySelector("#button-recompute-add-nearby").setAttribute('data-nearbyPoint', point.id);
-        $('#point-nearby').modal('show');
-      }
-    }
-  }
 }
 
 function recomputeAddNearby(e) {

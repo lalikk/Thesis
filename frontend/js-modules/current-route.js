@@ -99,6 +99,12 @@ class CurrentRoute {
         return this.#readRoute().length == 0;
     }
 
+    isTraverseDone() {
+        let currentIds = this.#readRoute();
+        let visitedIds = VISITED_POINTS.getAllPoints();
+        return currentIds.every(val => visitedIds.includes(val));
+    }
+
     isSorted() {
         try {
             return window.localStorage.getItem(ROUTE_SORTED_KEY) === "true";
