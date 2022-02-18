@@ -161,17 +161,20 @@ export class Navigation {
             let closePoints = SUBSET_WITH_INDICES(allPoints, closeIds);
             let closeCoordinates = SUBSET_WITH_INDICES(allCoordinates, closeIds);
             // Arrived at points
-            let foundCoordinates = FIND_IN_RANGE(position.coords, closeCoordinates, RANGE_ON_POINT);
-            let foundPoints = SUBSET_WITH_INDICES(closePoints, foundCoordinates);
-            if (foundCoordinates !== null && foundCoordinates.length != 0) {
+            let foundIndex = FIND_CLOSEST(position.coords, closeCoordinates, RANGE_ON_POINT);
+            if (foundIndex != -1) {
+                let foundPoint = closePoints[foundIndex];
                 // Points in proximity for possible route alteration 
-                let closePointsOnly = closePoints.filter(x => !foundPoints.includes(x));
+                let closePointsOnly = closePoints.filter(x => !foundPoint.includes(x));
                 closePointsOnly = this.#filterUntracked(closePointsOnly);
-                foundPoints = this.#filterUntracked(foundPoints)
-                //checkGoalsAchieved(foundPoints);
-                callback(closePointsOnly, foundPoints);
+                if (!VISITED_POINTS.isVisited(foundPoint.id) && !this.#ignoredPoints.isIgnored(foundPoint.id)) {
+                    // Only return one found point at a time, leads to redirect
+                    // Return arbitrary number of close points
+                    callback(foundPoint, closePointsOnly);
+                }
             } else {
-                callback(closePoints);
+                closePointsOnly = this.#filterUntracked(closePointsOnly);
+                callback(null, closePoints);
             }
         });
     }
@@ -281,7 +284,7 @@ class IgnoredPoints {
         }
     }
 
-    isVisited(idArg) {
+    isIgnored(idArg) {
         let id = SANITIZE_ID(idArg);
         if (id === undefined) {
             throw new Error("Invalid point id: " + idArg);

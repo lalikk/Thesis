@@ -135,6 +135,9 @@
   .outer-menu .hamburger {
 	background: #194f3e;
   }
+  .outer-menu .remcompute {
+	background: #77253e;
+  }
   .outer-menu .hamburger > div {
 	position: relative;
 	flex: none;

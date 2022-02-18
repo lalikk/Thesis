@@ -8,6 +8,7 @@ const ROUTE_IDS_AGE_KEY = "ROUTE_POINTS_AGE";
 const ROUTE_SORTED_KEY = "ROUTE_SORTED";
 const ROUTE_GEOMETRY_KEY = "ROUTE_GEOMETRY";
 const ROUTE_URL_KEY = "ROUTE_URL";
+const ROUTE_TRACKING_KEY = "ROUTE_TRACKING";
 
 class VisitedPoints {
 
@@ -115,6 +116,18 @@ class CurrentRoute {
         }
     }
 
+    isTracked() {
+        return this.#getTracking();
+    }
+
+    stopTracking() {
+        this.#setTracking(false);
+    }
+
+    restartTracking() {
+        this.#setTracking(true);
+    }
+
     getRoutePoints() {
         return this.#readRoute();
     }
@@ -143,6 +156,31 @@ class CurrentRoute {
             if (!currentIds.includes(id)) {
                 changed = true;
                 currentIds.push(id);
+            }
+        }
+        if (changed) {
+            this.#writeRoute(currentIds);
+            if (currentIds.length <= 1) {
+                this.#setSorted();
+            } else {
+                this.#clearSorted();
+            }
+        }
+        return changed;
+    }
+
+    // TODO refactoring reuse from ^^^^^^
+    appendLeft(idsArg) {
+        let ids = ENSURE_ID_ARRAY(idsArg);
+        if (ids === undefined) {
+            throw new Error("Invalid point id array: "+idsArg);
+        }
+        let changed = false;
+        let currentIds = this.#readRoute();
+        for (let id of ids) {
+            if (!currentIds.includes(id)) {
+                changed = true;
+                currentIds.unshift(id);
             }
         }
         if (changed) {
@@ -303,12 +341,48 @@ class CurrentRoute {
         }
     }
 
-    #writeRouteUrl() {
-        // TODO
+    #setTracking(tracking) {
+        try {
+            window.localStorage.setItem(ROUTE_TRACKING_KEY, JSON.stringify(tracking));
+        } catch (error) {
+            console.error("Cannot write tracking to storage.", error);
+        }
+    }
+
+    #getTracking() {
+        try {
+            let tracking = window.localStorage.getItem(ROUTE_TRACKING_KEY);
+            if (tracking === null) {
+                // Tracking is on by default.
+                return true;
+            } else {
+                return JSON.parse(tracking);
+            }
+        } catch (error) {
+            console.error("Cannot read tracking from local storage.", error);
+            return null;
+        }
+    }
+
+    #writeRouteUrl(url) {
+        try {
+            window.localStorage.setItem(ROUTE_URL_KEY, JSON.stringify(url));
+        } catch (error) {
+            console.error("Cannot write url to local storage");
+        }
     }
 
     #readRouteUrl() {
-        // TODO
+        try {
+            let url = window.localStorage.getItem(ROUTE_URL_KEY);
+            if (url === null) {
+                return null;
+            } else {
+                return JSON.parse(url)
+            }
+        } catch (error) {
+            console.error("Cannot read url from local storage");
+        }
     }
 
 }

@@ -49,6 +49,14 @@
         <div class="hamburger side-button" onclick="document.querySelector('.side-menu-extra').classList.toggle('zero-height')">
           <div></div>
         </div>
+        <div id="side-recompute" class="recompute side-button d-none" onclick="window.returnRecompute()">
+          <div>
+            <!-- TODO check replace href with onclick fnction call-->
+              <svg class="bi d-block mx-auto mb-1" width="30" height="30">
+                <use xlink:href="#location" />
+              </svg>
+          </div>
+        </div>
         <div class="side-menu-extra">
           <div class="location side-button">
             <div>
@@ -132,10 +140,8 @@
             </button>
           </div>
           <div class="modal-footer">
-            <button type="button" id="button-display-reached" class="btn btn-primary" data-bs-dismiss="modal">Learn more</button>
-
-         
-         
+            <button type="button" id="button-display-reached" class="btn btn-secondary" data-bs-dismiss="modal" onclick="window.displayReached(this)">Learn more</button>
+            <button type="button" id="button-ignore-reached" class="btn btn-primary" data-bs-dismiss="modal">No thanks</button> <!-- TODO make dismiss the modal-->
           </div>
         </div>
       </div>

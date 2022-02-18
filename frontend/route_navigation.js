@@ -34,12 +34,24 @@ $(async () => {
     showLocationError(locationError);
   });
 
-  NAVIGATION.monitorPointsNearby((pointsReached, pointsNearby) => {
-    document.querySelector("#button-ignore-nearby").setAttribute('data-nearbyPoint', point.id);
-    document.querySelector("#button-recompute-add-nearby").setAttribute('data-nearbyPoint', point.id);
-    //document.querySelector("button-display-reached").
-    $('#point-nearby').modal('show');
-    // TODO: Handle points nearby.
+  NAVIGATION.monitorPointsNearby((pointReached, pointsNearby) => {
+    if (pointReached != null) {
+      VISITED_POINTS.markAsVisited(pointReached.id);
+      let isRouteFinished = CURRENT_ROUTE.isTraverseDone();
+      document.querySelector("#button-display-reached").setAttribute("data-id", point.id);
+      document.querySelector("#button-display-reached").setAttribute("data-finished", isRouteFinished);
+      // do something if route is finished - TODO figure out 
+
+    } else {  // Reached point has highest priority, points nearby can be added with next movement detection
+
+      //document.querySelector("#button-ignore-nearby").setAttribute('data-id', point.id);      DO in loop, one for each
+      //document.querySelector("#button-recompute-add-nearby").setAttribute('data-id', point.id);
+      //document.querySelector("button-display-reached").
+      $('#point-nearby').modal('show');
+      // TODO: Handle points nearby.
+      COMPUTE_ROUTE.clearGeometry();
+      forceRedraw(false); 
+    }
   });
 
   NAVIGATION.monitorOffRoute(() => {
@@ -63,12 +75,14 @@ function onPointMarkerClick(marker) {
   }
 }
 
-async function ensureGeometry(routePoints) {
+async function ensureGeometry() {                          // TODO route points passing???
   let cachedGeometry = CURRENT_ROUTE.getGeometry();
   if (cachedGeometry != null) {
     // Initially draw cached geometry while waiting for location if possible.
     return cachedGeometry;
   } else {
+    let routePointIds = CURRENT_ROUTE.getRoutePoints();
+    let routePoints = await POINT_DATA.getPoints(routePointIds);
     let userLocation = await NAVIGATION.getUserCoordinates();
     console.log("Initial location:", userLocation);
     let computedGeometry = await COMPUTE_ROUTE(routePoints, userLocation);
@@ -77,27 +91,48 @@ async function ensureGeometry(routePoints) {
   }
 }
 
+async function forceRedraw(offRoute) {
+  let userLocation = await NAVIGATION.getUserCoordinates();
+  MAP.drawRouteGeometry(await ensureGeometry(routePoints), CURRENT_ROUTE.getActiveSegment(), userLocation.coordinates, offRoute);
+}
+
 /* BUTTON CLICK HANDLER FUNCTIONS */
 
 window.recomputeOffRoute = function() {
+  CURRENT_ROUTE.clearGeometry();
+  forceRedraw(false);
   console.log("Recompute off route.");
 }
 
 window.ignoreOffRoute = function() {
-    // TODO: set information somewhere
-    // TODO: if ignoring, add option to recompute later
+  // TODO: set information somewhere
+  CURRENT_ROUTE.stopTracking();
+  // TODO: if ignoring, add option to recompute later
+  document.querySelector("#side-recompute").classList.toggle('d-none');
     // TODO: if ignoring, redraw differently
+    forceRedraw(true);
   console.log("Ignore off route.");
 }
 
 window.recomputeNearby = function(element) {
   // Force recompute (clear geometry in CURRENT_ROUTE and redraw ensureGeometry())
+  CURRENT_ROUTE.appendLeft(element.getAttribute("data-id"));
   console.log("Recompute add nearby.", element);
 }
 
 window.ignoreNearby = function(element) {
   // TODO error handling??
   NAVIGATION.markAsIgnored(element.getAttribute("data-id"));
+}
+
+window.displayReached = function(element) {
+  let redirectUrl = MAKE_POINT_URL(element.getAttribute("data-id"));
+  let finished = element.getAttribute("data-finished");
+  if (finished == true) {
+    $('#goal-reached').modal('show');
+    // TODO prepare modal
+  }
+  window.location.href=redirectUrl;
 }
 
 function showLocationError(error) {
