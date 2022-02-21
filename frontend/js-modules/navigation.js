@@ -41,9 +41,14 @@ export class MapView {
         }
     }
 
-    addPointMarker(point, label) {
+    addPointMarker(point, label, visited = false) {
         let location = JAK.mel("div");
-        let pic = JAK.mel("img", {src:SMap.CONFIG.img+"/marker/drop-red.png"});
+        var pic;
+        if (visited === false) {
+            pic = JAK.mel("img", {src:SMap.CONFIG.img+"/marker/drop-red.png"});
+        } else {
+            pic = JAK.mel("img", {src:SMap.CONFIG.img+"/marker/drop-blue.png"});   
+        }
         location.appendChild(pic);
         let text = JAK.mel("div", {}, {position:"absolute", left:"0px", top:"2px", textAlign:"center", width:"22px", color:"white", fontWeight:"bold"});
         text.innerHTML = `${label}`;
@@ -73,7 +78,26 @@ export class MapView {
 
     drawRouteGeometry(geometry, activeSegment = -1, userLocation = null, offRoute = false) {
         // TODO: Handle offRoute.
+        console.log("Off route",offRoute);
+        console.log("Draw geometry", geometry);
         this.#layerGeometry.removeAll();
+        if (offRoute == true) {
+            this.#drawOffRoute(geometry);
+        } else {
+            this.#drawProgress(geometry, activeSegment, userLocation);
+        }
+    }
+
+    #drawOffRoute(geometry) {
+        let options = { color:'gray', opacity:0.4}
+        for (let g of geometry) {
+            let coords = TRANSFORM_ALL_COORDINATES(g.points);
+            let segmentGeometry = new SMap.Geometry(SMap.GEOMETRY_POLYLINE, null, coords, options);
+            this.#layerGeometry.addGeometry(segmentGeometry);
+        }
+    }
+
+    #drawProgress(geometry, activeSegment, userLocation) {
         for (let i=0; i < geometry.length; i++) {
             let segment = geometry[i];
             let options = {};
@@ -86,11 +110,13 @@ export class MapView {
                 this.#drawActiveSegment(coords, userLocation);
             } else {
                 let segmentGeometry = new SMap.Geometry(SMap.GEOMETRY_POLYLINE, null, coords, options);
+                console.log(segmentGeometry);
                 this.#layerGeometry.addGeometry(segmentGeometry);
             }
         }
         this.#layerGeometry.redraw();
     }
+
 
     #drawActiveSegment(coords, userLocation) {
         let userInSegment = FIND_CLOSEST(userLocation, coords, 100);
@@ -152,20 +178,46 @@ export class Navigation {
     monitorPointsNearby(callback) {
         navigator.geolocation.watchPosition(async (position) => {
             let allPoints = await POINT_DATA.getAllPoints();
+            console.log("all points", allPoints);
+            let allCoordinates = EXTRACT_COORDINATES(Object.values(allPoints));
+            let closestIndex = FIND_CLOSEST(position.coords, allCoordinates, RANGE_ON_POINT);
+            if (closestIndex != -1) {
+                callback(Object.values(allPoints)[closestIndex], null);
+            } else {
+                let closestNearby = FIND_CLOSEST(position.coords, allCoordinates, RANGE_POINT_NEARBY);
+                if (closestNearby != -1) {
+                    callback(null, Object.values(allPoints)[closestNearby]);
+                } else {
+                    callback(null, null);
+                }
+            }
+        });
+    }
+
+    monitorPointsNearbyOld(callback) {
+        navigator.geolocation.watchPosition(async (position) => {
+            let allPoints = await POINT_DATA.getAllPoints();
+            console.log("all points", allPoints);
             let allCoordinates = EXTRACT_COORDINATES(Object.values(allPoints));
             let closeIds = FIND_IN_RANGE(position.coords, allCoordinates, RANGE_POINT_NEARBY);
+            console.log("close ids", closeIds);
             if (closeIds.length == 0) {
                 //callback();
                 return;
             }
             let closePoints = SUBSET_WITH_INDICES(allPoints, closeIds);
+            console.log("close points", closePoints);
             let closeCoordinates = SUBSET_WITH_INDICES(allCoordinates, closeIds);
+            console.log("close cords", closeCoordinates);
             // Arrived at points
             let foundIndex = FIND_CLOSEST(position.coords, closeCoordinates, RANGE_ON_POINT);
+            console.log("found closest", foundIndex);
             if (foundIndex != -1) {
                 let foundPoint = closePoints[foundIndex];
+                console.log(foundPoint);
+                console.log(foundIndex);
                 // Points in proximity for possible route alteration 
-                let closePointsOnly = closePoints.filter(x => !foundPoint.includes(x));
+                let closePointsOnly = closePoints.filter(x => x != foundPoint);
                 closePointsOnly = this.#filterUntracked(closePointsOnly);
                 if (!VISITED_POINTS.isVisited(foundPoint.id) && !this.#ignoredPoints.isIgnored(foundPoint.id)) {
                     // Only return one found point at a time, leads to redirect

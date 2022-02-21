@@ -15,31 +15,39 @@ $(async () => {
   MAP.addMarkerClickListener(onPointMarkerClick);
 
   let routePointIds = CURRENT_ROUTE.getRoutePoints();
+  let visitedPointIds = VISITED_POINTS.getAllPoints();
   let routePoints = await POINT_DATA.getPoints(routePointIds);
+  let visitedPoints = await POINT_DATA.getPoints(visitedPointIds);
+  console.log(visitedPoints);
 
-  syncMarkersWithRoute(MAP, routePoints);
+  syncMarkersWithRoute(MAP, routePoints, visitedPoints);
 
-  MAP.drawRouteGeometry(await ensureGeometry(routePoints), CURRENT_ROUTE.getActiveSegment());
+  let isTracked = CURRENT_ROUTE.isTracked();
+  console.log(isTracked);
+  MAP.drawRouteGeometry(await ensureGeometry(), CURRENT_ROUTE.getActiveSegment(), null, !isTracked);
   let userLocation = await NAVIGATION.getUserCoordinates();
   MAP.refreshUserMarker(userLocation);
   let geometry = await ensureGeometry();
   console.log("Route geometry", geometry);
-  MAP.drawRouteGeometry(geometry, CURRENT_ROUTE.getActiveSegment(), userLocation.coordinates);
-
+  MAP.drawRouteGeometry(geometry, CURRENT_ROUTE.getActiveSegment(), userLocation.coordinates, !isTracked);  
+  document.querySelector('#side-recompute').classList.toggle("d-none", isTracked);
+  
   NAVIGATION.monitorUserCoordinates(async (userLocation) => {
     MAP.refreshUserMarker(userLocation);
-    MAP.drawRouteGeometry(await ensureGeometry(routePoints), CURRENT_ROUTE.getActiveSegment(), userLocation.coordinates);
+    MAP.drawRouteGeometry(await ensureGeometry(), CURRENT_ROUTE.getActiveSegment(), userLocation.coordinates, !isTracked);
   }, (locationError) => {
     // TODO: Handle location error.
     showLocationError(locationError);
   });
 
   NAVIGATION.monitorPointsNearby((pointReached, pointsNearby) => {
+    console.log(pointReached);
     if (pointReached != null) {
-      VISITED_POINTS.markAsVisited(pointReached.id);
+      VISITED_POINTS.markAsVisited(pointReached.id);            // TODO check that is not visited
       let isRouteFinished = CURRENT_ROUTE.isTraverseDone();
-      document.querySelector("#button-display-reached").setAttribute("data-id", point.id);
+      document.querySelector("#button-display-reached").setAttribute("data-id", pointReached.id);
       document.querySelector("#button-display-reached").setAttribute("data-finished", isRouteFinished);
+      $('#point-reached').modal('show');
       // do something if route is finished - TODO figure out 
 
     } else {  // Reached point has highest priority, points nearby can be added with next movement detection
@@ -61,10 +69,13 @@ $(async () => {
   
 });
 
-function syncMarkersWithRoute(map, routePoints) {
+function syncMarkersWithRoute(map, routePoints, visitedPoints) {
   map.removePointMarkers();
   for (let i = 0; i < routePoints.length; i++) {
     map.addPointMarker(routePoints[i], i+1);
+  }
+  for (let i = 0; i < visitedPoints.length; i++) {
+    map.addPointMarker(visitedPoints[i], "", true);
   }
 }
 
@@ -83,7 +94,7 @@ async function ensureGeometry() {                          // TODO route points 
   } else {
     let routePointIds = CURRENT_ROUTE.getRoutePoints();
     let routePoints = await POINT_DATA.getPoints(routePointIds);
-    let userLocation = await NAVIGATION.getUserCoordinates();
+    let userLocation = await NAVIGATION.getUserCoordinates();       // force new!!!
     console.log("Initial location:", userLocation);
     let computedGeometry = await COMPUTE_ROUTE(routePoints, userLocation);
     CURRENT_ROUTE.setGeometry(computedGeometry);
@@ -93,13 +104,22 @@ async function ensureGeometry() {                          // TODO route points 
 
 async function forceRedraw(offRoute) {
   let userLocation = await NAVIGATION.getUserCoordinates();
-  MAP.drawRouteGeometry(await ensureGeometry(routePoints), CURRENT_ROUTE.getActiveSegment(), userLocation.coordinates, offRoute);
+  MAP.drawRouteGeometry(await ensureGeometry(), CURRENT_ROUTE.getActiveSegment(), userLocation.coordinates, offRoute);
 }
 
 /* BUTTON CLICK HANDLER FUNCTIONS */
 
+window.returnRecompute = function() {
+  console.log("Recompute pressed");
+  CURRENT_ROUTE.restartTracking();
+  ensureGeometry();
+  forceRedraw(false);
+  document.querySelector('#side-recompute').classList.toggle("d-none", true);
+}
+
 window.recomputeOffRoute = function() {
   CURRENT_ROUTE.clearGeometry();
+  ensureGeometry();
   forceRedraw(false);
   console.log("Recompute off route.");
 }

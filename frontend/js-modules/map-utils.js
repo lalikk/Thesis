@@ -18,7 +18,7 @@ export async function COMPUTE_ROUTE(routePoints, userLocation = null) {
         if (routeCoords.length < 2) {
             success([]);
         }
-        SMap.Route.route(routeCoords, { geometry: true, itinerary: true })
+        SMap.Route.route(routeCoords, { geometry: true, itinerary: true, criterion:"turist1"})
             .then((route) => {
                 let result = route.getResults();
                 let geometry = sliceGeometry(result.geometry, result.points);
@@ -142,16 +142,41 @@ export function SUBSET_WITH_INDICES(objects, indices) {
     if (objects === null || indices === null) {
         return null;
     }
+    console.log(objects, indices);
     let resultArray = [];
     let limit = objects.length;
     for (let index of indices) {
+        console.log("index",index);
         if (index >= limit) {
             return null;
         } else {
+            console.log(objects[index]);
             resultArray.push(objects[index]);
         }
     }
+    console.log(resultArray);
     return resultArray;
+}
+
+export function CREATE_ROUTE_URL(routePoints, userLocation = null) {
+    let url = new SMap.URL.Route();
+    let options = { type:"trial", trialTurist:true };
+    let routeCoords = [];
+    if (userLocation !== null) {
+        routeCoords.push(TRANSFORM_COORDINATES(userLocation.coordinates));
+    }
+    for (let point of routePoints) {
+        routeCoords.push(TRANSFORM_COORDINATES(point.coordinates));
+    }
+    if (routeCoords.length < 2) {
+        return null;
+    }
+    url.addStart(routeCoords[0], options);
+    url.addDestination(routeCoords[routeCoords.length-1]);
+    for (let i = 1; i < routeCoords.length-1; ++i) {
+        url.addWaypoint(routeCoords[i], options);
+    }
+    return url.toString();
 }
 
 /**

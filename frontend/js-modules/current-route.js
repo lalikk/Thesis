@@ -7,7 +7,6 @@ const ROUTE_IDS_KEY = "ROUTE_POINTS";
 const ROUTE_IDS_AGE_KEY = "ROUTE_POINTS_AGE";
 const ROUTE_SORTED_KEY = "ROUTE_SORTED";
 const ROUTE_GEOMETRY_KEY = "ROUTE_GEOMETRY";
-const ROUTE_URL_KEY = "ROUTE_URL";
 const ROUTE_TRACKING_KEY = "ROUTE_TRACKING";
 
 class VisitedPoints {
@@ -126,6 +125,7 @@ class CurrentRoute {
 
     restartTracking() {
         this.#setTracking(true);
+        this.clearGeometry();
     }
 
     getRoutePoints() {
@@ -261,12 +261,7 @@ class CurrentRoute {
         }
         return 0;
     }
-
-
-    getRouteUrl() {
-        // TODO
-    }
-
+    
     #clearSorted() {
         try {
             window.localStorage.removeItem(ROUTE_SORTED_KEY);
@@ -363,28 +358,6 @@ class CurrentRoute {
             return null;
         }
     }
-
-    #writeRouteUrl(url) {
-        try {
-            window.localStorage.setItem(ROUTE_URL_KEY, JSON.stringify(url));
-        } catch (error) {
-            console.error("Cannot write url to local storage");
-        }
-    }
-
-    #readRouteUrl() {
-        try {
-            let url = window.localStorage.getItem(ROUTE_URL_KEY);
-            if (url === null) {
-                return null;
-            } else {
-                return JSON.parse(url)
-            }
-        } catch (error) {
-            console.error("Cannot read url from local storage");
-        }
-    }
-
 }
 
 export let VISITED_POINTS = new VisitedPoints();

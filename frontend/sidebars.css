@@ -135,7 +135,12 @@
   .outer-menu .hamburger {
 	background: #194f3e;
   }
-  .outer-menu .remcompute {
+  .outer-menu .recompute {
+	overflow: hidden;
+	transition-property: max-height;
+	transition-duration: 0.3s;
+	transition-timing-function: ease;
+	max-height: 300px;
 	background: #77253e;
   }
   .outer-menu .hamburger > div {
