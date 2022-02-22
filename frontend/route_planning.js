@@ -32,8 +32,11 @@ function renderTableRow(point, visited) {
         <a href=${MAKE_POINT_URL(point.id)} class="${visited ? "text-muted" : ""}">${point.title}</a>
       </td>
       <td>
+      <span class="visited-remove">
+        <button type="button" data-pointremove="${point.id}" onclick="window.revertVisited(this)" class="${visited ? "" : "d-none"} point-remove btn btn-primary btn-rounded btn-sm my-0">Add to route</button>
+      </span>
         <span class="table-remove">
-          <button type="button" data-point="${point.id}" onclick="window.removePoint(this)" class="point-remove btn btn-danger btn-rounded btn-sm my-0">Remove</button>
+          <button type="button" data-point-add="${point.id}" onclick="window.removePoint(this)" class="point-remove btn btn-danger btn-rounded btn-sm my-0">Remove</button>
         </span>
       </td>
     </tr>
@@ -41,12 +44,20 @@ function renderTableRow(point, visited) {
 }
 
 window.removePoint = function(element) {
-  let pointId = element.dataset['point'];
-  let row = document.querySelector(`tr[data-point="${pointId}"]`);
+  let pointId = element.dataset['pointremove'];
+  console.log(pointId);
+  let row = document.querySelector(`tr[data-pointremove="${pointId}"]`);
   row.parentNode.removeChild(row);
   CURRENT_ROUTE.remove(pointId);
   displayEmptyMessage(CURRENT_ROUTE.isEmpty());
   displayReorderButton(!CURRENT_ROUTE.isSorted()); 
+}
+
+window.revertVisited = async function(element) {
+  console.log(element);
+  VISITED_POINTS.removeFromVisited(element.dataset['point']);
+  document.querySelector(`tr[data-point-add="${pointId}"]`).classList.toggle("d-none", true);
+  await this.displayCurrentRoute();
 }
 
 function displayEmptyMessage(visible) {

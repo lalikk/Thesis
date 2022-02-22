@@ -132,6 +132,12 @@ class CurrentRoute {
         return this.#readRoute();
     }
 
+    getUnvisitedRoutePoints() {
+        let currentIds = this.#readRoute();
+        let visitedIds = VISITED_POINTS.getAllPoints();
+        return currentIds.filter(val => !visitedIds.includes(val));
+    }
+
     refresh(idsArg, sorted = false) {
         let ids = ENSURE_ID_ARRAY(idsArg);
         if (ids === undefined) {

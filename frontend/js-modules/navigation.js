@@ -59,9 +59,10 @@ export class MapView {
 
     getPointMarkers() {
         let markers = this.#layerMarkers.getMarkers();
+        console.log(markers);
         let result = [];
         for (let marker of markers) {
-            if (marker.getId().startWith("point-")) {
+            if (marker.getId().startsWith("point-")) {
                 result.push(marker);
             }
         }
@@ -69,7 +70,9 @@ export class MapView {
     }
 
     removePointMarkers() {
+        console.log("HELLO!!!");
         let pointMarkers = this.getPointMarkers();
+        console.log(pointMarkers);
         for (let marker of pointMarkers) {
             this.#layerMarkers.removeMarker(marker, true);
         }
@@ -152,6 +155,7 @@ export class MapView {
 export class Navigation {
 
     #ignoredPoints = new IgnoredPoints();
+    #lastLocation = null;
 
     constructor() {
     }
@@ -161,32 +165,50 @@ export class Navigation {
     }
 
     async getUserCoordinates() {
+        let navigation = this;
         return new Promise((success) => {
-            navigator.geolocation.getCurrentPosition((data) => {
-                success({ coordinates: data.coords });
-            }, (error) => {
-                console.error("Cannot get user location.", error);
-                success(null);
-            })
+            if (navigation.#lastLocation == null) {
+                navigator.geolocation.getCurrentPosition((data) => {
+                    console.log("fadfa")
+                    navigation.#lastLocation = { coordinates: data.coords };
+                    success({ coordinates: data.coords });
+                }, (error) => {
+                    console.error("Cannot get user location.", error);
+                    success(null);
+                }, {
+                    timeout: 1000,   // 1 second
+                })
+            } else {
+                success(navigation.#lastLocation);
+            }
         });
     }
 
     monitorUserCoordinates(success, error = (e) => console.error(e)) {
-        navigator.geolocation.watchPosition((position) => success({ coordinates: position.coords }), error);     
+        let navigation = this;
+        navigator.geolocation.watchPosition((position) => {
+            navigation.#lastLocation = { coordinates: position.coords };
+            success({ coordinates: position.coords });
+        }, error);     
     }
 
     monitorPointsNearby(callback) {
         navigator.geolocation.watchPosition(async (position) => {
             let allPoints = await POINT_DATA.getAllPoints();
-            console.log("all points", allPoints);
-            let allCoordinates = EXTRACT_COORDINATES(Object.values(allPoints));
+            console.log("all points",allPoints);
+            let trackedPoints = this.#filterUntracked(Object.values(allPoints));
+            console.log(trackedPoints);
+            let allCoordinates = EXTRACT_COORDINATES(trackedPoints);
             let closestIndex = FIND_CLOSEST(position.coords, allCoordinates, RANGE_ON_POINT);
+            console.log("closest:", allCoordinates, trackedPoints);
             if (closestIndex != -1) {
-                callback(Object.values(allPoints)[closestIndex], null);
+                callback(trackedPoints[closestIndex], null);
             } else {
+                console.log("Checking add nearby", position.coords, allCoordinates);
                 let closestNearby = FIND_CLOSEST(position.coords, allCoordinates, RANGE_POINT_NEARBY);
+                console.log(closestNearby);
                 if (closestNearby != -1) {
-                    callback(null, Object.values(allPoints)[closestNearby]);
+                    callback(null, trackedPoints[closestNearby]);
                 } else {
                     callback(null, null);
                 }
@@ -194,45 +216,11 @@ export class Navigation {
         });
     }
 
-    monitorPointsNearbyOld(callback) {
-        navigator.geolocation.watchPosition(async (position) => {
-            let allPoints = await POINT_DATA.getAllPoints();
-            console.log("all points", allPoints);
-            let allCoordinates = EXTRACT_COORDINATES(Object.values(allPoints));
-            let closeIds = FIND_IN_RANGE(position.coords, allCoordinates, RANGE_POINT_NEARBY);
-            console.log("close ids", closeIds);
-            if (closeIds.length == 0) {
-                //callback();
-                return;
-            }
-            let closePoints = SUBSET_WITH_INDICES(allPoints, closeIds);
-            console.log("close points", closePoints);
-            let closeCoordinates = SUBSET_WITH_INDICES(allCoordinates, closeIds);
-            console.log("close cords", closeCoordinates);
-            // Arrived at points
-            let foundIndex = FIND_CLOSEST(position.coords, closeCoordinates, RANGE_ON_POINT);
-            console.log("found closest", foundIndex);
-            if (foundIndex != -1) {
-                let foundPoint = closePoints[foundIndex];
-                console.log(foundPoint);
-                console.log(foundIndex);
-                // Points in proximity for possible route alteration 
-                let closePointsOnly = closePoints.filter(x => x != foundPoint);
-                closePointsOnly = this.#filterUntracked(closePointsOnly);
-                if (!VISITED_POINTS.isVisited(foundPoint.id) && !this.#ignoredPoints.isIgnored(foundPoint.id)) {
-                    // Only return one found point at a time, leads to redirect
-                    // Return arbitrary number of close points
-                    callback(foundPoint, closePointsOnly);
-                }
-            } else {
-                closePointsOnly = this.#filterUntracked(closePointsOnly);
-                callback(null, closePoints);
-            }
-        });
-    }
-
     monitorOffRoute(callback) {
         navigator.geolocation.watchPosition((position) => {
+            if (!CURRENT_ROUTE.isTracked()){
+                return;
+            }
             let geometryPoints = CURRENT_ROUTE.getGeometry();
             if (geometryPoints == null) {
                 return;
@@ -255,49 +243,6 @@ export class Navigation {
         return points.filter(x => !visitedIds.includes(x.id) && !ignoredIds.includes(x.id));
     }
 }
-
-
-
-
-
-
-
-
-
-
-function checkPointsAround(userLocation) {
-    for (let point of pointLocation) {
-      //console.log(userLocation, pointLocation);
-      if (!ignoredNearby.includes(point.id) && !visitedIds.includes(point.id) && !plannedRoute.includes(point.id)){
-        //console.log("nearest sight distance", userLocation.SMapCoords.distance(point.SMapCoords));
-        if (userLocation.SMapCoords.distance(point.SMapCoords) < 200) {
-          //console.log("Point nearby", userLocation, point, userLocation.SMapCoords.distance(point.SMapCoords));
-          document.querySelector("#button-ignore-nearby").setAttribute('data-nearbyPoint', point.id);
-          document.querySelector("#button-recompute-add-nearby").setAttribute('data-nearbyPoint', point.id);
-          $('#point-nearby').modal('show');
-        }
-      }
-    }
-  }
-  
-
-  function checkGoalReached(route, user){
-    //console.log("Check goal",route, user);
-    let userSMap = SMap.Coords.fromWGS84(user.SMapCoords.x, user.SMapCoords.y);
-    let routeEndSMap = SMap.Coords.fromWGS84(route._coords[route._coords.length-1].x, route._coords[route._coords.length-1].y);
-    //console.log()
-    //if (calcDistance(user, route[route.length -1]) < 0.l05) {
-    //console.log(userSMap);
-    //console.log(routeEndSMap);
-    //console.log(userSMap.distance(routeEndSMap));
-    if (userSMap.distance(routeEndSMap) < 100){
-      console.log("checkpoint reached");
-      return true;
-    } else {
-      return false;
-    }
-  }
-  
 
 class IgnoredPoints {
 
