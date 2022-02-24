@@ -63,15 +63,11 @@ export function FIND_CLOSEST(source, targets, limit) {
  * If none satisfy this condition, returns empty array
  */
  export function FIND_IN_RANGE(source, targets, limit) {
-     console.log("FIND IN RANGE INPUTS:", source, targets);
-     console.log("Targets", targets);  
     if (targets.length == 0) {
         return null;
     }
-    console.log("source",source);
     source = TRANSFORM_COORDINATES(source);
     let closePoints = [];
-    console.log(source);
     for (let i = 0; i < targets.length; ++i) {
         let distance = source.distance(TRANSFORM_COORDINATES(targets[i]));
         if (distance < limit) {
@@ -142,19 +138,15 @@ export function SUBSET_WITH_INDICES(objects, indices) {
     if (objects === null || indices === null) {
         return null;
     }
-    console.log(objects, indices);
     let resultArray = [];
     let limit = objects.length;
     for (let index of indices) {
-        console.log("index",index);
         if (index >= limit) {
             return null;
         } else {
-            console.log(objects[index]);
             resultArray.push(objects[index]);
         }
     }
-    console.log(resultArray);
     return resultArray;
 }
 

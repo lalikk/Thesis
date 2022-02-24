@@ -3,8 +3,8 @@ import { MILLIS_IN_DAY, SANITIZE_ID, ENSURE_ID_ARRAY } from "./constants.js";
 const VISITED_IDS_KEY = "VISITED_POINTS";
 const VISITED_IDS_AGE_KEY = "VISITED_POINTS_AGE";
 
-const ROUTE_IDS_KEY = "ROUTE_POINTS";
-const ROUTE_IDS_AGE_KEY = "ROUTE_POINTS_AGE";
+const ROUTE_PLANNED_IDS_KEY = "ROUTE_PLANNED_POINTS";
+const ROUTE_PLANNED_IDS_AGE_KEY = "ROUTE_PLANNED_POINTS_AGE";
 const ROUTE_SORTED_KEY = "ROUTE_SORTED";
 const ROUTE_GEOMETRY_KEY = "ROUTE_GEOMETRY";
 const ROUTE_TRACKING_KEY = "ROUTE_TRACKING";
@@ -60,8 +60,6 @@ class VisitedPoints {
         try {
             window.localStorage.setItem(VISITED_IDS_KEY, JSON.stringify(ids));
             window.localStorage.setItem(VISITED_IDS_AGE_KEY, Date.now());
-
-            CURRENT_ROUTE.refreshGeometry(ids);
         } catch (error) {
             console.error("Cannot write visited points.", error);
         }
@@ -95,16 +93,36 @@ class VisitedPoints {
 
 class CurrentRoute {
 
+    /**
+     * @returns false if there is a planned route for planning view
+     */
     isEmpty() {
-        return this.#readRoute().length == 0;
+        return ROUTE_MANAGER.readPlannedRoute().length == 0;
     }
 
+    /**
+     * 
+     * @returns true if there are points to visit in the route - the route can be drawn in map
+     */
+    isActive() {
+        return ROUTE_MANAGER.readActiveRoute().length == 0 && !this.isTraverseDone;
+    }
+
+    /**
+     * 
+     * @returns true if all points of route have been visited
+     */
     isTraverseDone() {
-        let currentIds = this.#readRoute();
+        let currentIds = ROUTE_MANAGER.readActiveRoute();
         let visitedIds = VISITED_POINTS.getAllPoints();
         return currentIds.every(val => visitedIds.includes(val));
     }
 
+    /**
+     * Route is considered sorted if it is an unedited predefined route with defined ordering or if it is a free route
+     * where optimal route has been computed and hasn't been edited since. 
+     * @returns 
+     */
     isSorted() {
         try {
             return window.localStorage.getItem(ROUTE_SORTED_KEY) === "true";
@@ -115,6 +133,10 @@ class CurrentRoute {
         }
     }
 
+    /**
+     * 
+     * @returns true if user is following the route and progress should be monitored
+     */
     isTracked() {
         return this.#getTracking();
     }
@@ -128,14 +150,20 @@ class CurrentRoute {
         this.clearGeometry();
     }
 
-    getRoutePoints() {
-        return this.#readRoute();
+    /**
+     * 
+     * @returns route used for navigation, cleaned of visited points outside the route
+     */
+    getActiveRoutePoints() {
+        return ROUTE_MANAGER.computeActiveRoute();
     }
 
-    getUnvisitedRoutePoints() {
-        let currentIds = this.#readRoute();
-        let visitedIds = VISITED_POINTS.getAllPoints();
-        return currentIds.filter(val => !visitedIds.includes(val));
+    /**
+     * 
+     * @returns whole route including points that are visited and are not part of drawn route
+     */
+    getPlannedRoutePoints() {
+        return ROUTE_MANAGER.readPlannedRoute();
     }
 
     refresh(idsArg, sorted = false) {
@@ -143,7 +171,8 @@ class CurrentRoute {
         if (ids === undefined) {
             throw new Error("Invalid point id array: "+idsArg);
         }
-        this.#writeRoute(ids);
+        this.clearGeometry();
+        ROUTE_MANAGER.writePlannedRoute(ids);        
         if (sorted || ids.length <= 1) {
             this.#setSorted();
         } else {
@@ -155,24 +184,13 @@ class CurrentRoute {
         let ids = ENSURE_ID_ARRAY(idsArg);
         if (ids === undefined) {
             throw new Error("Invalid point id array: "+idsArg);
+        }        
+        if (ROUTE_MANAGER.appendPlannedRoute(ids)) {
+            this.#clearSorted();
+        } else {
+            this.#setSorted();
         }
-        let changed = false;
-        let currentIds = this.#readRoute();
-        for (let id of ids) {
-            if (!currentIds.includes(id)) {
-                changed = true;
-                currentIds.push(id);
-            }
-        }
-        if (changed) {
-            this.#writeRoute(currentIds);
-            if (currentIds.length <= 1) {
-                this.#setSorted();
-            } else {
-                this.#clearSorted();
-            }
-        }
-        return changed;
+        this.clearGeometry();
     }
 
     // TODO refactoring reuse from ^^^^^^
@@ -181,23 +199,12 @@ class CurrentRoute {
         if (ids === undefined) {
             throw new Error("Invalid point id array: "+idsArg);
         }
-        let changed = false;
-        let currentIds = this.#readRoute();
-        for (let id of ids) {
-            if (!currentIds.includes(id)) {
-                changed = true;
-                currentIds.unshift(id);
-            }
+        if (ROUTE_MANAGER.appendPlannedRoute(ids)) {
+            this.#clearSorted();
+        } else {
+            this.#setSorted();
         }
-        if (changed) {
-            this.#writeRoute(currentIds);
-            if (currentIds.length <= 1) {
-                this.#setSorted();
-            } else {
-                this.#clearSorted();
-            }
-        }
-        return changed;
+        this.clearGeometry();
     }
 
     remove(idArg) {
@@ -205,24 +212,21 @@ class CurrentRoute {
         if (id === undefined) {
             throw new Error("Invalid point id: " + idArg);
         }
-        let ids = this.#readRoute();
-        let index = ids.indexOf(id);
-        if (index != -1) {
-            ids.splice(index, 1);
-            this.#writeRoute(ids);
-            if (ids.length <= 1) {
-                this.#setSorted();
-            } else {
-                this.#clearSorted();
-            }
+        this.clearGeometry();
+        if (ROUTE_MANAGER.remove(id) <= 1) {
+            this.#setSorted();
+        } else {
+            this.#clearSorted();
         }
+        this.clearGeometry();
     }
 
     /**
      * Clear both route and its geometry.
      */
     clear() {
-        this.#writeRoute([]);
+        ROUTE_MANAGER.writePlannedRoute([]);
+        this.clearGeometry();
         this.#setSorted();
     }
 
@@ -231,12 +235,6 @@ class CurrentRoute {
             window.localStorage.removeItem(ROUTE_GEOMETRY_KEY);
         } catch (error) {
             console.error("Cannot clear geometry.", error);
-        }
-    }
-
-    refreshGeometry(visited = null) {
-        if (visited === null) {
-            visited = VISITED_POINTS.getAllPoints();
         }
     }
 
@@ -253,7 +251,7 @@ class CurrentRoute {
      */
     getActiveSegment() {
         let visited = VISITED_POINTS.getAllPoints();
-        let route = this.#readRoute();
+        let route = ROUTE_MANAGER.computeActiveRoute();
         if (route.length == 0) {
             return -1;
         }
@@ -281,41 +279,6 @@ class CurrentRoute {
             window.localStorage.setItem(ROUTE_SORTED_KEY, "true");
         } catch (error) {
             console.error("Cannot set sorted status.", error);
-        }
-    }
-
-    
-    #writeRoute(ids) {
-        try {
-            window.localStorage.setItem(ROUTE_IDS_KEY, JSON.stringify(ids));
-            window.localStorage.setItem(ROUTE_IDS_AGE_KEY, Date.now());
-            this.clearGeometry();
-        } catch (error) {
-            console.error("Cannot write route points.", error);
-        }
-    }
-
-    #readRoute() {
-        let lastModified = window.localStorage.getItem(ROUTE_IDS_AGE_KEY);
-        if(lastModified == null || Date.now() - lastModified > MILLIS_IN_DAY) {
-            this.clear();
-            return [];
-        }
-
-        let idData = window.localStorage.getItem(ROUTE_IDS_KEY);
-        if(idData == null) {
-            return [];
-        }
-        try {
-            let route = JSON.parse(idData);
-            if (typeof route.length === "number") {
-                return route;
-            } else {
-                console.error("Invalid route points.", route);
-            }
-        } catch (error) {
-            console.error("Invalid route points.", error);
-            return [];
         }
     }
 
@@ -366,5 +329,104 @@ class CurrentRoute {
     }
 }
 
+class RouteManager {
+    writePlannedRoute(ids) {
+        try {
+            window.localStorage.setItem(ROUTE_PLANNED_IDS_KEY, JSON.stringify(ids));
+            window.localStorage.setItem(ROUTE_PLANNED_IDS_AGE_KEY, Date.now());
+        } catch (error) {
+            console.error("Cannot write planned route points.", error);
+        }
+    }
+
+    readPlannedRoute() {
+        let lastModified = window.localStorage.getItem(ROUTE_PLANNED_IDS_AGE_KEY);
+        if(lastModified == null || Date.now() - lastModified > MILLIS_IN_DAY) {
+            ROUTE_MANAGER.writePlannedRoute([]);
+            return [];
+        }
+
+        let idData = window.localStorage.getItem(ROUTE_PLANNED_IDS_KEY);
+        if(idData == null) {
+            return [];
+        }
+        try {
+            let route = JSON.parse(idData);
+            if (typeof route.length === "number") {
+                return route;
+            } else {
+                console.error("Invalid planned route points.", route);
+            }
+        } catch (error) {
+            console.error("Invalid planned route points.", error);
+            return [];
+        }
+    }
+
+    appendPlannedRoute(ids) {
+        let changed = false;
+        let currentIds = this.readPlannedRoute();
+        for (let id of ids) {
+            if (!currentIds.includes(id)) {
+                changed = true;
+                currentIds.push(id);
+            }
+        }
+        if (changed) {
+            this.writePlannedRoute(currentIds);
+        }
+        return currentIds.length > 1;
+    }
+
+    appendLeftPlannedRoute(ids) {
+        let changed = false;
+        let currentIds = this.readPlannedRoute();
+        for (let id of ids) {
+            if (!currentIds.includes(id)) {
+                changed = true;
+                currentIds.unshift(id);
+            }
+        }
+        if (changed) {
+            this.writePlannedRoute(currentIds);
+        }
+        return currentIds.length > 1;
+    }
+
+    remove(id) {
+        let ids = this.readPlannedRoute();
+        let index = ids.indexOf(id);
+        if (index != -1) {
+            ids.splice(index, 1);
+            this.writePlannedRoute(ids);
+            return ids.length;
+        }
+        return -1;
+    }
+
+    computeActiveRoute() {              // TODO error handlings
+        let ids = this.readPlannedRoute();  
+        let visited = VISITED_POINTS.getAllPoints();
+        console.log(ids, visited);
+        let activeIds = [];
+        let index = 0;
+        // Visited points from begining of the route should be displayed for history purposes
+        while (visited.includes(ids[index])) {
+            activeIds.push(ids[index]);
+            ++index;
+        }
+        console.log(activeIds, index);
+        // After first unvisited point, add only unvisited to route, visited are by default not part of navigation
+        for (; index < ids.length; ++index) {
+            if (!visited.includes(ids[index])) {
+                activeIds.push(ids[index]);
+                console.log(activeIds);
+            }
+        } 
+        return activeIds;
+    }
+}
+
 export let VISITED_POINTS = new VisitedPoints();
 export let CURRENT_ROUTE = new CurrentRoute();
+let ROUTE_MANAGER = new RouteManager();

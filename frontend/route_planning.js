@@ -8,7 +8,7 @@ $(async () => {
 });
 
 async function displayCurrentRoute() {
-  let currentRoute = CURRENT_ROUTE.getRoutePoints();
+  let currentRoute = CURRENT_ROUTE.getPlannedRoutePoints();
   displayEmptyMessage(currentRoute.length == 0);
   displayReorderButton(!CURRENT_ROUTE.isSorted());
   renderTable(await POINT_DATA.getPoints(currentRoute));
@@ -33,10 +33,10 @@ function renderTableRow(point, visited) {
       </td>
       <td>
       <span class="visited-remove">
-        <button type="button" data-pointremove="${point.id}" onclick="window.revertVisited(this)" class="${visited ? "" : "d-none"} point-remove btn btn-primary btn-rounded btn-sm my-0">Add to route</button>
+        <button type="button" data-pointadd="${point.id}" onclick="window.revertVisited(this)" class="${visited ? "" : "d-none"} point-remove btn btn-primary btn-rounded btn-sm my-0">Add to route</button>
       </span>
         <span class="table-remove">
-          <button type="button" data-point-add="${point.id}" onclick="window.removePoint(this)" class="point-remove btn btn-danger btn-rounded btn-sm my-0">Remove</button>
+          <button type="button" data-pointremove="${point.id}" onclick="window.removePoint(this)" class="point-remove btn btn-danger btn-rounded btn-sm my-0">Remove</button>
         </span>
       </td>
     </tr>
@@ -45,8 +45,7 @@ function renderTableRow(point, visited) {
 
 window.removePoint = function(element) {
   let pointId = element.dataset['pointremove'];
-  console.log(pointId);
-  let row = document.querySelector(`tr[data-pointremove="${pointId}"]`);
+  let row = document.querySelector(`tr[data-point="${pointId}"]`);
   row.parentNode.removeChild(row);
   CURRENT_ROUTE.remove(pointId);
   displayEmptyMessage(CURRENT_ROUTE.isEmpty());
@@ -54,10 +53,10 @@ window.removePoint = function(element) {
 }
 
 window.revertVisited = async function(element) {
-  console.log(element);
-  VISITED_POINTS.removeFromVisited(element.dataset['point']);
-  document.querySelector(`tr[data-point-add="${pointId}"]`).classList.toggle("d-none", true);
-  await this.displayCurrentRoute();
+  let pointId =element.dataset['pointadd'];
+  VISITED_POINTS.removeFromVisited(pointId);
+  document.querySelector(`tr[data-point="${pointId}"]`).classList.toggle("d-none", true);
+  await displayCurrentRoute();
 }
 
 function displayEmptyMessage(visible) {

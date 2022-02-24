@@ -59,7 +59,6 @@ export class MapView {
 
     getPointMarkers() {
         let markers = this.#layerMarkers.getMarkers();
-        console.log(markers);
         let result = [];
         for (let marker of markers) {
             if (marker.getId().startsWith("point-")) {
@@ -70,9 +69,7 @@ export class MapView {
     }
 
     removePointMarkers() {
-        console.log("HELLO!!!");
         let pointMarkers = this.getPointMarkers();
-        console.log(pointMarkers);
         for (let marker of pointMarkers) {
             this.#layerMarkers.removeMarker(marker, true);
         }
@@ -80,9 +77,6 @@ export class MapView {
     }
 
     drawRouteGeometry(geometry, activeSegment = -1, userLocation = null, offRoute = false) {
-        // TODO: Handle offRoute.
-        console.log("Off route",offRoute);
-        console.log("Draw geometry", geometry);
         this.#layerGeometry.removeAll();
         if (offRoute == true) {
             this.#drawOffRoute(geometry);
@@ -113,7 +107,6 @@ export class MapView {
                 this.#drawActiveSegment(coords, userLocation);
             } else {
                 let segmentGeometry = new SMap.Geometry(SMap.GEOMETRY_POLYLINE, null, coords, options);
-                console.log(segmentGeometry);
                 this.#layerGeometry.addGeometry(segmentGeometry);
             }
         }
@@ -123,7 +116,6 @@ export class MapView {
 
     #drawActiveSegment(coords, userLocation) {
         let userInSegment = FIND_CLOSEST(userLocation, coords, 100);
-        console.log("Position of user in segment:",userInSegment);
         if (userInSegment > 0) {
             let visited = coords.splice(0, userInSegment + 1);
             let visitedGeometry = new SMap.Geometry(SMap.GEOMETRY_POLYLINE, null, visited, { color: 'gray' });
@@ -169,7 +161,6 @@ export class Navigation {
         return new Promise((success) => {
             if (navigation.#lastLocation == null) {
                 navigator.geolocation.getCurrentPosition((data) => {
-                    console.log("fadfa")
                     navigation.#lastLocation = { coordinates: data.coords };
                     success({ coordinates: data.coords });
                 }, (error) => {
@@ -195,18 +186,15 @@ export class Navigation {
     monitorPointsNearby(callback) {
         navigator.geolocation.watchPosition(async (position) => {
             let allPoints = await POINT_DATA.getAllPoints();
-            console.log("all points",allPoints);
             let trackedPoints = this.#filterUntracked(Object.values(allPoints));
-            console.log(trackedPoints);
             let allCoordinates = EXTRACT_COORDINATES(trackedPoints);
             let closestIndex = FIND_CLOSEST(position.coords, allCoordinates, RANGE_ON_POINT);
-            console.log("closest:", allCoordinates, trackedPoints);
             if (closestIndex != -1) {
                 callback(trackedPoints[closestIndex], null);
             } else {
-                console.log("Checking add nearby", position.coords, allCoordinates);
-                let closestNearby = FIND_CLOSEST(position.coords, allCoordinates, RANGE_POINT_NEARBY);
-                console.log(closestNearby);
+                let offRoutePoints = this.#filterPlanned(trackedPoints);
+                let offRouteCoordinates =  EXTRACT_COORDINATES(offRoutePoints);
+                let closestNearby = FIND_CLOSEST(position.coords, offRouteCoordinates, RANGE_POINT_NEARBY);
                 if (closestNearby != -1) {
                     callback(null, trackedPoints[closestNearby]);
                 } else {
@@ -229,7 +217,6 @@ export class Navigation {
             for (let g of geometryPoints) {
                 coords.push(g.points);
             }
-            console.log(coords, coords.flat())
             let inUserRange = FIND_IN_RANGE(position.coords, coords.flat(),  RANGE_OFF_ROUTE);
             if (inUserRange.length == 0) {
                 callback(true);
@@ -241,6 +228,12 @@ export class Navigation {
         let visitedIds = VISITED_POINTS.getAllPoints();
         let ignoredIds = this.#ignoredPoints.getAllPoints();
         return points.filter(x => !visitedIds.includes(x.id) && !ignoredIds.includes(x.id));
+    }
+
+    #filterPlanned(points) {
+        let routeIds = CURRENT_ROUTE.getPlannedRoutePoints();
+        return points.filter(x => !routeIds.includes(x.id));
+
     }
 }
 

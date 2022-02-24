@@ -14,7 +14,7 @@ $(async () => {
   // Open point detail on marker click.
   MAP.addMarkerClickListener(onPointMarkerClick);
 
-  let routePointIds = CURRENT_ROUTE.getRoutePoints();
+  let routePointIds = CURRENT_ROUTE.getActiveRoutePoints();
   let routePoints = await POINT_DATA.getPoints(routePointIds);
 
   console.log(MAP, routePoints);
@@ -45,10 +45,10 @@ $(async () => {
       let isRouteFinished = CURRENT_ROUTE.isTraverseDone();
       document.querySelector("#button-display-reached").setAttribute("data-id", pointReached.id);
       document.querySelector("#button-display-reached").setAttribute("data-finished", isRouteFinished);
-      $('#point-reached').modal('show');
       if (isRouteFinished) {
         $('#route-completed').modal('show');
       }
+      $('#point-reached').modal('show');
       // do something if route is finished - TODO figure out 
 
     } // Reached point has highest priority, points nearby can be added with next movement detection
@@ -56,9 +56,6 @@ $(async () => {
       document.querySelector("#button-ignore-nearby").setAttribute('data-id', pointNearby.id);
       document.querySelector("#button-recompute-add-nearby").setAttribute('data-id', pointNearby.id);
       $('#point-nearby').modal('show');
-      // TODO: Handle points nearby.
-      //CURRENT_ROUTE.clearGeometry();
-      //forceRedraw(false); 
     }
   });
 
@@ -100,8 +97,8 @@ async function ensureGeometry() {
     // Initially draw cached geometry while waiting for location if possible.
     return cachedGeometry;
   } else {
-    let routePointIds = CURRENT_ROUTE.getUnvisitedRoutePoints();
-    CURRENT_ROUTE.refresh(routePointIds);
+    let routePointIds = CURRENT_ROUTE.getActiveRoutePoints();
+    //CURRENT_ROUTE.refresh(routePointIds);
     let routePoints = await POINT_DATA.getPoints(routePointIds);
     let userLocation = await NAVIGATION.getUserCoordinates(); 
     console.log("Initial location:", userLocation);
@@ -182,60 +179,4 @@ function showLocationError(error) {
       x = "An unknown error occurred."
       break;
   }
-  Cookies.set('locationAllowed', false);
 }
-
-/*
-
-function informUserOffRoute(userLocation) {
-  let ignoreOffRoute = Cookies.get('ignoreOffRoute');
-  //console.log(ignoreOffRoute);
-  if (typeof ignoreOffRoute == 'undefined'){
-    document.querySelector("#button-recompute-off-route").setAttribute('data-userLocation', JSON.stringify(userLocation));
-    $('#off-route').modal('show');
-  }
-  // TODO: if ignoring, add option to recompute later
-}
-
-function recomputeOffRoute (e) {
-  Cookies.set('navigationRecompute', 'true');
-  Cookies.set('ignoreOffRoute', 'true');
-  createRoutePromise(globalLocation, globalPoints).then((route) => {
-    console.log("Route recomputed.");
-    globalRoute = route;
-    displayRoute(route, globalLocation);
-    //window.location.reload();
-  });
-}
-
-function ignoreOffRoute () {
-  Cookies.set('ignoreOffRoute', 'true');
-}
-
-function recomputeAddNearby(e) {
-  Cookies.set('navigationRecompute', 'true');
-  let nextPoint = Cookies.get('userProgress');
-  //console.log(e.target.dataset);
-  plannedRoute.splice(nextPoint, 0, parseInt(e.target.dataset['nearbypoint']));
-  //console.log(plannedRoute);
-  Cookies.set('route', JSON.stringify(plannedRoute));
-  createRoutePointsPromise().then((points) => {
-    globalPoints = points;
-    displayPointMarkers(points);
-    updateUserMarker(globalLocation);
-    createRoutePromise(globalLocation, points).then((route) => {
-      //console.log("Route recomputed!!!.");
-      globalRoute = route;
-      displayRoute(route, globalLocation);
-    })
-  });
-  // ignore, do not recommend again
-  ignoreAddNearby(e);
-
-}
-
-function ignoreAddNearby(e) {
-  ignoredNearby.push(e.target.dataset['nearbypoint']);
-  Cookies.set('ignoredPointsNearby', JSON.stringify(ignoredNearby));
-}
-*/
