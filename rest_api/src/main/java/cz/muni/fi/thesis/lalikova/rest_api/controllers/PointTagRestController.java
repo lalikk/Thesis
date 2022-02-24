@@ -26,7 +26,7 @@ public class PointTagRestController {
     PointTagFacade pointTagFacade;
 
     @GetMapping(value = ApiUri.ROOT_URI_POINT_TAGS, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed({Role.FULL, Role.LIMITED})
+    //@RolesAllowed({Role.FULL, Role.LIMITED})
     public ResponseEntity<Collection<PointTagDto>> findAll() {
         log.info("findAll()");
         try {

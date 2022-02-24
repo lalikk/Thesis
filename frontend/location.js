@@ -1,83 +1,58 @@
-import Cookies from './node_modules/js-cookie/dist/js.cookie.mjs'
+import { MAKE_POINT_URL} from './js-modules/constants.js';
+import { MapView, Navigation} from "./js-modules/navigation.js";
+import POINT_DATA from './js-modules/point-data.js';
+import { VISITED_POINTS } from './js-modules/current-route.js';
+import TAG_DATA from './js-modules/point-tag-data.js';
 
-const urlPoint = new URL("http://localhost:3000/point_detail");
-var center = SMap.Coords.fromWGS84(16.6, 49.19);      // TODO
-var m = new SMap(JAK.gel("m"), center, 13);
-var layer = new SMap.Layer.Marker();
+var MAP = null;
+var NAVIGATION = null;
 
-initMap();
-
-$.getJSON(`http://localhost:8080/rest/points/`, function(data, status) {
-  console.log(data, status);
-  for (let point of data){
-    addSimpleMarker(point);
-  }
-  placeUser();
-  m.getSignals().addListener(this, "marker-click", function(e) {
-    var marker = e.target;
-    var id = marker.getId();
-    let markers = layer.getMarkers();
-    for (var i = 0; i < markers.length; i++) {
-      if (markers[i].getId() == id) {
-        urlPoint.search = new URLSearchParams({id:`${id}`});  
-        console.log(urlPoint);
-        window.location.href=urlPoint;             
-        break;
-      }
-    }
+$(async () => {
+  MAP = new MapView("m");
+  NAVIGATION = new Navigation();
+  MAP.addMarkerClickListener(onPointMarkerClick);
+  let allPoints = await POINT_DATA.getAllPoints();
+  await syncMarkersWithRoute(Object.values(allPoints));
+  let userLocation = await NAVIGATION.getUserCoordinates();
+  MAP.refreshUserMarker(userLocation);
+  NAVIGATION.monitorUserCoordinates(async (userLocation) => {
+    MAP.refreshUserMarker(userLocation);
+  }, (locationError) => {
+    showLocationError(locationError);
   });
-});
+})
 
-function initMap(){
-  m.addDefaultLayer(SMap.DEF_BASE).enable();
-  m.addDefaultControls();
-  var sync = new SMap.Control.Sync({bottomSpace:0});
-  m.addControl(sync);
-  m.addLayer(layer);
-  layer.enable();
+function onPointMarkerClick(marker) {
+  if (marker.getId().startsWith("point-")) {
+    let id = marker.getId().substring(6);
+    window.location.href = MAKE_POINT_URL(id); 
+  }
 }
 
-function addSimpleMarker(point) {
-  var marker = new SMap.Marker(SMap.Coords.fromWGS84(point.coordinates.latitude, point.coordinates.longitude), point.id, {title:point.title});
-  layer.addMarker(marker);
-}
-
-function addUserMarker(coordinates) {
-  let location = JAK.mel("div");
-  let text = JAK.mel("div", {}, {position:"absolute", left:"0px", top:"2px", textAlign:"center", width:"22px", color:"white", fontWeight:"bold"});
-  text.innerHTML = "X";
-  location.appendChild(text); 
-  let pic = JAK.mel("img", {src:SMap.CONFIG.img+"/marker/drop-red.png"});
-  location.appendChild(pic);
-  console.log(coordinates.latitude);
-  console.log(coordinates.longitude);
-  var marker = new SMap.Marker(SMap.Coords.fromWGS84(parseFloat(coordinates.longitude), parseFloat(coordinates.latitude)), null, {url:location, title:"You are standing here"});
-  layer.addMarker(marker);
-} 
-
-function placeUser() {
-  navigator.geolocation.watchPosition( function (position){
-    receiveCoords(position);
-    let locationAllowed = Cookies.get('locationAllowed');
-    console.log()
-    if (typeof locationAllowed != 'undefined' && locationAllowed == 'true') {
-      console.log(`userLocation = ${Cookies.get('userLocation')}`)
-      let userLocation = JSON.parse(Cookies.get('userLocation'));
-      addUserMarker(userLocation);
-      console.log(userLocation);
+async function syncMarkersWithRoute(points, tag = null) {
+  console.log(points, tag);
+  if (tag != null) {
+    points = points.filter(x => x.tags.map(t => t.id).includes(tag.id));
+  }
+  console.log("after filter",points);
+  let visitedPointIds = VISITED_POINTS.getAllPoints();
+  let visitedPoints = await POINT_DATA.getPoints(visitedPointIds);
+  MAP.removePointMarkers();
+  for (let i = 0; i < points.length; i++) {
+    if (!visitedPoints.includes(points[i])) {
+      MAP.addPointMarker(points[i], i+1);
+    } else {
+      MAP.addPointMarker(points[i], i+1, true);
     }
-  }, showError);
-
+  }
+  for (let i = 0; i < visitedPoints.length; i++) {
+    if (!points.includes(visitedPoints[i])){
+      MAP.addPointMarker(visitedPoints[i], "", true);
+    }
+  }
 }
 
-function receiveCoords(position) {
-  console.log(position.coords.latitude);
-  console.log(position.coords.longitude);
-  Cookies.set('locationAllowed', 'true');
-  Cookies.set('userLocation', JSON.stringify({latitude:position.coords.latitude, longitude:position.coords.longitude}));
-}
-
-function showError(error) {
+function showLocationError(error) {
   var x;
   switch(error.code) {
     case error.PERMISSION_DENIED:
@@ -93,6 +68,55 @@ function showError(error) {
       x = "An unknown error occurred."
       break;
   }
-  Cookies.set('locationAllowed', false);
-  console.log(x);
+}
+
+window.toggleTagFilter = async function(element) {
+  console.log(element);
+  let elementId = element.dataset['tag'];
+  let nextElementId = getNextTag(elementId);
+  toggleFilterButton(elementId, nextElementId);
+  let tagTitle =getTagTitle(nextElementId);
+  let tag = await TAG_DATA.getTagFromTitle(tagTitle);
+  await syncMarkersWithRoute(Object.values(await POINT_DATA.getAllPoints()), tag);
+  console.log(tag);
+
+}
+
+function toggleFilterButton(elementId, nextElementId) {
+  console.log(document.querySelector('#tags-all'));
+  console.log(elementId, nextElementId);
+  document.querySelector(`#${elementId}`).classList.toggle("d-none");
+  document.querySelector(`#${nextElementId}`).classList.toggle("d-none");
+}
+
+function getNextTag(elementId) {
+  switch (elementId) {
+    case "tags-all":
+      return "tags-nature";
+    case "tags-nature":
+        return "tags-church";
+    case "tags-church":
+      return "tags-architecture";
+    case "tags-architecture":    
+      return "tags-all";
+    default:
+      console.error("Invalid tag name");
+      return "tags-all";
+  }
+}
+
+function getTagTitle(elementId) {
+  switch (elementId) {
+    case "tags-all":
+      return null;
+    case "tags-nature":
+        return "Nature";
+    case "tags-church":
+      return "Church";
+    case "tags-architecture":    
+    return "Architecture";
+    default:
+      console.error("Invalid tag name");
+      return null;
+  }
 }

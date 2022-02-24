@@ -21,7 +21,6 @@ $(async () => {
   await syncMarkersWithRoute(MAP, routePoints);
 
   let isTracked = CURRENT_ROUTE.isTracked();
-  console.log(isTracked);
   MAP.drawRouteGeometry(await ensureGeometry(), CURRENT_ROUTE.getActiveSegment(), null, !isTracked);
   let userLocation = await NAVIGATION.getUserCoordinates();
   MAP.refreshUserMarker(userLocation);

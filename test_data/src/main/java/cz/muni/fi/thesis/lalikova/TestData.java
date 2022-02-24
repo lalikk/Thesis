@@ -38,26 +38,24 @@ public class TestData
     private CoordinatesDao coordinatesDao;
 
     public void loadData() throws IOException {
-        PointTag pointTag1 = createPointTag("Tag 1", "First tag");
-        PointTag pointTag2 = createPointTag("Tag 2", "Second tag");
 
         Route route1 = createRoute("Route 1", "Route desc");
         Route route2 = createRoute("Route 2", "Route desc");
         Route route3 = createRoute("Route 3", "Route desc");
 
-        Point point1 = createPoint("Point 1", "Point 1", Set.of(pointTag1, pointTag2), Set.of(route1,route2));
-        Point point2 = createPoint("Point 2", "Point 2", Set.of(pointTag1, pointTag2), Set.of(route1,route2));
-        Point point3 = createPoint("Point 3", "Point 3", Set.of(pointTag2), Set.of(route1));
-        Point point4 = createPoint("Point 4", "Point 4", Set.of(pointTag2), Set.of(route1,route2));
-        Point point5 = createPoint("Point 5", "Point 5", Set.of(pointTag1), Set.of(route2));
-        Point point6 = createPoint("Point 6", "Point 6", Collections.EMPTY_SET, Set.of(route1));
+        Point point1 = createPoint("Point 1", "Point 1", Set.of(route1, route2));
+        Point point2 = createPoint("Point 2", "Point 2", Set.of(route1, route2));
+        Point point3 = createPoint("Point 3", "Point 3", Set.of(route1));
+        Point point4 = createPoint("Point 4", "Point 4", Set.of(route1, route2));
+        Point point5 = createPoint("Point 5", "Point 5", Set.of(route2));
+        Point point6 = createPoint("Point 6", "Point 6", Set.of(route1));
 
-        Coordinates coordinates1 = createCoordinates(16.599211022817716,49.19458262392775,  point1);
-        Coordinates coordinates2 = createCoordinates(16.606823348960095,49.19912148092236,  point2);
-        Coordinates coordinates3 = createCoordinates(16.60763874071133,49.191219940789175,  point3);
-        Coordinates coordinates4 = createCoordinates(16.566847708531117,49.19277300502827,  point4);
-        Coordinates coordinates5 = createCoordinates(16.580194378883252,49.23120894717356,  point5);
-        Coordinates coordinates6 = createCoordinates(16.667938231869357,49.23064865534206,  point6);
+        Coordinates coordinates1 = createCoordinates(16.599211022817716, 49.19458262392775, point1);
+        Coordinates coordinates2 = createCoordinates(16.606823348960095, 49.19912148092236, point2);
+        Coordinates coordinates3 = createCoordinates(16.60763874071133, 49.191219940789175, point3);
+        Coordinates coordinates4 = createCoordinates(16.566847708531117, 49.19277300502827, point4);
+        Coordinates coordinates5 = createCoordinates(16.580194378883252, 49.23120894717356, point5);
+        Coordinates coordinates6 = createCoordinates(16.667938231869357, 49.23064865534206, point6);
 
         Photo photo1 = createPhoto("photo 1", "https://images.pexels.com/photos/62307/air-bubbles-diving-underwater-blow-62307.jpeg?auto=compress&cs=tinysrgb&h=650&w=940", point1);
         Photo photo2 = createPhoto("photo 2", "https://images.pexels.com/photos/38238/maldives-ile-beach-sun-38238.jpeg?auto=compress&cs=tinysrgb&h=650&w=940", point2);
@@ -81,8 +79,10 @@ public class TestData
         Photo photo5 = createPhoto("photo 5", "https://images.pexels.com/photos/62307/air-bubbles-diving-underwater-blow-62307.jpeg?auto=compress&cs=tinysrgb&h=650&w=940", point5);
         Photo photo6 = createPhoto("photo 6", "https://images.pexels.com/photos/158827/field-corn-air-frisch-158827.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", point6);
 
+        PointTag pointTag1 = createPointTag("Church", "", Set.of(point3, point4));
+        PointTag pointTag2 = createPointTag("Architecture", "Architectural point", Set.of(point1, point2, point4));
+        PointTag pointTag3 = createPointTag("Nature", "Natural point", Set.of(point5, point2)   );
     }
-
     private Coordinates createCoordinates(double longitude, double latitude, Point point){
         Coordinates coordinates = new Coordinates();
         coordinates.setLatitude(latitude);
@@ -101,19 +101,19 @@ public class TestData
         return photo;
     }
 
-    private PointTag createPointTag(String title, String desc){
+    private PointTag createPointTag(String title, String desc, Set<Point> points ){
         PointTag pointTag = new PointTag();
         pointTag.setDescription(desc);
         pointTag.setName(title);
+        pointTag.setPoints(points);
         pointTagDao.create(pointTag);
         return pointTag;
     }
 
-    private Point createPoint(String title, String desc, Set<PointTag> tags, Set<Route> routes){
+    private Point createPoint(String title, String desc, Set<Route> routes){
         Point point = new Point();
         point.setDescription(desc);
         point.setTitle(title);
-        point.setTags(tags);
         point.setRoutes(routes);
         pointDao.create(point);
         return point;

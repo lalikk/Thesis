@@ -15,6 +15,8 @@ public class PointDto {
 
     private Set<PhotoDto> photos;
 
+    private Set<PointTagDto> tags;
+
     public Long getId() {
         return id;
     }
@@ -53,6 +55,14 @@ public class PointDto {
 
     public void setPhotos(Set<PhotoDto> photos) {
         this.photos = photos;
+    }
+
+    public Set<PointTagDto> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<PointTagDto> tags) {
+        this.tags = tags;
     }
 
     @Override

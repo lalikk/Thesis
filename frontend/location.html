@@ -8,15 +8,16 @@
   <title>Virtual nature trail</title>
 
   <!-- Bootstrap core CSS -->
-  <link href="./assets/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="./assets/css/starter.css" rel="stylesheet">  
   <script type="text/javascript" src="https://api.mapy.cz/loader.js"></script>
   <script type="text/javascript">Loader.load();</script>
 
   <!-- Custom styles for this template -->
-  <link href="headers.css" rel="stylesheet">
   <link href="sidebars.css" rel="stylesheet">
-  <link href="colorscheme.css" rel="stylesheet">
+  <script src="./node_modules/jquery/dist/jquery.min.js"></script>
+  <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>  
+  <script src="./node_modules/@fancyapps/fancybox/dist/jquery.fancybox.min.js"></script>
+  <script type="module" src="location.js"></script>
 </head>
 
 <body>
@@ -61,6 +62,46 @@
               </a>
             </div>
           </div>
+          <div id="tags-all" class="navigation side-button" data-tag="tags-all" onclick="window.toggleTagFilter(this)">
+            <div>
+              <a class="nav-link text-white">
+                <svg class="bi d-block mx-auto mb-1" width="30" height="30">
+                  <use xlink:href="#planningView" />              <!-- TODO pictograms-->
+                </svg>
+                ALL
+              </a>
+            </div>
+          </div>
+          <div id="tags-nature" class="navigation side-button d-none" data-tag="tags-nature" onclick="window.toggleTagFilter(this)">
+            <div>
+              <a class="nav-link text-white">
+                <svg class="bi d-block mx-auto mb-1" width="30" height="30">
+                  <use xlink:href="#planningView" />              <!-- TODO pictograms-->
+                </svg>
+                NATURE
+              </a>
+            </div>
+          </div>          
+          <div id="tags-church" class="navigation side-button d-none" data-tag="tags-church" onclick="window.toggleTagFilter(this)">
+            <div>
+              <a class="nav-link text-white">
+                <svg class="bi d-block mx-auto mb-1" width="30" height="30">
+                  <use xlink:href="#planningView" />              <!-- TODO pictograms-->
+                </svg>
+                CHURCH
+              </a>
+            </div>
+          </div>          
+          <div id="tags-architecture" class="navigation side-button d-none" data-tag="tags-architecture" onclick="window.toggleTagFilter(this)">
+            <div>
+              <a class="nav-link text-white">
+                <svg class="bi d-block mx-auto mb-1" width="30" height="30">
+                  <use xlink:href="#planningView" />              <!-- TODO pictograms-->
+                </svg>
+                ARCHITECTURE
+              </a>
+            </div>
+          </div>
           <div class="more-a side-button" tabindex="0" onclick="document.querySelector('.menu').classList.toggle('active')">
             <div>
                 <!--<svg id="moreSvg" class="bi d-block mx-auto mb-1 text-white" width="30" height="30">
@@ -91,9 +132,5 @@
       </div>
     </div>  
   </main>
-
-  <script src="node_modules/jquery/dist/jquery.min.js"></script>
-  <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
-  <script type="module" src="location.js"></script>
 </body>
 </html>
