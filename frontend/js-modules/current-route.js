@@ -119,6 +119,14 @@ class CurrentRoute {
     }
 
     /**
+     * 
+     * @returns true if there is at least one visited point on planned route
+     */
+     hasVisitedPoints() {
+        return ROUTE_MANAGER.hasVisitedPoints();
+    }
+
+    /**
      * Route is considered sorted if it is an unedited predefined route with defined ordering or if it is a free route
      * where optimal route has been computed and hasn't been edited since. 
      * @returns 
@@ -165,7 +173,7 @@ class CurrentRoute {
     getPlannedRoutePoints() {
         return ROUTE_MANAGER.readPlannedRoute();
     }
-
+    
     refresh(idsArg, sorted = false) {
         let ids = ENSURE_ID_ARRAY(idsArg);
         if (ids === undefined) {
@@ -184,13 +192,16 @@ class CurrentRoute {
         let ids = ENSURE_ID_ARRAY(idsArg);
         if (ids === undefined) {
             throw new Error("Invalid point id array: "+idsArg);
-        }        
-        if (ROUTE_MANAGER.appendPlannedRoute(ids)) {
+        }  
+        let changed = ROUTE_MANAGER.appendPlannedRoute(ids);
+        let routeSize = ROUTE_MANAGER.getPlannedRouteSize();
+        if (routeSize <= 2) {
             this.#clearSorted();
         } else {
             this.#setSorted();
         }
         this.clearGeometry();
+        return changed;
     }
 
     // TODO refactoring reuse from ^^^^^^
@@ -199,12 +210,15 @@ class CurrentRoute {
         if (ids === undefined) {
             throw new Error("Invalid point id array: "+idsArg);
         }
-        if (ROUTE_MANAGER.appendPlannedRoute(ids)) {
+        let changed = ROUTE_MANAGER.appendLeftPlannedRoute(ids);
+        let routeSize = ROUTE_MANAGER.getPlannedRouteSize();
+        if (routeSize <= 2) {
             this.#clearSorted();
         } else {
             this.#setSorted();
         }
         this.clearGeometry();
+        return changed;
     }
 
     remove(idArg) {
@@ -330,6 +344,7 @@ class CurrentRoute {
 }
 
 class RouteManager {
+
     writePlannedRoute(ids) {
         try {
             window.localStorage.setItem(ROUTE_PLANNED_IDS_KEY, JSON.stringify(ids));
@@ -375,7 +390,7 @@ class RouteManager {
         if (changed) {
             this.writePlannedRoute(currentIds);
         }
-        return currentIds.length > 1;
+        return changed;
     }
 
     appendLeftPlannedRoute(ids) {
@@ -390,7 +405,7 @@ class RouteManager {
         if (changed) {
             this.writePlannedRoute(currentIds);
         }
-        return currentIds.length > 1;
+        return changed;
     }
 
     remove(id) {
@@ -404,8 +419,10 @@ class RouteManager {
         return -1;
     }
 
-    computeActiveRoute() {              // TODO error handlings
-        let ids = this.readPlannedRoute();  
+    computeActiveRoute(ids = null) {              // TODO error handlings
+        if (ids == null) {
+            ids = this.readPlannedRoute();  
+        }
         let visited = VISITED_POINTS.getAllPoints();
         console.log(ids, visited);
         let activeIds = [];
@@ -425,6 +442,20 @@ class RouteManager {
         } 
         return activeIds;
     }
+
+    hasVisitedPoints() {
+        let ids = this.readPlannedRoute();
+        let activeIds = this.computeActiveRoute(ids);
+        if (ids.length == 0 || activeIds.length == 0) {
+            return false;
+        }
+        return !(ids.length == activeIds.length) || VISITED_POINTS.isVisited(activeIds[0]);
+    }
+
+    getPlannedRouteSize() {
+        return this.readPlannedRoute.length;
+    }
+
 }
 
 export let VISITED_POINTS = new VisitedPoints();

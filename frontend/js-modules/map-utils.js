@@ -36,8 +36,8 @@ export async function COMPUTE_ROUTE(routePoints, userLocation = null) {
  * Compute the closest point from source within targets. 
  * If its distance is more than limit (or targets empty), return -1.
  */
-export function FIND_CLOSEST(source, targets, limit) {
-    if (targets.length == 0) {
+export function FIND_CLOSEST(source, targets, limit = Number.POSITIVE_INFINITY) {
+    if (targets == null || targets.length == 0) {
         return -1;
     }
 

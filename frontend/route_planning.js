@@ -2,6 +2,8 @@ import Cookies from './node_modules/js-cookie/dist/js.cookie.mjs'
 import POINT_DATA from './js-modules/point-data.js';
 import { VISITED_POINTS, CURRENT_ROUTE } from './js-modules/current-route.js'
 import { MAKE_POINT_URL } from './js-modules/constants.js'
+import { Navigation } from './js-modules/navigation.js';
+import { EXTRACT_COORDINATES, FIND_CLOSEST, TRANSFORM_COORDINATES } from "./js-modules/map-utils.js"
 
 $(async () => {
   await displayCurrentRoute();
@@ -73,87 +75,59 @@ function displayReorderButton(visible) {
 let distances = JSON.parse(Cookies.get('distances'));
 console.log("distances:", distances);
 
-
 window.computeRouteOrder = async function() {
-  let startingPoint = await findClosestToUser();
-  let orderedRoute = [startingPoint];
+  if (CURRENT_ROUTE.hasVisitedPoints()) {
+    // TODO let user know to remove visited points
+    return;
+  }
+
+  let startingPointId = await findClosestToUser();
+  let orderedRoute = [startingPointId];
   //console.log(idsArray);
-  let unusedPoints = JSON.parse(JSON.stringify(idsArray));
-  unusedPoints.splice(unusedPoints.indexOf(startingPoint), 1);
-  console.log("closestId:", startingPoint);
+  let unusedPoints = CURRENT_ROUTE.getPlannedRoutePoints();
+  unusedPoints.splice(unusedPoints.indexOf(startingPointId), 1);
+  console.log("closestId:", startingPointId);
   console.log("unused initial", unusedPoints);
-  while (orderedRoute.length < idsArray.length) {
+  while (unusedPoints.length > 0) {
     console.log("ordered route:", orderedRoute);  
     console.log("unused points:", unusedPoints);
     orderedRoute.push(findClosestPoint(orderedRoute[orderedRoute.length - 1], unusedPoints));
   }
-  if (JSON.stringify(idsArray) != JSON.stringify(orderedRoute)) {
-    idsArray = orderedRoute;
-    Cookies.set('route', JSON.stringify(idsArray));
-    Cookies.set('navigationRecompute', 'true');
+  if (JSON.stringify(CURRENT_ROUTE.getPlannedRoutePoints()) != JSON.stringify(orderedRoute)) {
+    CURRENT_ROUTE.refresh(orderedRoute, true);
   }
-  // Optimal route is presented, no recomputation offered till change
-  Cookies.set('displayRecommend', 'false');    
-  console.log(idsArray);
-  console.log("ordered route", orderedRoute);
-  console.log("unused:", unusedPoints);
-  displayNewOrder(idsArray);
+  await displayNewOrder(orderedRoute);
 }
 
-function displayNewOrder(idsArray) {
+async function displayNewOrder(idsArray) {
   document.querySelector("#point-list").innerHTML = "";
-  buildTable(idsArray);
+  displayReorderButton(false);
+  renderTable(await POINT_DATA.getPoints(idsArray));
 }
 
+/**
+ * Finds a point closest to user location, returns its id
+ * @returns point id
+ */
 async function findClosestToUser() {
-  let userLocation = await getUserPosition();
-  let userSMap = SMap.Coords.fromWGS84(userLocation.x, userLocation.y);
-  //console.log(userLocation);
-  //console.log(points);
-  let points = Array.from(remainingPoints.values());
-  console.log(remainingPoints);
-  console.log(points);
-
-  let minDistance = {distance:userSMap.distance(SMap.Coords.fromWGS84(points[0].coordinates.latitude, points[0].coordinates.longitude)), id:points[0].id};
-  //console.log(minDistance);
-  for (let p of points) {
-    let currentSMap = SMap.Coords.fromWGS84(p.coordinates.latitude, p.coordinates.longitude);
-    let currentDistance = userSMap.distance(currentSMap);
-    if (currentDistance < minDistance.distance) {
-      minDistance.distance = currentDistance;
-      minDistance.id = p.id;
-    }
-    //console.log(minDistance);
-  }
-  return minDistance.id;
+  let NAVIGATION = new Navigation();
+  let userLocation = await NAVIGATION.getUserCoordinates();
+  let points = await POINT_DATA.getPoints(CURRENT_ROUTE.getPlannedRoutePoints());
+  let pointCoordinates = EXTRACT_COORDINATES(Object.values(points));
+  console.log("Points transformation:", points, pointCoordinates, userLocation);
+  let index = FIND_CLOSEST(userLocation.coordinates, pointCoordinates);
+  let closestPoint = (Object.values(points)[index]);
+  console.log(closestPoint);
+  return closestPoint.id;
 }
 
-function findClosestPoint(pointId,unusedPoints) {
+function findClosestPoint(pointId, unusedPoints) {
   console.log("pointId:", pointId);
   console.log("unusedPoints:", unusedPoints);
-  let minDistance = {distance:Number.MAX_VALUE, id:-1};
-  console.log(minDistance);
-  console.log("distances:", distances); 
-  for (let d of distances) {
-    console.log(d);
-    if ((d.pointAId == pointId || d.pointBId == pointId) && d.distance < minDistance.distance) {
-      if (unusedPoints.includes(d.pointAId) || unusedPoints.includes(d.pointBId)){
-        minDistance.distance = d.distance;
-        let closestId =  d.pointAId == pointId ? d.pointBId : d.pointAId;
-        minDistance.id = closestId;
-      }
-    }
-    console.log("min distance:", minDistance);
-  }
-  unusedPoints = unusedPoints.splice(unusedPoints.indexOf(minDistance.id), 1);
-  return minDistance.id;
-}
+  let source = POINT_DATA.getPoint(pointId);
+  let targets = POINT_DATA.getPoints(unusedPoints);
+  targets = EXTRACT_COORDINATES(Object.values(targets));
+  let index = FIND_CLOSEST(source.coordinates, targets);
 
-  function getUserPosition() {
-    return new Promise((success, error) => {
-      navigator.geolocation.getCurrentPosition((data) => {
-        data = SMap.Coords.fromWGS84(data.coords.longitude, data.coords.latitude);
-        success(data);
-      }, error);
-    });
-  }
+  return unusedPoints.splice(index, 1)[0];
+}
