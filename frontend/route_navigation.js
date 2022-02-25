@@ -2,7 +2,7 @@ import { MapView, Navigation } from "./js-modules/navigation.js";
 import POINT_DATA from './js-modules/point-data.js';
 import { VISITED_POINTS, CURRENT_ROUTE } from "./js-modules/current-route.js";
 import { MAKE_POINT_URL } from './js-modules/constants.js';
-import { COMPUTE_ROUTE } from "./js-modules/map-utils.js";
+import { COMPUTE_ROUTE, CREATE_ROUTE_URL } from "./js-modules/map-utils.js";
 
 var MAP = null;
 var NAVIGATION = null;
@@ -160,6 +160,27 @@ window.displayReached = function(element) {
     // TODO prepare modal
   }
   window.location.href=redirectUrl;
+}
+
+window.ignoreReturn = function() {
+  CURRENT_ROUTE.resetTrackingTime();
+}
+
+window.addEventListener('online',  returnOnline);
+window.addEventListener('offline', informOffline);
+
+async function returnOnline(event) {
+  console.log("ONLINE", event);
+  await forceRedraw(false);
+  $('#inform-online').modal('show');
+}
+
+async function informOffline(event) {
+  console.log("OFFLINE", event);
+  let userLocation = await NAVIGATION.getUserCoordinates();
+  let points = await POINT_DATA.getPoints(await CURRENT_ROUTE.getUnvisitedRoutePoints());
+  $('#inform-offline').modal('show');
+  document.querySelector('#button-offline-app').onclick = function() {window.open(CREATE_ROUTE_URL(points, userLocation));}
 }
 
 function showLocationError(error) {

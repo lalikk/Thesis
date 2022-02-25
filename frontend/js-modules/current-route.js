@@ -1,4 +1,4 @@
-import { MILLIS_IN_DAY, SANITIZE_ID, ENSURE_ID_ARRAY } from "./constants.js";
+import { MILLIS_IN_DAY, FIVE_MINUTES, SANITIZE_ID, ENSURE_ID_ARRAY } from "./constants.js";
 
 const VISITED_IDS_KEY = "VISITED_POINTS";
 const VISITED_IDS_AGE_KEY = "VISITED_POINTS_AGE";
@@ -8,6 +8,7 @@ const ROUTE_PLANNED_IDS_AGE_KEY = "ROUTE_PLANNED_POINTS_AGE";
 const ROUTE_SORTED_KEY = "ROUTE_SORTED";
 const ROUTE_GEOMETRY_KEY = "ROUTE_GEOMETRY";
 const ROUTE_TRACKING_KEY = "ROUTE_TRACKING";
+const ROUTE_TRACKING_AGE_KEY = "ROUTE_TRACKING_AGE";
 
 class VisitedPoints {
 
@@ -149,13 +150,35 @@ class CurrentRoute {
         return this.#getTracking();
     }
 
+    isOffTrackLonger(timeLimit = FIVE_MINUTES) {
+        try {
+            return JSON.parse(window.localStorage.getItem(ROUTE_TRACKING_AGE_KEY)) > timeLimit;
+        } catch (error) {
+            console.error("Cannot read off route time.", error);
+            return true;
+        }
+    }
+
     stopTracking() {
-        this.#setTracking(false);
+        this.#setTracking(false);       
     }
 
     restartTracking() {
         this.#setTracking(true);
-        this.clearGeometry();
+        this.clearGeometry();        
+        try {
+            window.localStorage.removeItem(ROUTE_TRACKING_AGE_KEY);
+        } catch (error) {
+            console.error("Cannot clear off route time.", error);
+        }
+    }
+
+    resetTrackingTime() {
+        try {
+            window.localStorage.setItem(ROUTE_TRACKING_AGE_KEY, Date.now());
+        } catch (error) {
+            console.error("Cannot set leaving route.", error);
+        }
     }
 
     /**
@@ -173,7 +196,11 @@ class CurrentRoute {
     getPlannedRoutePoints() {
         return ROUTE_MANAGER.readPlannedRoute();
     }
-    
+
+    getUnvisitedRoutePoints() {
+        return ROUTE_MANAGER.getUnvisitedPoints();
+    }
+
     refresh(idsArg, sorted = false) {
         let ids = ENSURE_ID_ARRAY(idsArg);
         if (ids === undefined) {
@@ -441,6 +468,12 @@ class RouteManager {
             }
         } 
         return activeIds;
+    }
+
+    getUnvisitedPoints() {
+        let visitedIds = VISITED_POINTS.getAllPoints();
+        let ids = this.readPlannedRoute();
+        return ids.filter(x => !visitedIds.includes(x));
     }
 
     hasVisitedPoints() {

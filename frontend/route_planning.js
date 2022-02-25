@@ -62,6 +62,7 @@ window.revertVisited = async function(element) {
 }
 
 function displayEmptyMessage(visible) {
+  CURRENT_ROUTE.restartTracking();  
   document.querySelector('#empty-route').classList.toggle("d-none", !visible);
 }
 

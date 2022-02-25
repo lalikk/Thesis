@@ -182,6 +182,55 @@
         </div>
       </div>
     </div>
+
+    <div id="route-return" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">You have return to the route, would you like to continue navigation?</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            </button>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="button-return-off-route" class="btn btn-secondary" data-bs-dismiss="modal" onclick="window.returnRecompute()">Resume navigation</button>
+            <button type="button" id="button-ignore-return" class="btn btn-primary" data-bs-dismiss="modal" onclick="window.ignoreReturn()">Ignore</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="inform-offline" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">You appear to be offline. Would you like to open the route in offline mapy.cz application?</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            </button>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="button-offline-app" class="btn btn-secondary" data-bs-dismiss="modal" >Open in application</button>
+            <button type="button" id="button-offline-wait" class="btn btn-primary" data-bs-dismiss="modal" >Dismiss</button>
+          </div>
+        </div>
+      </div>
+    </div>    
+    
+    <div id="inform-online" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">You have returned back online</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            </button>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="button-online-ok" class="btn btn-primary" data-bs-dismiss="modal">Ok</button> <!-- TODO make dismiss the modal-->
+          </div>
+        </div>
+      </div>
+    </div>
+
+
     </main>
 
   <script src="node_modules/jquery/dist/jquery.min.js"></script>

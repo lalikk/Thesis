@@ -206,9 +206,6 @@ export class Navigation {
 
     monitorOffRoute(callback) {
         navigator.geolocation.watchPosition((position) => {
-            if (!CURRENT_ROUTE.isTracked()){
-                return;
-            }
             let geometryPoints = CURRENT_ROUTE.getGeometry();
             if (geometryPoints == null) {
                 return;
@@ -218,9 +215,19 @@ export class Navigation {
                 coords.push(g.points);
             }
             let inUserRange = FIND_IN_RANGE(position.coords, coords.flat(),  RANGE_OFF_ROUTE);
-            if (inUserRange.length == 0) {
-                callback(true);
+            console.log("MONITOR OFF ROUTE", inUserRange);
+            if (CURRENT_ROUTE.isTracked()){
+                if (inUserRange.length == 0) {
+                    console.log(inUserRange.length, "LENGTH");
+                    callback(true);
+                }
+            } else {
+                if (CURRENT_ROUTE.isOffTrackLonger()) {
+                    console.log("ROUTE RETURN");
+                    $('#route-return').modal('show');
+                }
             }
+
         });
     }
 

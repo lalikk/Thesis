@@ -1,4 +1,5 @@
 export const MILLIS_IN_DAY = 1000 * 60 * 60 * 24;
+export const FIVE_MINUTES = 1000 * 60 * 5;
 
 export const RANGE_ON_POINT = 100;      
 export const RANGE_POINT_NEARBY = 500;
