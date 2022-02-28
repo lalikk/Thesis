@@ -15,7 +15,7 @@
   <!-- Custom styles for this template -->
   <link href="headers.css" rel="stylesheet">
   <link href="sidebars.css" rel="stylesheet">
-  <link href="colorscheme.css" rel="stylesheet">
+  <link href="css_elements.css" rel="stylesheet">
 </head>
 
 <body>
@@ -108,7 +108,10 @@
       </div>
     </div>
 
-    <table id='point-list' class="container table-responsive-md" style="margin-top: 6rem; margin-bottom: 6rem;"></table>
+    <table id='point-list' class="container table-responsive" style="margin-top: 3rem; margin-bottom: 3rem;"></table>
+
+    <div id='point-cards' class="container" style="display: block;"></div>
+
 
     <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
       <button type="button" id="button-order-route" class="btn btn-primary btn-lg px-4 gap-3" onclick="window.computeRouteOrder()">Recommend route</button>

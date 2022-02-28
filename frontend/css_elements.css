@@ -1,0 +1,84 @@
+body {
+    margin: 32px;
+  }
+  
+  .delbtn {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: 1px solid #bdbdbd;
+    height: 48px;
+    padding: 0 12px 0 12px;
+    letter-spacing: 0.25px;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+  .delbtn:focus {
+    outline: none;
+  }
+  .btn-delete {
+    font-size: 16px;
+    color: #194f3e  ;
+  }
+  .btn-delete:hover {
+    background-color: #e4e4e4;
+  }
+  .btn-delete:focus {
+    box-shadow: 0 0 0 4px #e4e4e4;
+  }
+
+  .btn-pink-delete {
+    font-size: 16px;
+    color: #9e3152  ;
+  }
+  .btn-pink-delete:hover {
+    background-color: #e4e4e4;
+  }
+  .btn-pink-delete:focus {
+    box-shadow: 0 0 0 4px #e4e4e4;
+  }
+
+  .card-img-top {
+	object-fit: cover; /* Do not scale the image */
+	object-position: center; /* Center the image within the element */
+	width: 100%;
+	max-height: 250px;
+  }
+
+
+  
+
+.card-planning {
+  height: 8rem;
+  position: relative;
+  padding: 20px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-end;
+  text-decoration: none;
+  border: 4px solid #194f3e;
+  margin-bottom: 20px;
+  background-size: cover;
+}
+
+.inner-planning {
+  height: 80%;
+  display: inline-table;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  box-sizing: border-box;
+  padding: 1rem;
+}
+
+.title-planning {
+  font-size: 24px;
+  color: black;
+  text-align: center;
+  font-weight: 700;
+  color: #181818;
+  text-shadow: 0px 2px 2px #a6f8d5;
+  position: relative;
+  margin: 0 0 20px 0;
+}
