@@ -13,42 +13,7 @@ async function displayCurrentRoute() {
   let currentRoute = CURRENT_ROUTE.getPlannedRoutePoints();
   displayEmptyMessage(currentRoute.length == 0);
   displayReorderButton(!CURRENT_ROUTE.isSorted() && !CURRENT_ROUTE.isEmpty());
-  //renderTable(await POINT_DATA.getPoints(currentRoute));
   renderCards(await POINT_DATA.getPoints(currentRoute));
-}
-
-function renderTable(currentRoute) {
-  let table = document.querySelector("#point-list");  
-  let contents = "";
-
-  for (let point of currentRoute) {
-    contents += renderTableRow(point, VISITED_POINTS.isVisited(point.id));
-  }
-
-  table.innerHTML = contents;
-}
-
-function renderTableRow(point, visited) {
-  return `
-    <tr data-point="${point.id}">
-      <td style="width:80%">
-        <a href=${MAKE_POINT_URL(point.id)} class="${visited ? "text-muted" : ""}">${point.title}</a>
-      </td>
-      <td>
-      <span class="visited-remove">
-        <button type="button" data-pointadd="${point.id}" onclick="window.revertVisited(this)" class="${visited ? "" : "d-none"} point-remove btn btn-primary btn-rounded btn-sm my-0">Add to route</button>
-      </span>
-        <span class="table-remove">
-          <button type="button" data-pointremove="${point.id}" onclick="window.removePoint(this)" class="point-remove delbtn btn-delete my-0">
-            <span class="mdi mdi-delete mdi-24px"></span>
-            <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-    <path fill="currentColor" d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z" />
-</svg>
-          </button>
-        </span>
-      </td>
-    </tr>
-  `;
 }
 
 function renderCards(currentRoute) {  
@@ -56,12 +21,12 @@ function renderCards(currentRoute) {
   let contents = "";
 
   for (let i=0; i < currentRoute.length; ++i) {
-    contents += renderExperimentalRow(currentRoute[i], VISITED_POINTS.isVisited(currentRoute[i].id), i == 0, i == currentRoute.length-1);
+    contents += renderCardRow(currentRoute[i], VISITED_POINTS.isVisited(currentRoute[i].id), i == 0, i == currentRoute.length-1);
   }
   div.innerHTML = contents;
 }
 
-function renderExperimentalRow(point, visited, isFirst, isLast) {
+function renderCardRow(point, visited, isFirst, isLast) {
   return `
   <div data-point="${point.id}" class="card-planning" style="background-image: url('${point.photos[0].image}');">
     <div class="inner-planning">

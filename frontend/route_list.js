@@ -1,5 +1,5 @@
 import ROUTE_DATA from './js-modules/route-data.js';
-import { URL_ROUTE_DETAIL_PREFIX } from './js-modules/constants.js';
+import { MAKE_ROUTE_URL } from './js-modules/constants.js';
 
 $(async () => {
     let routes = await ROUTE_DATA.getAllRoutes();
@@ -7,18 +7,23 @@ $(async () => {
     let table = "";
     for (let id in routes) {
         let route = routes[id];
-        table += renderRouteTableRow(route);
+        console.log(route)
+        if (route.points.length >= 1) {
+            table += renderCardRow(route);
+        }
     }
 
-    document.querySelector("#route-list").innerHTML = table;
+    document.querySelector("#route-cards").innerHTML = table;
 })
 
-function renderRouteTableRow(route) {
-    let url = new URL(URL_ROUTE_DETAIL_PREFIX.toString());
-    url.search = new URLSearchParams({ id: route.id });
+function renderCardRow(route) {
     return `
-        <tr>
-            <td><a href="${url}">${route.description}</a></td>
-        </tr>
-    `;
-}
+    <div data-route="${route.id}" class="card-planning" style="background-image: url('${route.points[0].photos[0].image}');">
+      <div class="inner-planning" style="padding-right:2rem;">
+        <span style="display: inline-block;">      
+        <a href=${MAKE_ROUTE_URL(route.id)}><h3>${route.description}</h3></a>
+        </span>
+      </div>
+    </div>`;
+  }
+  
