@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * Data transfer object for route entity
+ */
 public class RouteDto {
 
     private Long id;

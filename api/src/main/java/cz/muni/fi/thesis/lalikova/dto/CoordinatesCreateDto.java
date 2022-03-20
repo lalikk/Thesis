@@ -3,10 +3,13 @@ package cz.muni.fi.thesis.lalikova.dto;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
+/**
+ * Data transfer object for creation of coordinates entity
+ */
 public class CoordinatesCreateDto {
 
     @NotNull
-    private Double latitude;        // TODO validation constraints
+    private Double latitude;
 
     @NotNull
     private Double longitude;

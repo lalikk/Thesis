@@ -5,6 +5,9 @@ import cz.muni.fi.thesis.lalikova.dto.DistancesDto;
 
 import java.util.List;
 
+/**
+ * Facade interface for the distances
+ */
 public interface DistancesFacade {
 
     void create(DistancesCreateDto distances);

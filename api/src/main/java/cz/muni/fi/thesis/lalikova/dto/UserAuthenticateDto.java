@@ -1,5 +1,8 @@
 package cz.muni.fi.thesis.lalikova.dto;
 
+/**
+ * Data transfer object for user authentication
+ */
 public class UserAuthenticateDto {
     private Long id;
 

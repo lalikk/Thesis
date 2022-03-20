@@ -6,6 +6,9 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * Data transfer object for new points entity
+ */
 public class PointCreateDto {
 
     @NotNull

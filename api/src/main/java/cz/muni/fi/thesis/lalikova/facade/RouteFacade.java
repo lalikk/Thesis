@@ -5,6 +5,9 @@ import cz.muni.fi.thesis.lalikova.dto.RouteDto;
 
 import java.util.List;
 
+/**
+ * Facade interface for the routes
+ */
 public interface RouteFacade {
     void create(RouteCreateDto route);
 

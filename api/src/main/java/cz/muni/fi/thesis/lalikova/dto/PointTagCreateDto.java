@@ -4,6 +4,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
+/**
+ * Data transfer object for new point tag entity
+ */
 public class PointTagCreateDto {
 
     @NotNull

@@ -5,6 +5,9 @@ import cz.muni.fi.thesis.lalikova.dto.PointTagDto;
 
 import java.util.List;
 
+/**
+ * Facade interface for the point tags
+ */
 public interface PointTagFacade {
 
     void create(PointTagCreateDto pointTag);

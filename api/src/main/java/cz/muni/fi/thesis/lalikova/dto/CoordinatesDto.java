@@ -2,6 +2,9 @@ package cz.muni.fi.thesis.lalikova.dto;
 
 import java.util.Objects;
 
+/**
+ * Data transfer object for coordinates entity
+ */
 public class CoordinatesDto {
 
     private Long id;

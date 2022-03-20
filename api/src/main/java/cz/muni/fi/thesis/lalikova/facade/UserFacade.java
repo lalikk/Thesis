@@ -6,6 +6,9 @@ import cz.muni.fi.thesis.lalikova.dto.UserDto;
 
 import java.util.List;
 
+/**
+ * Facade interface for the users
+ */
 public interface UserFacade {
     void create(UserCreateDto userDto, String unencryptedPassword);
 

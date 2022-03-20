@@ -3,6 +3,9 @@ package cz.muni.fi.thesis.lalikova.dto;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
+/**
+ * Data transfer object for point tag entity
+ */
 public class PointTagDto {
 
     @NotNull

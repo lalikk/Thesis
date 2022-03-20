@@ -5,6 +5,9 @@ import cz.muni.fi.thesis.lalikova.dto.PhotoDto;
 
 import java.util.List;
 
+/**
+ * Facade interface for the photos
+ */
 public interface PhotoFacade {
 
     void create(PhotoCreateDto photo);

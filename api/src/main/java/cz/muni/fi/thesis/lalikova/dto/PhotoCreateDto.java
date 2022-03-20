@@ -5,6 +5,9 @@ import javax.validation.constraints.Size;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * Data transfer object for new photo entity
+ */
 public class PhotoCreateDto {
 
     @NotNull

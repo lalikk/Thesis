@@ -3,6 +3,9 @@ package cz.muni.fi.thesis.lalikova.dto;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * Data transfer object for point entity
+ */
 public class PointDto {
 
     private Long id;

@@ -2,6 +2,9 @@ package cz.muni.fi.thesis.lalikova.dto;
 
 import java.util.Objects;
 
+/**
+ * Data transfer object for photo entity
+ */
 public class PhotoDto {
 
     Long id;

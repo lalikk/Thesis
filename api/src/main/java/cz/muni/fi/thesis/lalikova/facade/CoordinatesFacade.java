@@ -5,6 +5,9 @@ import cz.muni.fi.thesis.lalikova.dto.CoordinatesDto;
 
 import java.util.List;
 
+/**
+ * Facade interface for the coordinates
+ */
 public interface CoordinatesFacade {
 
     void create(CoordinatesCreateDto coordinates);

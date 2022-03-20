@@ -5,6 +5,9 @@ import cz.muni.fi.thesis.lalikova.dto.PointDto;
 
 import java.util.List;
 
+/**
+ * Facade interface for the points
+ */
 public interface PointFacade {
     void create(PointCreateDto point);
 

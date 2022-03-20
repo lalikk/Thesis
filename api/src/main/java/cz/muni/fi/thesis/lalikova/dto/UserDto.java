@@ -2,6 +2,9 @@ package cz.muni.fi.thesis.lalikova.dto;
 
 import java.util.Objects;
 
+/**
+ * Data transfer object for user entity
+ */
 public class UserDto {
     private Long id;
 
