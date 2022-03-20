@@ -14,6 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Implementation of the interface for the facade for Photo entity
+ */
 @Service
 @Transactional
 public class PhotoFacadeImpl implements PhotoFacade {

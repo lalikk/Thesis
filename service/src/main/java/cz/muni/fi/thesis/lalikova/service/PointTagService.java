@@ -3,6 +3,9 @@ package cz.muni.fi.thesis.lalikova.service;
 import cz.muni.fi.thesis.lalikova.entity.PointTag;
 import java.util.List;
 
+/**
+ * Interface for the service for Point tag entity
+ */
 public interface PointTagService {
 
     void create(PointTag pointTag);

@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 
+/**
+ * Implementation of the interface for the facade for User entity
+ */
 @Service
 @Transactional
 public class UserFacadeImpl implements UserFacade {

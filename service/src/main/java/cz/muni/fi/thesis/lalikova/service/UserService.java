@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Interface for the service for User entity
+ */
 @Service
 public interface UserService {
     void create(User user, String unencryptedPassword);

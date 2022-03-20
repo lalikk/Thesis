@@ -3,6 +3,9 @@ package cz.muni.fi.thesis.lalikova.service;
 import cz.muni.fi.thesis.lalikova.entity.Route;
 import java.util.List;
 
+/**
+ * Interface for the service for Route entity
+ */
 public interface RouteService {
     void create(Route route);
 

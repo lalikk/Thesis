@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Implementation of the interface for the service for Photo entity
+ */
 @Service
 public class PhotoServiceImpl implements PhotoService{
 

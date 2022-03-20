@@ -11,6 +11,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+/**
+ * Service configuration class
+ */
 @Configuration
 @Import(InMemoryDb.class)
 @ComponentScan(basePackageClasses={RouteServiceImpl.class, PointServiceImpl.class})

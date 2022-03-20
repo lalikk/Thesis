@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Implementation of the interface for the service for Point tag entity
+ */
 @Service
 public class PointTagServiceImpl implements PointTagService{
 

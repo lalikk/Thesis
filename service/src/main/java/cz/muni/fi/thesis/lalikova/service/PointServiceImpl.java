@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Implementation of the interface for the service for Point entity
+ */
 @Service
 public class PointServiceImpl implements PointService{
 

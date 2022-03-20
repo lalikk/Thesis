@@ -3,6 +3,9 @@ package cz.muni.fi.thesis.lalikova.service;
 import cz.muni.fi.thesis.lalikova.entity.Photo;
 import java.util.List;
 
+/**
+ * Interface for the service for Photo entity
+ */
 public interface PhotoService {
 
     void create(Photo photo);
