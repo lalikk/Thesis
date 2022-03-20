@@ -4,6 +4,9 @@ import cz.muni.fi.thesis.lalikova.entity.User;
 
 import java.util.List;
 
+/**
+ * Data access object interface for User entity
+ */
 public interface UserDao {
 
     void create(User user);

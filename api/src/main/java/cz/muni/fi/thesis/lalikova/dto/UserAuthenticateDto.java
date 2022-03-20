@@ -1,6 +1,7 @@
 package cz.muni.fi.thesis.lalikova.dto;
 
-public class UserAuthenticateDto {private Long id;
+public class UserAuthenticateDto {
+    private Long id;
 
     private String login;
 

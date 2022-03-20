@@ -31,7 +31,6 @@ public class UserRestController {
     @Autowired
     UserFacade userFacade;
 
-    @RolesAllowed({Role.FULL})
     @GetMapping(value = ApiUri.ROOT_URI_USERS, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<UserDto>> findAll() {
         log.info("findAll()");
@@ -43,7 +42,6 @@ public class UserRestController {
         }
     }
 
-    @RolesAllowed({Role.FULL})
     @GetMapping(value = ApiUri.ROOT_URI_USER, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDto> findById(@PathVariable("id") Long id) {
         log.info("findById({})", id);
@@ -56,7 +54,6 @@ public class UserRestController {
     }
 
     @PostMapping(value = ApiUri.ROOT_URI_USERS, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed({Role.FULL, Role.LIMITED})
     public ResponseEntity<UserDto> create(@RequestBody UserCreateDto userCreateDto) {
         log.info("create({})", userCreateDto);
         try {
@@ -69,7 +66,6 @@ public class UserRestController {
     }
 
     @PutMapping(value = ApiUri.ROOT_URI_USERS, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed({Role.FULL, Role.LIMITED})
     public ResponseEntity<UserDto> update(@RequestBody UserDto userDto) {
         log.info("update({})", userDto);
         try {
@@ -83,7 +79,6 @@ public class UserRestController {
     }
 
     @DeleteMapping(value = ApiUri.ROOT_URI_USER, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed({Role.FULL, Role.LIMITED})
     public ResponseEntity<Void> removeById(@PathVariable("id") Long id) {
         log.info("removeById({})", id);
         try {

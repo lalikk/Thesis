@@ -1,8 +1,7 @@
 package cz.muni.fi.thesis.lalikova.entity;
 
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,6 +14,9 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ *  Class representing a registered user of the application
+ */
 @Entity
 @Table(name="appUser")
 public class User {
@@ -57,7 +59,7 @@ public class User {
     }
 
     public User setPasswordHash(String passwordHash) {
-        PasswordEncoder encoder = new Pbkdf2PasswordEncoder();
+        PasswordEncoder encoder = new Argon2PasswordEncoder();
         this.passwordHash = encoder.encode(passwordHash);
         return this;
     }

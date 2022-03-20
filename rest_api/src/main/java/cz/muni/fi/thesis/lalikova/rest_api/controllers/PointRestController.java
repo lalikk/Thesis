@@ -4,7 +4,6 @@ import cz.muni.fi.thesis.lalikova.dto.PointCreateDto;
 import cz.muni.fi.thesis.lalikova.dto.PointDto;
 import cz.muni.fi.thesis.lalikova.facade.PointFacade;
 import cz.muni.fi.thesis.lalikova.rest_api.ApiUri;
-import cz.muni.fi.thesis.lalikova.rest_api.security.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.RolesAllowed;
 import java.util.Collection;
 
 @RequestMapping(ApiUri.ROOT_URI)
@@ -58,8 +56,7 @@ public class PointRestController {
         }
     }
 
-    @PostMapping(value = ApiUri.ROOT_URI_POINTS, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed({Role.FULL, Role.LIMITED})
+    @PostMapping(value = ApiUri.ROOT_URI_POINTS_AUTH, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PointDto> create(@RequestBody PointCreateDto pointCreateDto) {
         log.info("create({})", pointCreateDto);
         try {
@@ -71,8 +68,7 @@ public class PointRestController {
         }
     }
 
-    @PutMapping(value = ApiUri.ROOT_URI_POINTS, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed({Role.FULL, Role.LIMITED})
+    @PutMapping(value = ApiUri.ROOT_URI_POINTS_AUTH, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PointDto> update(@RequestBody PointDto pointDto) {
         log.info("update({})", pointDto);
         try {
@@ -85,8 +81,7 @@ public class PointRestController {
         }
     }
 
-    @DeleteMapping(value = ApiUri.ROOT_URI_POINT, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed({Role.FULL, Role.LIMITED})
+    @DeleteMapping(value = ApiUri.ROOT_URI_POINT_AUTH, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> removeById(@PathVariable("id") Long id) {
         log.info("removeById({})", id);
         try {

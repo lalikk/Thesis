@@ -4,6 +4,9 @@ import cz.muni.fi.thesis.lalikova.entity.PointTag;
 
 import java.util.List;
 
+/**
+ * Data access object interface for Point tag entity
+ */
 public interface PointTagDao {
 
     void create(PointTag pointTag);

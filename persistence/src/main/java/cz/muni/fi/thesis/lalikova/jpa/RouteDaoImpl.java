@@ -11,6 +11,9 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
 
+/**
+ * Implementation of data access object interface for Route entity
+ */
 @Repository
 @Transactional
 public class RouteDaoImpl implements RouteDao {

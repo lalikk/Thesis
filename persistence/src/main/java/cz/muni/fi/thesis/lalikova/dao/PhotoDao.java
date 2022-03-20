@@ -4,6 +4,9 @@ import cz.muni.fi.thesis.lalikova.entity.Photo;
 
 import java.util.List;
 
+/**
+ * Data access object interface for Photo entity
+ */
 public interface PhotoDao {
 
     void create(Photo photo);

@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Class for Point cz.muni.fi.thesis.lalikova.entity
+ * Class for the entity representing a point of interest
  */
 @Entity
 public class Point {
@@ -97,7 +97,7 @@ public class Point {
         return user;
     }
 
-    public void setUser(AdvancedUser user) {
+    public void setUser(User user) {
         this.user = user;
     }
 

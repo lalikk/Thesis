@@ -24,7 +24,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         try {
             UserDto user = userFacade.findByLogin(login);
-            log.debug("Found user: " + user.getLogin());
+            log.error("Found user: " + user.getLogin());
+            log.error("Passwd: " + user.getPasswordHash());
             return new cz.muni.fi.thesis.lalikova.rest_api.security.UserDetailsImpl(user);
         } catch (EntityNotFoundException e) {
             throw new UsernameNotFoundException("Username " + login + " was not found");

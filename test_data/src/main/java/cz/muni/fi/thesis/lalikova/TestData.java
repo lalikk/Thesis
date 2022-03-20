@@ -1,27 +1,25 @@
 package cz.muni.fi.thesis.lalikova;
 
-import cz.muni.fi.thesis.lalikova.dao.CoordinatesDao;
-import cz.muni.fi.thesis.lalikova.dao.PointDao;
-import cz.muni.fi.thesis.lalikova.dao.PointTagDao;
-import cz.muni.fi.thesis.lalikova.dao.PhotoDao;
-import cz.muni.fi.thesis.lalikova.dao.RouteDao;
-import cz.muni.fi.thesis.lalikova.entity.Route;
-import cz.muni.fi.thesis.lalikova.entity.PointTag;
-import cz.muni.fi.thesis.lalikova.entity.Photo;
-import cz.muni.fi.thesis.lalikova.entity.Coordinates;
-import cz.muni.fi.thesis.lalikova.entity.Point;
+import cz.muni.fi.thesis.lalikova.dao.*;
+import cz.muni.fi.thesis.lalikova.entity.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Set;
 
 @Component
 @Transactional
 public class TestData
 {
+
+    final static Logger log = LoggerFactory.getLogger(TestData.class);
+
     @Autowired
     private PointDao pointDao;
 
@@ -36,6 +34,9 @@ public class TestData
 
     @Autowired
     private CoordinatesDao coordinatesDao;
+
+    @Autowired
+    private UserDao userDao;
 
     public void loadData() throws IOException {
 
@@ -57,7 +58,7 @@ public class TestData
         Coordinates coordinates5 = createCoordinates(16.580194378883252, 49.23120894717356, point5);
         Coordinates coordinates6 = createCoordinates(16.667938231869357, 49.23064865534206, point6);
 
-        Photo photo1 = createPhoto("photo 1", "https://images.pexels.com/photos/62307/air-bubbles-diving-underwater-blow-62307.jpeg?auto=compress&cs=tinysrgb&h=650&w=940", point1);
+        Photo photo1 = createPhoto("photo 1", "images/Firefox_wallpaper.png", point1);
         Photo photo2 = createPhoto("photo 2", "https://images.pexels.com/photos/38238/maldives-ile-beach-sun-38238.jpeg?auto=compress&cs=tinysrgb&h=650&w=940", point2);
         Photo photo2_1 = createPhoto("photo 2", "https://images.pexels.com/photos/62307/air-bubbles-diving-underwater-blow-62307.jpeg?auto=compress&cs=tinysrgb&h=650&w=940", point2);
         Photo photo2_2 = createPhoto("photo 2", "https://images.pexels.com/photos/158827/field-corn-air-frisch-158827.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", point2);
@@ -81,7 +82,15 @@ public class TestData
 
         PointTag pointTag1 = createPointTag("Church", "", Set.of(point3, point4));
         PointTag pointTag2 = createPointTag("Architecture", "Architectural point", Set.of(point1, point2, point4));
-        PointTag pointTag3 = createPointTag("Nature", "Natural point", Set.of(point5, point2)   );
+        PointTag pointTag3 = createPointTag("Nature", "Natural point", Set.of(point5, point2));
+
+        PasswordEncoder encoder = new Argon2PasswordEncoder();
+        User authenticatedUser = new User();
+        authenticatedUser.setLogin("user");
+        authenticatedUser.setPasswordHash("user");
+        log.error("Create user pswd hash: " + encoder.encode("user"));
+        log.error("Create user get pswd hash: " + authenticatedUser.getPasswordHash());
+        userDao.create(authenticatedUser);
     }
     private Coordinates createCoordinates(double longitude, double latitude, Point point){
         Coordinates coordinates = new Coordinates();

@@ -4,6 +4,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
+/**
+ *  Class representing the precomputed distances between pairs of point for proximity calculations
+ */
 @Entity
 public class Distances {
 

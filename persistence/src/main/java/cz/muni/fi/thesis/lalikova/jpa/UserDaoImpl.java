@@ -10,6 +10,9 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
 
+/**
+ * Implementation of data access object interface for User entity
+ */
 @Repository
 @Transactional
 public class UserDaoImpl implements UserDao {

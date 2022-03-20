@@ -9,6 +9,9 @@ import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
+/**
+ *  Class representing the entity of GEO coordinates
+ */
 @Entity
 public class Coordinates {
 

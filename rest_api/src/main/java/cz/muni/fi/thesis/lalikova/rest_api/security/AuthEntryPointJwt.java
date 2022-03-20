@@ -21,7 +21,7 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint, AccessDenied
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
-                         AuthenticationException authException) throws IOException, ServletException {
+                         AuthenticationException authException) throws IOException {
 
         logger.error("Unauthorized error: {}", authException.getMessage(), authException);
 
@@ -31,7 +31,7 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint, AccessDenied
     }
 
     @Override
-    public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException, ServletException {
+    public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException {
         logger.error("Access denied error: {}", e.getMessage(), e);
 
         httpServletResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);

@@ -9,6 +9,9 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
+/**
+ *  Class representing a photograph
+ */
 @Entity
 public class Photo {
 

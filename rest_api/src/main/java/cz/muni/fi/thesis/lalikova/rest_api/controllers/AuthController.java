@@ -2,9 +2,13 @@ package cz.muni.fi.thesis.lalikova.rest_api.controllers;
 
 import cz.muni.fi.thesis.lalikova.dto.UserAuthenticateDto;
 import cz.muni.fi.thesis.lalikova.facade.UserFacade;
+import cz.muni.fi.thesis.lalikova.rest_api.ApiUri;
 import cz.muni.fi.thesis.lalikova.rest_api.security.JwtResponse;
 import cz.muni.fi.thesis.lalikova.rest_api.security.JwtUtils;
 import cz.muni.fi.thesis.lalikova.rest_api.security.UserDetailsImpl;
+import cz.muni.fi.thesis.lalikova.rest_api.security.UserDetailsServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +29,11 @@ import javax.validation.Valid;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/rest/auth")
+@RequestMapping(ApiUri.ROOT_URI)
 public class AuthController {
+
+    final static Logger log = LoggerFactory.getLogger(AuthController.class);
+
     @Autowired
     AuthenticationManager authenticationManager;
 
@@ -44,6 +51,9 @@ public class AuthController {
     public ResponseEntity<?> authenticateUser(@RequestBody @Valid UserAuthenticateDto user) {
         Authentication authentication;
         try {
+            log.error(user.getPassword());
+            log.error(encoder.encode(user.getPassword()));
+            log.error(String.valueOf(encoder.matches("user", encoder.encode(user.getPassword()))));
             authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getLogin(), user.getPassword()));
         } catch (AuthenticationException e) {

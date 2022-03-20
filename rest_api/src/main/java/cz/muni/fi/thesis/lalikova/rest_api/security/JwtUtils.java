@@ -19,7 +19,8 @@ public class JwtUtils {
 
     private final String jwtSecret = "signatureSecret";
 
-    private final int jwtExpirationMs = 30*60*1000;
+    // 24 hours expiration time
+    private final long jwtExpirationMs = 24*60*60*1000;
 
     public String generateJwtToken(Authentication authentication) {
 

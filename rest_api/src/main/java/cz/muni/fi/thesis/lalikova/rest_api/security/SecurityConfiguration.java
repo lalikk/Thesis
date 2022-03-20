@@ -14,6 +14,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -50,18 +53,35 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         log.debug("configure() called");
 
+        // Enable CORS (API can be accessed from other domains/origins).
         http.cors().and().csrf().disable();
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        // Set custom error messages when authentication fails.
         http.exceptionHandling()
                 .authenticationEntryPoint(unauthorizedHandler)
                 .accessDeniedHandler(unauthorizedHandler);
 
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
+        // Setup paths that should require authenticated access.
+        http.authorizeRequests()
+                .antMatchers("/rest/auth/**").authenticated()
+                .antMatchers("/rest/**").permitAll();
 
-        http.authorizeRequests() //be warned that the order of those calls matters!
-                .antMatchers("/rest").permitAll();
-                //.antMatchers("/rest/**").authenticated();
-
+        // Add AuthTokenFilter which reads the token on each response and recognises it.
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration configuration = new CorsConfiguration();
+        // This is probably unnecessary, but may be needed for sending credentials.
+        //configuration.setAllowCredentials(true);
+        configuration.addAllowedOrigin("*");
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
+        source.registerCorsConfiguration( "/**", configuration);
+        return new CorsFilter(source);
     }
 
 }

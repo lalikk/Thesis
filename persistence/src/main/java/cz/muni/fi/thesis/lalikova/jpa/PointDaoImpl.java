@@ -10,6 +10,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
+/**
+ * Implementation of data access object interface for Point entity
+ */
 @Repository
 @Transactional
 public class PointDaoImpl implements PointDao {

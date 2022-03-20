@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ *  Class representing a route composed of points
+ */
 @Entity
 public class Route {
 
