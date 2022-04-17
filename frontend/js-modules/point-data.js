@@ -101,6 +101,11 @@ class PointData {
 
     #loadFromServer() {
         return new Promise((success, error) => {
+            /*$.ajaxSetup({
+                headers : {
+                    "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjQ5NzA4NzMwLCJleHAiOjE2NDk3OTUxMzB9.4GYquCWi5t3CPRdvYiGEPbxrwRw26RDzpRXPyLw7oYGRE8Bstlg26uRnwuWi1wKpo1EY3UYeFACsZDtnpV8xnA"
+                }
+              });*/
             $.getJSON(URL_POINT_LIST)
                 .done((data) => {
                     let result = {};

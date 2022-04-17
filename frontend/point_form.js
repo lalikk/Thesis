@@ -1,3 +1,7 @@
+import { RETRIEVE_TOKEN } from './js-modules/authorisation-check.js'
+import { URL_CREATE_POINT } from './js-modules/constants.js';
+import TAG_DATA from './js-modules/point-tag-data.js';
+
 let pointTags = window.localStorage.getItem('pointTagsRequest');
 
 if (pointTags == null) {
@@ -7,8 +11,8 @@ if (pointTags == null) {
         displayCheckboxes(data);
     });
 } else {
-    let data = JSON.parse(pointTags);
-    displayCheckboxes(data);
+    pointTags = JSON.parse(pointTags);
+    displayCheckboxes(pointTags);
 }
 
 function displayCheckboxes(data) {
@@ -21,4 +25,55 @@ function displayCheckboxes(data) {
             </div>\n`
     }
     div.innerHTML = contents;
+}
+
+window.createPoint = async function() {
+    console.log('Create point function reached');
+    let newPoint = {};
+    newPoint.title = document.getElementById("pointTitle").value;
+    newPoint.description = document.getElementById("pointDescription").value;
+    newPoint.coordinates = {}
+    newPoint.coordinates.latitude = document.getElementById("latitude").value;
+    newPoint.coordinates.longitude = document.getElementById("longitude").value;
+    newPoint.photos = null;
+    newPoint.tags = [];
+    await fillTags(newPoint.tags);
+    console.log(newPoint);
+    storePoint(newPoint);
+}
+
+async function fillTags(tags) {
+    console.log(pointTags);
+    for (let tag of pointTags) {
+        let checkboxState = document.getElementById(tag.name);
+        console.log(checkboxState, tag.name);
+        if (checkboxState.checked ) {
+            tags.push(tag);
+        }
+    }
+}
+
+function storePoint(point) {
+    let pointJSON = JSON.stringify(point);
+    let token = RETRIEVE_TOKEN();
+    console.log(point);
+    console.log(token);
+    $.ajaxSetup({
+    headers : {
+        "Authorization": token
+    }
+    });
+    $.ajax({
+        url:URL_CREATE_POINT,
+        dataType:'json',
+        type:'POST',
+        contentType:'application/json',
+        data: pointJSON,
+        success: function(data) {
+            console.log("Point successfully created");
+        },
+        error: function(data) {
+            console.log(data);
+        }
+    })
 }

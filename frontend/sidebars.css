@@ -18,7 +18,7 @@
   }
   * {
 	box-sizing: border-box;
-	font-family: 'Open Sans', sans-serif;
+	font-family: 'Noto Serif', serif;
 	font-weight: 300;
   }
   a,
@@ -29,14 +29,22 @@
 	text-decoration: none;
   }
   h1 {
-	font-family: 'Pacifico', cursive;
-	font-weight: 400;
-	font-size: 3em;
+	font-family: 'Montserrat';
+	font-weight: 600;
+	font-size: 2em;
 	text-align: center;
   }
+
+  h2 {
+	font-family: 'Montserrat';
+	font-weight: 400;
+	font-size: 1.7em;
+	text-align: center;
+  }
+
   .outer-menu {
 	position: fixed;
-	top: 10vh;
+	top: 1vh;
 	left: 0;
 	z-index: 1;
   }

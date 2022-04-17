@@ -18,7 +18,7 @@ public class PointCreateDto {
     @Size(max = 500)
     private String description;
 
-    private CoordinatesDto coordinates;
+    private CoordinatesCreateDto coordinates;
 
     private Set<PhotoDto> photos = new HashSet<>();
 
@@ -57,11 +57,11 @@ public class PointCreateDto {
         this.tags = tags;
     }
 
-    public CoordinatesDto getCoordinates() {
+    public CoordinatesCreateDto getCoordinates() {
         return coordinates;
     }
 
-    public void setCoordinates(CoordinatesDto coordinates) {
+    public void setCoordinates(CoordinatesCreateDto coordinates) {
         this.coordinates = coordinates;
     }
 

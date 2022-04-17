@@ -23,9 +23,12 @@ public class ApiUri {
     public static final String ROOT_URI_POINT_TAGS = "/point_tags";
 
     public static final String ROOT_URI_POINT = "/points/{id}";
-    public static final String ROOT_URI_POINTS = "/auth/points";
+    public static final String ROOT_URI_POINTS = "/points";
     public static final String ROOT_URI_POINTS_AUTH = "/auth/points";
     public static final String ROOT_URI_POINT_AUTH = "/auth/point/{id}";
     public static final String ROOT_URI_ROUTE_POINTS = "/route_points/{id}";
-    // eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjQ3Nzc1MjQ3LCJleHAiOjE2NDc3NzcwNDd9.UQ1DX2m8nsNvBpWDmkEWGqwdz4TB-yAO8PSeoFI-kaC1PkjPs_W6AFg7i0DgYioLSOALVkQ0GXKvlNXumSLUJQ
+
+    public static final String ROOT_URI_LOGIN = "/login";
+    public static final String ROOT_URI_AUTH = "/auth_check";
+
 }

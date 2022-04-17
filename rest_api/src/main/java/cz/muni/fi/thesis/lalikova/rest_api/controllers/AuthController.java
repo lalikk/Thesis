@@ -1,12 +1,13 @@
 package cz.muni.fi.thesis.lalikova.rest_api.controllers;
 
+import cz.muni.fi.thesis.lalikova.dto.AuthenticationCheckDto;
+import cz.muni.fi.thesis.lalikova.dto.TokenCheckDto;
 import cz.muni.fi.thesis.lalikova.dto.UserAuthenticateDto;
 import cz.muni.fi.thesis.lalikova.facade.UserFacade;
 import cz.muni.fi.thesis.lalikova.rest_api.ApiUri;
 import cz.muni.fi.thesis.lalikova.rest_api.security.JwtResponse;
 import cz.muni.fi.thesis.lalikova.rest_api.security.JwtUtils;
 import cz.muni.fi.thesis.lalikova.rest_api.security.UserDetailsImpl;
-import cz.muni.fi.thesis.lalikova.rest_api.security.UserDetailsServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,7 @@ public class AuthController {
     @Autowired
     JwtUtils jwtUtils;
 
-    @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = ApiUri.ROOT_URI_LOGIN, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<?> authenticateUser(@RequestBody @Valid UserAuthenticateDto user) {
         Authentication authentication;
@@ -66,5 +67,12 @@ public class AuthController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
         return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getRole(), userDetails.getUsername()));
+    }
+
+    @PostMapping(value = ApiUri.ROOT_URI_AUTH, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AuthenticationCheckDto> checkAuthorisation(@RequestBody TokenCheckDto tokenDto) {
+        AuthenticationCheckDto check = new AuthenticationCheckDto();
+        check.setValidAuthentication(jwtUtils.validateJwtToken(tokenDto.getToken()));
+        return ResponseEntity.ok(check);
     }
 }

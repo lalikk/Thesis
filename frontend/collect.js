@@ -3,7 +3,7 @@ import Cookies from './node_modules/js-cookie/dist/js.cookie.mjs'
 let distances = [];
 
 let allPointsPromise = new Promise((success, error) => {
-    $.getJSON('http://localhost:8080/rest/points', (data) => {  
+     $.getJSON('http://localhost:8080/rest/points', (data) => {  
       for (let point of data) {
         point["SMapCoords"] = SMap.Coords.fromWGS84(point.coordinates.latitude, point.coordinates.longitude);
       }
@@ -25,7 +25,7 @@ function distancePromise(){
               console.log(i,j);
               let distanceObj = {pointAId:points[i].id, pointBId:points[j].id, distance:routeResults.length};
               distances.push(distanceObj);
-              //$.post('http://localhost:8080/rest/distances', JSON.stringify(distanceObj), null, "json");
+              $.post('http://localhost:8080/rest/distances', JSON.stringify(distanceObj), null, "json");
           })
       }
   }
@@ -66,6 +66,7 @@ console.log("d:",d);
 if (typeof Cookies.get('distances') == undefined) {
   Cookies.set('distances', JSON.stringify(d));
 }
+
 function stateChange() {
   setTimeout(function () {
     Cookies.set('distances', JSON.stringify(d));
