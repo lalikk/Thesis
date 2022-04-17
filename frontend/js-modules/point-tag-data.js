@@ -3,7 +3,7 @@ import { URL_POINT_TAG_LIST, MILLIS_IN_DAY, SANITIZE_ID, ENSURE_ID_ARRAY } from 
 const TAG_DATA_KEY = "TAG_DATA";
 const TAG_DATA_AGE_KEY = "TAG_DATA_AGE";
 
-class PointData {
+class TagData {
     #tags = null;
 
     /**
@@ -110,6 +110,6 @@ class PointData {
     }
 }
 
-let TAG_DATA = new PointData();
+let TAG_DATA = new TagData();
 
 export default TAG_DATA;

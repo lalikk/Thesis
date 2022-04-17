@@ -11,12 +11,17 @@
   <link href="./assets/css/starter.css" rel="stylesheet">
 
   <!-- Custom styles for this template -->
-  <link href="headers.css" rel="stylesheet">
   <link href="sidebars.css" rel="stylesheet">
   <link href="css_elements.css" rel="stylesheet">
+
+  <script src="./node_modules/jquery/dist/jquery.min.js"></script>
+  <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>  
+  <script src="./node_modules/masonry-layout/dist/masonry.pkgd.min.js"></script>
+  <script type="module" src="./route_editable.js"></script>
 </head>
 
 <body>
+
   <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
     <symbol id="location" viewBox="0 0 16 16">
       <path
@@ -83,77 +88,14 @@
         </div>
       </div>
     </div> 
+    <div class="container page-top" id="route-contents-edit" style="position: relative; padding-top: 8rem;"> 
 
-    <div class="container">
-        <main>
-          <div style="margin-top: 5rem;"><h2 >Create new point page</h2></div>
-          <div class="row g-5" style="margin-top: 1rem;">
-            <div class="col-md-7 col-lg-8">
-              <form class="needs-validation" novalidate>
-                <div class="row g-3">
-                  <div class="col-sm-6">
-                    <label for="pointTitle" class="form-label">Title</label>
-                    <input type="text" class="form-control" id="pointTitle" placeholder="" value="" required>
-                    <div class="invalid-feedback">
-                      Valid title is required.
-                    </div>
-                  </div>
-      
-                  <div class="col-12">
-                    <label for="pointDescription" class="form-label">Additional Information</label>
-                    <div class="input-group has-validation">
-                      <textarea class="form-control" id="pointDescription" rows="16" required></textarea>
-                      <div class="invalid-feedback">
-                        At least a short information about the point is required.
-                      </div>
-                    </div>
-                  </div>
-      
-                  <div class="col-sm-6">
-                    <label for="latitude" class="form-label">Latitude</label>
-                    <input type="text" class="form-control" id="latitude" placeholder="" value="" required>
-                    <div class="invalid-feedback">
-                      Valid latitude is required.
-                    </div>
-                  </div>
-      
-                  <div class="col-sm-6">
-                    <label for="longitude" class="form-label">Longitude</label>
-                    <input type="text" class="form-control" id="longitude" placeholder="" value="" required>
-                    <div class="invalid-feedback">
-                      Valid longitude is required.
-                    </div>
-                  </div>
 
-                <hr class="my-4">
-                  <h4>Please check all applicable tags</h4>
 
-                  <div id="point-tags"></div>
-
-                <!--        TODO: use javascript to add checkbox for all existing tags
-                    <div class="form-check">
-                  <input type="checkbox" class="form-check-input" id="same-address">
-                  <label class="form-check-label" for="same-address">Shipping address is the same as my billing address</label>
-                </div>
-      
-                <div class="form-check">
-                  <input type="checkbox" class="form-check-input" id="save-info">
-                  <label class="form-check-label" for="save-info">Save this information for next time</label>
-                </div>
-      
-                -->
-                <hr class="my-4">
-      
-              </form>
-            </div>
-            <button class="w-100 btn btn-primary btn-lg" onclick="window.createPoint()">Create new point</button>
-          </div>
-         </main>
-      </div>
-      
+    </div>
   </main>
-  <script src="node_modules/jquery/dist/jquery.min.js"></script>
-  <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>  
-  <script type="module" src="./point_form.js"></script>
 </body>
 </html>
+
+
+

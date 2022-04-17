@@ -5,8 +5,6 @@ import Cookies from './node_modules/js-cookie/dist/js.cookie.mjs'
 $(async () => {
     let isLoggedIn = await CHECK_VALID_LOGIN();
     console.log(isLoggedIn, "logged");
-
-
 })
 
 window.sendLogin = async function() {

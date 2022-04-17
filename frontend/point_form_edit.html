@@ -93,7 +93,7 @@
                 <div class="row g-3">
                   <div class="col-sm-6">
                     <label for="pointTitle" class="form-label">Title</label>
-                    <input type="text" class="form-control" id="pointTitle" placeholder="" value="" required>
+                    <input type="text" class="form-control" id="pointTitleEdit" placeholder="" value="" required>
                     <div class="invalid-feedback">
                       Valid title is required.
                     </div>
@@ -102,7 +102,7 @@
                   <div class="col-12">
                     <label for="pointDescription" class="form-label">Additional Information</label>
                     <div class="input-group has-validation">
-                      <textarea class="form-control" id="pointDescription" rows="16" required></textarea>
+                      <textarea class="form-control" id="pointDescriptionEdit" rows="16" required></textarea>
                       <div class="invalid-feedback">
                         At least a short information about the point is required.
                       </div>
@@ -111,7 +111,7 @@
       
                   <div class="col-sm-6">
                     <label for="latitude" class="form-label">Latitude</label>
-                    <input type="text" class="form-control" id="latitude" placeholder="" value="" required>
+                    <input type="text" class="form-control" id="latitudeEdit" placeholder="" value="" required>
                     <div class="invalid-feedback">
                       Valid latitude is required.
                     </div>
@@ -119,7 +119,7 @@
       
                   <div class="col-sm-6">
                     <label for="longitude" class="form-label">Longitude</label>
-                    <input type="text" class="form-control" id="longitude" placeholder="" value="" required>
+                    <input type="text" class="form-control" id="longitudeEdit" placeholder="" value="" required>
                     <div class="invalid-feedback">
                       Valid longitude is required.
                     </div>
@@ -128,7 +128,7 @@
                 <hr class="my-4">
                   <h4>Please check all applicable tags</h4>
 
-                  <div id="point-tags"></div>
+                  <div id="point-tags-edit"></div>
 
                 <!--        TODO: use javascript to add checkbox for all existing tags
                     <div class="form-check">
@@ -146,7 +146,7 @@
       
               </form>
             </div>
-            <button class="w-100 btn btn-primary btn-lg" onclick="window.createPoint()">Create new point</button>
+            <button class="w-100 btn btn-primary btn-lg" onclick="window.editPoint()">Create new point</button>
           </div>
          </main>
       </div>
@@ -154,6 +154,6 @@
   </main>
   <script src="node_modules/jquery/dist/jquery.min.js"></script>
   <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>  
-  <script type="module" src="./point_form.js"></script>
+  <script type="module" src="./point_form_edit.js"></script>
 </body>
 </html>

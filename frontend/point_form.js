@@ -2,18 +2,13 @@ import { RETRIEVE_TOKEN } from './js-modules/authorisation-check.js'
 import { URL_CREATE_POINT } from './js-modules/constants.js';
 import TAG_DATA from './js-modules/point-tag-data.js';
 
-let pointTags = window.localStorage.getItem('pointTagsRequest');
+var pointTags;
 
-if (pointTags == null) {
-    $.getJSON('http://localhost:8080/rest/point_tags', function(data, status) {
-        console.log(data, status);
-        window.localStorage.setItem('pointTagsRequest', JSON.stringify(data));
-        displayCheckboxes(data);
-    });
-} else {
-    pointTags = JSON.parse(pointTags);
+$(async () => {
+    pointTags = await TAG_DATA.getAllTags();
+    pointTags = Object.values(pointTags);
     displayCheckboxes(pointTags);
-}
+})
 
 function displayCheckboxes(data) {
     let div = document.querySelector("#point-tags");

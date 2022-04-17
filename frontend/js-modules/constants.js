@@ -11,9 +11,18 @@ export const URL_ROUTE_LIST = new URL("http://localhost:8080/rest/routes");
 export const URL_POINT_TAG_LIST = new URL("http://localhost:8080/rest/point_tags");
 
 export const URL_CREATE_POINT = new URL("http://localhost:8080/rest/auth/points")
+export const URL_REMOVE_POINT_PREFIX = new URL("http://localhost:8080/rest/auth/point")
+export const URL_REMOVE_ROUTE_PREFIX = new URL("http://localhost:8080/rest/auth/route")
 
 export const URL_POINT_DETAIL_PREFIX = new URL("http://localhost:3000/point_detail");
 export const URL_ROUTE_DETAIL_PREFIX = new URL("http://localhost:3000/route_detail");
+export const URL_POINT_DETAIL_PREFIX_EDITABLE = new URL("http://localhost:3000/point_editable");
+export const URL_POINT_DETAIL_PREFIX_EDIT_FORM = new URL("http://localhost:3000/point_form_edit"); 
+export const URL_POINT_CREATE_REDIRECT = new URL("http://localhost:3000/point_form");
+
+export const URL_ROUTE_DETAIL_PREFIX_EDITABLE = new URL("http://localhost:3000/route_editable");
+export const URL_ROUTE_DETAIL_PREFIX_EDIT_FORM = new URL("http://localhost:3000/route_form_edit"); 
+export const URL_ROUTE_CREATE_REDIRECT = new URL("http://localhost:3000/route_form");
 
 export const URL_USER_LOGIN = new URL("http://localhost:8080/rest/login");
 export const URL_USER_AUTH_CHECK = new URL("http://localhost:8080/rest/auth_check");
@@ -24,9 +33,47 @@ export function MAKE_POINT_URL(id) {
     return url;
 }
 
+export function MAKE_EDITABLE_POINT_URL(id) {
+    let url = new URL(URL_POINT_DETAIL_PREFIX_EDITABLE.toString());
+    url.search = new URLSearchParams({ 'id': id });
+    return url;
+}
+
+export function MAKE_EDIT_POINT_FORM_URL(id) {
+    let url = new URL(URL_POINT_DETAIL_PREFIX_EDIT_FORM.toString());
+    url.search = new URLSearchParams({ 'id': id });
+    return url;
+}
+
+export function MAKE_REMOVE_POINT_URL(id) {
+    let url = new URL(URL_REMOVE_POINT_PREFIX.toString());
+    url = url.href;
+    url = url.concat("/", id.toString());
+    return url;
+}
+
 export function MAKE_ROUTE_URL(id) {
     let url = new URL(URL_ROUTE_DETAIL_PREFIX.toString());
     url.search = new URLSearchParams({ 'id': id });
+    return url;
+}
+
+export function MAKE_EDITABLE_ROUTE_URL(id) {
+    let url = new URL(URL_ROUTE_DETAIL_PREFIX_EDITABLE.toString());
+    url.search = new URLSearchParams({ 'id': id});
+    return url;
+}
+
+export function MAKE_EDIT_ROUTE_FORM_URL(id) {
+    let url = new URL(URL_ROUTE_DETAIL_PREFIX_EDIT_FORM.toString());
+    url.search = new URLSearchParams({ 'id': id });
+    return url;
+}
+
+export function MAKE_REMOVE_ROUTE_URL(id) {
+    let url = new URL(URL_REMOVE_ROUTE_PREFIX.toString());
+    url = url.href;
+    url = url.concat("/", id.toString());
     return url;
 }
 
