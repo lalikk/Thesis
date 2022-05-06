@@ -19,7 +19,7 @@ public class RouteCreateDto {
 
     private String description;
 
-    private Set<PointDto> points = new HashSet<>();
+    private Set<PointDto> points = new HashSet<>();         // TODO take only ids instead of objects, look into all dtos
 
     private List<Long> orderedPointIds = new ArrayList<>();
 

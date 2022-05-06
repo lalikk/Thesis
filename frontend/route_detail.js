@@ -29,7 +29,7 @@ function displayRoute(data) {
                     <img class="card-img-top" src="${point.photos[0].image}" width="100%" height="200" focusable="false"/>
                     <div class="card-body">
                         <h5 class="card-title"><a href=${MAKE_POINT_URL(point.id)}>${point.title}</a></h5>
-                        <p class="card-text">${point.description}</p>
+                        <div class="text-ellipsis--3">${point.description}</div>
                     </div>
                 </div>
             </div>

@@ -6,7 +6,7 @@ $(async () => {
     let urlParams = new URLSearchParams(window.location.search);
     let id = urlParams.get('id');
     if(typeof id !== "string") {
-        window.location.href="./route_list.html";
+        window.location.href="./route_list_edit.html";
         return;
     }
     

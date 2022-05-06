@@ -30,9 +30,10 @@
   }
   h1 {
 	font-family: 'Montserrat';
-	font-weight: 600;
-	font-size: 2em;
+	font-weight: 400;
+	font-size: 3em;
 	text-align: center;
+	margin-bottom: 2rem;
   }
 
   h2 {

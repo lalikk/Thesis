@@ -1,5 +1,17 @@
-import Cookies from './node_modules/js-cookie/dist/js.cookie.mjs'
+//import Cookies from './node_modules/js-cookie/dist/js.cookie.mjs'
 
+if('serviceWorker' in navigator) {
+  let registration;
+
+  const registerServiceWorker = async () => {
+    registration = await navigator.serviceWorker.register('./service-worker.js');
+    console.log("Service worker registered.", registration);
+  };
+
+  registerServiceWorker();
+}
+
+/*
 let distances = [];
 
 let allPointsPromise = new Promise((success, error) => {
@@ -25,7 +37,7 @@ function distancePromise(){
               console.log(i,j);
               let distanceObj = {pointAId:points[i].id, pointBId:points[j].id, distance:routeResults.length};
               distances.push(distanceObj);
-              $.post('http://localhost:8080/rest/distances', JSON.stringify(distanceObj), null, "json");
+              //$.post('http://localhost:8080/rest/distances', JSON.stringify(distanceObj), null, "json");
           })
       }
   }
@@ -74,6 +86,7 @@ function stateChange() {
 }
 
 stateChange();
+*/
 
 
   /*for (let i=0; i < distances.length; ++i) {

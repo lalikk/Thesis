@@ -31,6 +31,7 @@ public class Point {
     @OneToOne(mappedBy = "point")
     private Coordinates coordinates;
 
+    @Column(length = 4096)
     private String description;
 
     @OneToMany(mappedBy = "point")
