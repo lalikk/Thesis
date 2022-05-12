@@ -7,7 +7,7 @@ import java.util.List;
  * Interface for the service for Route entity
  */
 public interface RouteService {
-    void create(Route route);
+    Route create(Route route);
 
     Route findById(Long id);
 

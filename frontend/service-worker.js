@@ -16,6 +16,7 @@ const filesToCache = [
   '/route_navigation.html',
   '/route_planning.html',
   // HTML-specific JS
+  //'/index.js',
   '/location.js',
   '/point_detail.js',
   '/point_list.js',
@@ -44,7 +45,7 @@ const filesToCache = [
   '/node_modules/jquery/dist/jquery.min.js',
   '/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
   '/node_modules/masonry-layout/dist/masonry.pkgd.min.js',
-  '/node_modules/@fancyapps/fancybox/dist/jquery.fancybox.min.js',
+  '/assets/fancyapps/fancybox/dist/jquery.fancybox.min.js',
 ];
 
 // the event handler for the activate event
@@ -69,8 +70,8 @@ self.addEventListener('fetch', e => {
         'ignoreVary': true,
     })
     .then(response => {
-        console.log("SW fetch:", e);
-        console.log("Response:", response);
+        //console.log("SW fetch:", e);
+        //console.log("Response:", response);
         return response ? response : fetch(e.request);
     })
   )

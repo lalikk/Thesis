@@ -20,8 +20,8 @@ function displayRoute(data) {
 
     let contents = "";
     //contents += `<div class="title-simple"><h1>${data.title}</h1></div>\n`;
-    contents += `<div class="text-body"><div class="clearfix"><h4>${data.description}</h4></div></div>\n`;
-    contents += `<div  class="row" data-masonry='{"percentPosition": true }'>`;
+    contents += `<div class="text-body"><div class="clearfix"><h2>${data.description}</h2></div></div>\n`;
+    contents += `<div  class="row" data-masonry='{"percentPosition": true }' style='margin-top:2rem'>`;
     for (let point of points) {
         contents += `
             <div class="col-sm-6 col-lg-4 mb-4">

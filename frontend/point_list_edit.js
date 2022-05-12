@@ -46,6 +46,8 @@ window.removePoint = async function(element) {
             contentType:'application/json',
             success: function(data) {
                 console.log("Point successfully edited");
+                POINT_DATA.clear();
+                window.location = window.location;
             },
             error: function(data) {
                 console.log(data);

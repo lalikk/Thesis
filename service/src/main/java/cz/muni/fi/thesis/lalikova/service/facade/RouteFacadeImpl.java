@@ -2,6 +2,7 @@ package cz.muni.fi.thesis.lalikova.service.facade;
 
 import cz.muni.fi.thesis.lalikova.dto.RouteCreateDto;
 import cz.muni.fi.thesis.lalikova.dto.RouteDto;
+import cz.muni.fi.thesis.lalikova.entity.Point;
 import cz.muni.fi.thesis.lalikova.entity.Route;
 import cz.muni.fi.thesis.lalikova.exceptions.ServiceCallException;
 import cz.muni.fi.thesis.lalikova.facade.RouteFacade;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -28,14 +30,15 @@ public class RouteFacadeImpl implements RouteFacade {
     private BeanMappingService beanMappingService;
 
     @Override
-    public void create(@NonNull RouteCreateDto route) {
+    public RouteDto create(@NonNull RouteCreateDto route) {
         Route routeEntity;
         try {
             routeEntity = beanMappingService.mapTo(route, Route.class);
         } catch (Exception e) {
             throw new ServiceCallException("BeanMappingService Map To Exception with route: " + route, e);
         }
-        routeService.create(routeEntity);
+        routeEntity = routeService.create(routeEntity);
+        return beanMappingService.mapTo(routeEntity, RouteDto.class);
     }
 
     @Override
@@ -82,13 +85,16 @@ public class RouteFacadeImpl implements RouteFacade {
 
     @Override
     public void update(@NonNull RouteDto route) {
-        Route routeEntity;
+        Route existing;
         try {
-            routeEntity = beanMappingService.mapTo(route, Route.class);
+            existing = routeService.findById(route.getId());
+            existing.setDescription(route.getDescription());
+            existing.setDifficult(route.getDifficult());
+            existing.setPoints(new HashSet<>(beanMappingService.mapTo(route.getPoints(), Point.class)));
         } catch (Exception e) {
             throw new ServiceCallException("BeanMappingService Map To Exception with route: " + route, e);
         }
-        routeService.update(routeEntity);
+        routeService.update(existing);
     }
 
     @Override

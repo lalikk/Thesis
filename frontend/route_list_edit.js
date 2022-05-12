@@ -46,6 +46,8 @@ window.removeRoute = async function(element) {
             contentType:'application/json',
             success: function(data) {
                 console.log("Route successfully removed");
+                ROUTE_DATA.clear();
+                window.location = window.location;
             },
             error: function(data) {
                 console.log(data);

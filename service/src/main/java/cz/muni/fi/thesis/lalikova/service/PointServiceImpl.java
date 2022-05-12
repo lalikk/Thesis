@@ -1,19 +1,18 @@
 package cz.muni.fi.thesis.lalikova.service;
 
-import cz.muni.fi.thesis.lalikova.dao.CoordinatesDao;
-import cz.muni.fi.thesis.lalikova.dao.PointDao;
-import cz.muni.fi.thesis.lalikova.dao.RouteDao;
-import cz.muni.fi.thesis.lalikova.entity.Coordinates;
-import cz.muni.fi.thesis.lalikova.entity.Point;
-import cz.muni.fi.thesis.lalikova.entity.PointTag;
-import cz.muni.fi.thesis.lalikova.entity.Route;
+import cz.muni.fi.thesis.lalikova.dao.*;
+import cz.muni.fi.thesis.lalikova.dto.PhotoDto;
+import cz.muni.fi.thesis.lalikova.dto.PointDto;
+import cz.muni.fi.thesis.lalikova.entity.*;
 import cz.muni.fi.thesis.lalikova.exceptions.DaoDataAccessException;
 import lombok.NonNull;
+import org.mockito.internal.util.collections.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,29 +33,48 @@ public class PointServiceImpl implements PointService{
     private RouteDao routeDao;
 
     @Autowired
+    private PhotoDao photoDao;
+
+    @Autowired
+    private PointTagDao tagDao;
+
+    @Autowired
     private CoordinatesDao coordinatesDao;
 
     @Override
-    public void create(@NonNull Point point) {
+    public Point create(@NonNull Point point) {
         log.error("Create point", point);
         try {
             if (point.getCoordinates() == null) {
                 throw new DaoDataAccessException("No coordinates supplied");
             }
-            Coordinates coords = new Coordinates();
-            coords.setLatitude(point.getCoordinates().getLatitude());
-            coords.setLongitude(point.getCoordinates().getLongitude());
-            coordinatesDao.create(coords);
-            Set<Long> pointTagIds = new HashSet<>();
-            if (point.getPhotos() != null) {
-                // TODO
-            }
-            if (point.getTags() != null) {
-                for (PointTag tag : point.getTags()) {
-
-                }
-            }
+            //Coordinates coords = new Coordinates();
+            //coords.setLatitude(point.getCoordinates().getLatitude());
+            //coords.setLongitude(point.getCoordinates().getLongitude());
+            //coordinatesDao.create(coords);
+            //point.setCoordinates(coords);
+            //Set<Long> pointTagIds = new HashSet<>();
+            //if (point.getPhotos() != null) {
+                //
+            //}
+            /*if (point.getTags() != null) {
+                Set<PointTag> newSet = point.getTags().stream()
+                        .map(tag -> {
+                            PointTag existingTag = tagDao.findById(tag.getId());
+                            existingTag.addPoint(point);
+                            return existingTag;
+                        })
+                        .collect(Collectors.toSet());
+                point.setTags(newSet);
+            }*/
+            point.getCoordinates().setPoint(point);
             pointDao.create(point);
+            for (PointTag tag : point.getTags()) {
+                PointTag existingTag = tagDao.findById(tag.getId());
+                existingTag.addPoint(point);
+                tagDao.update(existingTag);
+            }
+            return point;
         } catch (Exception ex) {
             throw new DaoDataAccessException("Point Dao Create Exception with point: " + point, ex);
         }
@@ -94,6 +112,15 @@ public class PointServiceImpl implements PointService{
     @Override
     public void update(@NonNull Point point) {
         try {
+            for (PointTag tag : tagDao.findAll()) {
+                tag.removePoint(point);
+                tagDao.update(tag);
+            }
+            for (PointTag tag : point.getTags()) {
+                PointTag existingTag = tagDao.findById(tag.getId());
+                existingTag.addPoint(point);
+                tagDao.update(existingTag);
+            }
             pointDao.update(point);
         } catch (Exception ex) {
             throw new DaoDataAccessException("Point Dao Update Exception with point: " + point, ex);
@@ -103,7 +130,18 @@ public class PointServiceImpl implements PointService{
     @Override
     public void removeById(@NonNull Long id) {
         try {
-            pointDao.remove(pointDao.findById(id));
+            Point point = pointDao.findById(id);
+            for (PointTag tag : point.getTags()) {
+                tag.removePoint(point);
+                tagDao.update(tag);
+            }
+            point.setTags(Collections.emptySet());
+            for (Route route : point.getRoutes()) {
+                route.removePoint(point);
+                routeDao.update(route);
+            }
+            point.setRoutes(Collections.emptySet());
+            pointDao.remove(point);
         } catch (Exception ex) {
             throw new DaoDataAccessException("Point Dao Remove Exception with point id: "+ id, ex);
         }

@@ -18,17 +18,11 @@ $(async () => {
     }
 })
 
-// http://localhost:3000/point_detail?id=1&present=true when accessed from given location
+// http://localhost:3000/point_detail?id=1&present=true when accessed from given location; the url for the qr code
 
 function displayPoint(point) {
     let div = document.querySelector("#point-contents");
     let contents = "";
-    contents += `
-    <button type="button" id='add-to-planning' data-id="${point.id}" onclick="window.addToPlanning(this)" 
-            class="btn btn-primary btn-lg px-4 gap-3 position-absolute" style="right: 1rem; top: 5rem;">
-        Add to planned route
-    </button>
-`;
     contents += `<div class="title-simple"><h1>${point.title}</h1></div>`;
 
     contents += `<div class="text-body"><div class="clearfix"><h4>${point.description}</h4></div></div>`;
@@ -43,6 +37,13 @@ function displayPoint(point) {
     } 
     
     contents += renderPointGallery(point);
+    contents += `
+    <button type="button" id='add-to-planning' data-id="${point.id}" onclick="window.addToPlanning(this)" 
+            class="btn btn-primary btn-lg px-4 gap-3" style="margin: 0 auto; display:block">
+        Add to planned route
+    </button>
+`;
+
     div.innerHTML = contents;
 }
 

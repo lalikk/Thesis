@@ -8,7 +8,7 @@ $(async () => {
 
 async function renderPoints(points, tag = null) {
     let div = document.querySelector("#masonry");
-    let contents = "";
+    let contents = "<h1 style='margin-bottom: 1rem;'>Místa</h1> ";
     console.log("Before", points);
     if (tag != null) {
         let pointIds = Object.values(points).filter(x => x.tags.map(t => t.id).includes(tag.id)).map(x => x.id);
@@ -25,7 +25,7 @@ async function renderPoints(points, tag = null) {
 function renderPointCard(point) {
     return `<div class="col-sm-6 col-lg-4 mb-4">
                 <div class="card">
-                    <img class="card-img-top" src="${point.photos[0].image}" width="100%" height="200" focusable="false"/>
+                    <img class="card-img-top" src="${point.photos[0] ? point.photos[0].image: ""}" width="100%" height="200" focusable="false"/>
                     <div class="card-body">
                         <h5 class="card-title"><a href="${MAKE_POINT_URL(point.id)}">${point.title}</a></h5>
                         <p class="text-ellipsis--3">${point.description}</p>

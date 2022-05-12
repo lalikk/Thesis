@@ -1,6 +1,7 @@
 import POINT_DATA from './js-modules/point-data.js';
-import { MAKE_POINT_URL, URL_CREATE_ROUTE } from './js-modules/constants.js';
+import { MAKE_POINT_URL, URL_CREATE_ROUTE, URL_ROUTE_LIST_EDIT } from './js-modules/constants.js';
 import { RETRIEVE_TOKEN } from './js-modules/authorisation-check.js'
+import ROUTE_DATA from './js-modules/route-data.js';
 
 var allPoints;
 var routePoints = [];
@@ -47,7 +48,7 @@ function displayAvailablePoints() {
                     <img class="card-img-top" src="${point.photos[0].image}" width="100%" height="200" focusable="false"/>
                     <div class="card-body">
                         <h5 class="card-title"><a href=${MAKE_POINT_URL(point.id)}>${point.title}</a></h5>
-                        <p class="card-text">${point.description}</p>
+                        <p class="text-ellipsis--3">${point.description}</p>
                     </div>
                 </div>
             </div>
@@ -74,7 +75,7 @@ function displaySelectedPoints() {
                     <img class="card-img-top" src="${point.photos[0].image}" width="100%" height="200" focusable="false"/>
                     <div class="card-body">
                         <h5 class="card-title"><a href=${MAKE_POINT_URL(point.id)}>${point.title}</a></h5>
-                        <p class="card-text">${point.description}</p>
+                        <p class="text-ellipsis--3">${point.description}</p>
                     </div>
                 </div>
             </div>
@@ -87,8 +88,10 @@ function displaySelectedPoints() {
 
 window.createRoute = async function () {
     let newRoute = {}
+    newRoute.title = document.getElementById("routeDescription").value;
     newRoute.description = document.getElementById("routeDescription").value;
-    newRoute.points =   new Set(routePoints);
+    newRoute.points = await POINT_DATA.getPoints(routePoints);
+    console.log("Points in request:", newRoute);
     sendRoute(newRoute);
 }
 
@@ -110,6 +113,8 @@ function sendRoute(route) {
         data: routeJSON,
         success: function(data) {
             console.log("Route successfully created");
+            ROUTE_DATA.clear();
+            window.location = URL_ROUTE_LIST_EDIT;
         },
         error: function(data) {
             console.log(data);

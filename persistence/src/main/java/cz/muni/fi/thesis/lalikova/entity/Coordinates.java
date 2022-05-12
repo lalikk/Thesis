@@ -1,11 +1,8 @@
 package cz.muni.fi.thesis.lalikova.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import net.minidev.json.annotate.JsonIgnore;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
@@ -16,7 +13,7 @@ import java.util.Objects;
 public class Coordinates {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
@@ -28,6 +25,7 @@ public class Coordinates {
     private Double Longitude;
 
     @OneToOne
+    @MapsId
     private Point point;
 
     public Long getId() {

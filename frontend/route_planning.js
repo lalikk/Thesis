@@ -18,7 +18,7 @@ async function displayCurrentRoute() {
 
 function renderCards(currentRoute) {  
   let div = document.querySelector("#point-cards");  
-  let contents = "";
+  let contents = currentRoute.length == 0 ? "" : "<h1 style='margin-bottom: 1rem; margin=top:32pt'>Trasa</h1> ";
 
   for (let i=0; i < currentRoute.length; ++i) {
     contents += renderCardRow(currentRoute[i], VISITED_POINTS.isVisited(currentRoute[i].id), i == 0, i == currentRoute.length-1);
@@ -33,8 +33,9 @@ function renderCardRow(point, visited, isFirst, isLast) {
       <span style="display: inline-block;">      
       <a href=${MAKE_POINT_URL(point.id)} class="${visited ? "text-muted" : ""}"><h3>${point.title}</h3></a>
       </span>
-      <span class="visited-remove" style="display: inline-block; margin: 0 1rem 0 4rem;">
-        <button type="button" data-pointadd="${point.id}" onclick="window.revertVisited(this)" class="${visited ? "" : "invisible"} point-remove delbtn  btn-pink-delete my-0">
+      <div id='button-line' style='text-align:right; margin-top:0.3rem;'>
+      <span class="visited-remove" style="display: inline-block; margin: 0 0.5rem 0 0;">
+      <button type="button" data-pointadd="${point.id}" onclick="window.revertVisited(this)" class="${visited ? "" : "invisible"} point-remove delbtn  btn-pink-delete my-0">
           <span class="mdi mdi-delete mdi-24px">
             <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
               <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
@@ -42,7 +43,7 @@ function renderCardRow(point, visited, isFirst, isLast) {
           </span>
         </button>
       </span>
-      <span class="visited-remove" style="display: inline-block; margin: 0 1rem 0 0;">
+      <span class="visited-remove" style="display: inline-block; margin: 0 0.5rem 0 0;">
       <button type="button" data-pointup="${point.id}" onclick="window.moveUp(this)" class="${isFirst ? "invisible" : ""} point-remove delbtn  btn-delete my-0">
         <span class="mdi mdi-delete mdi-24px">
           <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" class="bi bi-arrow-up-short" viewBox="0 0 16 16">
@@ -51,7 +52,7 @@ function renderCardRow(point, visited, isFirst, isLast) {
         </span>
       </button>
     </span>
-    <span class="visited-remove" style="display: inline-block; margin: 0 1rem 0 0;">
+    <span class="visited-remove" style="display: inline-block; margin: 0 0.5rem 0 0;">
     <button type="button" data-pointdown="${point.id}" onclick="window.moveDown(this)" class="${isLast ? "invisible" : ""} point-remove delbtn  btn-delete my-0" >
       <span class="mdi mdi-delete mdi-24px">
         <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" class="bi bi-arrow-down-short" viewBox="0 0 16 16">
@@ -69,6 +70,7 @@ function renderCardRow(point, visited, isFirst, isLast) {
           </span>
         </button>
       </span>
+      </div>
     </div>
   </div>`;
 }
@@ -94,7 +96,7 @@ window.moveUp = async function(element) {
   let route = CURRENT_ROUTE.getPlannedRoutePoints();
   let index = route.indexOf(parseInt(pointId));
   route = swap(route, index, index-1);
-  CURRENT_ROUTE.refresh(route, route.length >= 2);
+  CURRENT_ROUTE.refresh(route);
   await displayCurrentRoute();
 }
 
@@ -103,7 +105,7 @@ window.moveDown = async function(element) {
   let route = CURRENT_ROUTE.getPlannedRoutePoints();
   let index = route.indexOf(parseInt(pointId));
   route = swap(route, index, index+1);
-  CURRENT_ROUTE.refresh(route, route.length >= 2);
+  CURRENT_ROUTE.refresh(route);
   await displayCurrentRoute();
 }
 
@@ -117,6 +119,7 @@ function swap(array, from, to) {
 function displayEmptyMessage(visible) {
   CURRENT_ROUTE.restartTracking();  
   document.querySelector('#empty-route').classList.toggle("d-none", !visible);
+  document.querySelector('#point-cards').classList.toggle("d-none", visible);
 }
 
 function displayReorderButton(visible) {
@@ -126,26 +129,22 @@ function displayReorderButton(visible) {
 
 ///////////// Optimal distances
 
-let distances = JSON.parse(Cookies.get('distances'));
-console.log("distances:", distances);
-
 window.computeRouteOrder = async function() {
   if (CURRENT_ROUTE.hasVisitedPoints()) {
-    // TODO let user know to remove visited points
     return;
   }
 
+
+  let distances = await POINT_DATA.getAllDistances();
+  console.log("distances:", distances);
+
   let startingPointId = await findClosestToUser();
   let orderedRoute = [startingPointId];
-  //console.log(idsArray);
   let unusedPoints = CURRENT_ROUTE.getPlannedRoutePoints();
   unusedPoints.splice(unusedPoints.indexOf(startingPointId), 1);
-  console.log("closestId:", startingPointId);
-  console.log("unused initial", unusedPoints);
   while (unusedPoints.length > 0) {
-    console.log("ordered route:", orderedRoute);  
-    console.log("unused points:", unusedPoints);
-    orderedRoute.push(findClosestPoint(orderedRoute[orderedRoute.length - 1], unusedPoints));
+    console.log("Route:", orderedRoute, unusedPoints);
+    orderedRoute.push(await findClosestPoint(orderedRoute[orderedRoute.length - 1], unusedPoints, distances));
   }
   if (JSON.stringify(CURRENT_ROUTE.getPlannedRoutePoints()) != JSON.stringify(orderedRoute)) {
     CURRENT_ROUTE.refresh(orderedRoute, true);
@@ -175,13 +174,24 @@ async function findClosestToUser() {
   return closestPoint.id;
 }
 
-function findClosestPoint(pointId, unusedPoints) {
-  console.log("pointId:", pointId);
-  console.log("unusedPoints:", unusedPoints);
-  let source = POINT_DATA.getPoint(pointId);
-  let targets = POINT_DATA.getPoints(unusedPoints);
-  targets = EXTRACT_COORDINATES(Object.values(targets));
-  let index = FIND_CLOSEST(source.coordinates, targets);
+async function findClosestPoint(pointId, unusedPoints, distances) {
+  if (unusedPoints.length == 0) {
+    return -1;
+  }
 
-  return unusedPoints.splice(index, 1)[0];
+  var smallestDistance = { index: -1, distance: Number.POSITIVE_INFINITY };
+  for (let i = 0; i < distances.length; ++i) {
+    let dist = distances[i];
+    if (dist.pointAId == pointId && unusedPoints.includes(dist.pointBId)) {
+      if (dist.distance < smallestDistance.distance) {
+        smallestDistance.index = unusedPoints.indexOf(dist.pointBId);
+        smallestDistance.distance = dist.distance;
+      }
+    }
+  }
+
+  if (smallestDistance.index == -1) {
+    throw Error();
+  }
+  return unusedPoints.splice(smallestDistance.index, 1)[0];
 }

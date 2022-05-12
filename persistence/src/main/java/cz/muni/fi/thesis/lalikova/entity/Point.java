@@ -1,14 +1,6 @@
 package cz.muni.fi.thesis.lalikova.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Objects;
@@ -28,20 +20,20 @@ public class Point {
     @Column(nullable = false)
     private String title;
 
-    @OneToOne(mappedBy = "point")
+    @OneToOne(mappedBy = "point", cascade = CascadeType.ALL, orphanRemoval = true)
     private Coordinates coordinates;
 
     @Column(length = 4096)
     private String description;
 
-    @OneToMany(mappedBy = "point")
-    private Set<Photo> photos ;
+    @OneToMany(mappedBy = "point", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Photo> photos;
 
     @ManyToMany(mappedBy = "points")
     private Set<PointTag> tags = new HashSet<>();
 
-    @ManyToOne
-    private User user;
+    //@ManyToOne
+    //private User user;
 
     @ManyToMany
     private Set<Route> routes = new HashSet<>();
@@ -94,13 +86,13 @@ public class Point {
         this.tags = tags;
     }
 
-    public User getUser() {
+    /*public User getUser() {
         return user;
     }
 
     public void setUser(User user) {
         this.user = user;
-    }
+    }*/
 
     public Set<Route> getRoutes() {
         return routes;
@@ -108,6 +100,14 @@ public class Point {
 
     public void setRoutes(Set<Route> routes) {
         this.routes = routes;
+    }
+
+    public void removeRoute(Route route) {
+        this.routes.remove(route);
+    }
+
+    public void addRoute(Route route) {
+        this.routes.add(route);
     }
 
     @Override

@@ -262,6 +262,8 @@
   .outer-menu .menu > div > div > ul > li > a:hover {
 	color: #e5e5e5;
   }
+
+  
   .outer-menu .menu > div > div > ul > li > a:hover:after {
 	width: 100%;
   }
@@ -276,7 +278,7 @@
 	background: #e5e5e5;
 	transition: width 0.4s ease;
   }
-  
+
   .hidden-element {
 	  visibility: hidden;
   }

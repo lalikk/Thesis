@@ -1,4 +1,4 @@
-//import Cookies from './node_modules/js-cookie/dist/js.cookie.mjs'
+import Cookies from './node_modules/js-cookie/dist/js.cookie.mjs'
 
 if('serviceWorker' in navigator) {
   let registration;
@@ -17,7 +17,7 @@ let distances = [];
 let allPointsPromise = new Promise((success, error) => {
      $.getJSON('http://localhost:8080/rest/points', (data) => {  
       for (let point of data) {
-        point["SMapCoords"] = SMap.Coords.fromWGS84(point.coordinates.latitude, point.coordinates.longitude);
+        point["SMapCoords"] = SMap.Coords.fromWGS84(point.coordinates.longitude, point.coordinates.latitude);
       }
       success(data) 
     }, error);
@@ -28,19 +28,28 @@ let allPointsPromise = new Promise((success, error) => {
 
 function distancePromise(){
   return new Promise((success, error) => {
-  for (let i=0; i < points.length-1; ++i) {
-      for (let j=i+1; j<points.length; ++j) {
+    var a = [];
+  for (let i=0; i < points.length; ++i) {
+      for (let j=0; j<points.length; ++j) {
+        if (i==j) {
+          continue;
+        }
           let coords = [points[i].SMapCoords, points[j].SMapCoords];
           console.log(i,j);
+          console.log(coords);
           SMap.Route.route(coords, {}).then((route) => {
               var routeResults = route.getResults();
-              console.log(i,j);
-              let distanceObj = {pointAId:points[i].id, pointBId:points[j].id, distance:routeResults.length};
+              //console.log(i,j);
+              console.log(routeResults);
+              let distanceObj = {pointAId:points[i].id, pointBId:points[j].id, distance:routeResults.time};
+              console.log(distanceObj);
+              a.push([distanceObj.pointAId, distanceObj.pointBId, distanceObj.distance])
               distances.push(distanceObj);
               //$.post('http://localhost:8080/rest/distances', JSON.stringify(distanceObj), null, "json");
           })
       }
   }
+  console.log(a);
   success(distances)});
 }
  
@@ -86,8 +95,8 @@ function stateChange() {
 }
 
 stateChange();
-*/
 
+*/
 
   /*for (let i=0; i < distances.length; ++i) {
       $.postJson('http://localhost:8080/rest/distances', JSON.stringify(distances[i]));

@@ -2,7 +2,9 @@ package cz.muni.fi.thesis.lalikova.service.facade;
 
 import cz.muni.fi.thesis.lalikova.dto.PointCreateDto;
 import cz.muni.fi.thesis.lalikova.dto.PointDto;
+import cz.muni.fi.thesis.lalikova.dto.PointUpdateDto;
 import cz.muni.fi.thesis.lalikova.entity.Point;
+import cz.muni.fi.thesis.lalikova.entity.PointTag;
 import cz.muni.fi.thesis.lalikova.exceptions.ServiceCallException;
 import cz.muni.fi.thesis.lalikova.facade.PointFacade;
 import cz.muni.fi.thesis.lalikova.service.BeanMappingService;
@@ -12,7 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Implementation of the interface for the facade for Point entity
@@ -28,14 +33,15 @@ public class PointFacadeImpl implements PointFacade {
     private BeanMappingService beanMappingService;
 
     @Override
-    public void create(@NonNull PointCreateDto point) {
+    public PointDto create(@NonNull PointCreateDto point) {
         Point pointEntity;
         try {
             pointEntity = beanMappingService.mapTo(point, Point.class);
         } catch (Exception e) {
             throw new ServiceCallException("BeanMappingService Map To Exception with point: " + point, e);
         }
-        pointService.create(pointEntity);
+        pointEntity = pointService.create(pointEntity);
+        return beanMappingService.mapTo(pointEntity, PointDto.class);
     }
 
     @Override
@@ -69,10 +75,15 @@ public class PointFacadeImpl implements PointFacade {
     }
 
     @Override
-    public void update(PointDto point) {
+    public void update(PointUpdateDto point) {
         Point pointEntity;
         try {
-            pointEntity = beanMappingService.mapTo(point, Point.class);
+            pointEntity = pointService.findById(point.getId());
+            pointEntity.setTitle(point.getTitle());
+            pointEntity.setDescription(point.getDescription());
+            pointEntity.getCoordinates().setLatitude(point.getCoordinates().getLatitude());
+            pointEntity.getCoordinates().setLongitude(point.getCoordinates().getLongitude());
+            pointEntity.setTags(new HashSet<>(beanMappingService.mapTo(point.getTags(), PointTag.class)));
         } catch (Exception e) {
             throw new ServiceCallException("BeanMappingService Map To Exception with point: " + point, e);
         }

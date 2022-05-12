@@ -62,6 +62,14 @@ public class PointTag {
         this.points = points;
     }
 
+    public void addPoint(Point point) {
+        this.points.add(point);
+    }
+
+    public void removePoint(Point point) {
+        this.points.remove(point);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

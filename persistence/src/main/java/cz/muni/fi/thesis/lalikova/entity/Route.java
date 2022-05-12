@@ -25,17 +25,19 @@ public class Route {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    @Column(nullable = false)
     private String title;
 
+    @NotNull
+    @Column(nullable = false)
     private String description;
+
+    private Boolean difficult;
 
     @ManyToMany(mappedBy = "routes")
     private Set<Point> points = new HashSet<>();
 
-    @ManyToOne
-    private User user;
+    //@ManyToOne
+    //private User user;
 
     @ElementCollection
     private List<Long> orderedPointIds = new ArrayList<>();
@@ -64,6 +66,23 @@ public class Route {
         this.description = description;
     }
 
+    public Boolean getDifficult() {
+        return difficult;
+    }
+
+    public void setDifficult(Boolean difficult) {
+        this.difficult = difficult;
+    }
+
+
+    public void addPoint(Point point) {
+        this.points.add(point);
+    }
+
+    public void removePoint(Point point) {
+        this.points.remove(point);
+    }
+
     public Set<Point> getPoints() {
         return points;
     }
@@ -72,13 +91,13 @@ public class Route {
         this.points = points;
     }
 
-    public User getUser() {
+    /*public User getUser() {
         return user;
     }
 
     public void setUser(User user) {
         this.user = user;
-    }
+    }*/
 
     public List<Long> getOrderedPointIds() {
         return orderedPointIds;
@@ -93,7 +112,7 @@ public class Route {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Route route = (Route) o;
-        return getId().equals(route.getId()) && getTitle().equals(route.getTitle());
+        return Objects.equals(getTitle(), route.getTitle()) && getDescription().equals(route.getDescription()) && Objects.equals(getDifficult(), route.getDifficult());
     }
 
     @Override

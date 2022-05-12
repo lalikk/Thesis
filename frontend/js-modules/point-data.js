@@ -1,10 +1,13 @@
-import { URL_POINT_LIST, MILLIS_IN_DAY, SANITIZE_ID, ENSURE_ID_ARRAY } from "./constants.js";
+import { URL_POINT_LIST, URL_DISTANCES_LIST, MILLIS_IN_DAY, SANITIZE_ID, ENSURE_ID_ARRAY } from "./constants.js";
+import ROUTE_DATA from "./route-data.js";
 
 const POINT_DATA_KEY = "POINT_DATA";
+const DISTANCES_DATA_KEY = "DISTANCES_DATA";
 const POINT_DATA_AGE_KEY = "POINT_DATA_AGE";
 
 class PointData {
     #points = null;
+    #distances = null;
 
     /**
      * Get the list of all points, fetching data from server if necessary.
@@ -13,6 +16,11 @@ class PointData {
     async getAllPoints() {
         await this.#ensurePoints();
         return this.#points;
+    }
+
+    async getAllDistances() {
+        await this.#ensurePoints();
+        return this.#distances;
     }
 
     async getPoints(idsArg) {
@@ -33,6 +41,17 @@ class PointData {
         return result;
     }
 
+    clear() {
+        try {
+            window.localStorage.removeItem(DISTANCES_DATA_KEY);
+            window.localStorage.removeItem(POINT_DATA_AGE_KEY);
+            ROUTE_DATA.clear();
+        } catch (error) {
+            console.error("Error clearing local storage:", error);
+        }
+    }
+
+
     /**
      * Get point by ID, fetching data from server if necessary.
      * 
@@ -52,12 +71,12 @@ class PointData {
     }
 
     async #ensurePoints() {
-        if(this.#points === null) {
+        if(this.#points === null || this.#distances === null) {
             this.#loadFromLocalStorage();
-            if (this.#points === null) {
+            if (this.#points === null || this.#distances === null) {
                 try {
-                    let serverData = await this.#loadFromServer();
-                    this.#points = serverData;
+                    this.#points = await this.#loadFromServer();
+                    this.#distances = await this.#loadDistancesFromServer();
                     this.#saveToLocalStorage();
                 } catch (error) {
                     this.#loadFromLocalStorage(true);
@@ -80,12 +99,18 @@ class PointData {
 
             let dataString = window.localStorage.getItem(POINT_DATA_KEY);
             this.#points = JSON.parse(dataString);
+            let dataString2 = window.localStorage.getItem(DISTANCES_DATA_KEY);
+            this.#distances = JSON.parse(dataString2);
             if(typeof this.#points !== "object") {
                 throw new Error("Parsed data is not an object", { cause: this.#points });
+            }
+            if(typeof this.#distances !== "object") {
+                throw new Error("Parsed data is not an object", { cause: this.#distances });
             }
         } catch (error) {
             console.error("Error loading points from local storage:", error);
             this.#points = null;
+            this.#distances = null;
         }
     }
 
@@ -93,6 +118,8 @@ class PointData {
         try {
             let dataString = JSON.stringify(this.#points);
             window.localStorage.setItem(POINT_DATA_KEY, dataString);
+            let dataString2 = JSON.stringify(this.#distances);
+            window.localStorage.setItem(DISTANCES_DATA_KEY, dataString2);
             window.localStorage.setItem(POINT_DATA_AGE_KEY, Date.now());
         } catch (error) {
             console.error("Error saving points to local storage:", error);
@@ -101,11 +128,6 @@ class PointData {
 
     #loadFromServer() {
         return new Promise((success, error) => {
-            /*$.ajaxSetup({
-                headers : {
-                    "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjQ5NzA4NzMwLCJleHAiOjE2NDk3OTUxMzB9.4GYquCWi5t3CPRdvYiGEPbxrwRw26RDzpRXPyLw7oYGRE8Bstlg26uRnwuWi1wKpo1EY3UYeFACsZDtnpV8xnA"
-                }
-              });*/
             $.getJSON(URL_POINT_LIST)
                 .done((data) => {
                     let result = {};
@@ -113,6 +135,17 @@ class PointData {
                         result[point.id] = point;
                     }
                     success(result);
+                })
+                .fail((e) => error(e));
+        });
+    }
+
+    #loadDistancesFromServer() {
+        return new Promise((success, error) => {
+            $.getJSON(URL_DISTANCES_LIST)
+                .done((data) => {
+                    console.log(data);
+                    success(data);
                 })
                 .fail((e) => error(e));
         });

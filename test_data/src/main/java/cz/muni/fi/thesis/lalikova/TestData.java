@@ -38,11 +38,14 @@ public class TestData
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private DistancesDao distancesDao;
+
     public void loadData() throws IOException {
 
-        Route route1 = createRoute("Trasa č.1", "Památkový okruh dlouhý");
-        Route route2 = createRoute("Trasa č.2", "Památkový okruh krátky");
-        Route route3 = createRoute("Trasa č.3", "Památkový okruh výběr");
+        Route route1 = createRoute("Trasa č.1", "Památkový okruh dlouhý", true);
+        Route route2 = createRoute("Trasa č.2", "Památkový okruh krátky", false);
+        Route route3 = createRoute("Trasa č.3", "Památkový okruh výběr", false);
 
         Point point1 = createPoint("Špilberk", "Špilberk (německy Spielberg, v hantecu Špilas) je hrad a pevnost tvořící dominantu města Brna. Nachází se na vrcholu stejnojmenného kopce, který leží v městské části Brno-střed, na západě katastrálního území Město Brno.\n" +
                         "\n" +
@@ -137,7 +140,7 @@ public class TestData
         Photo photo6_3 = createPhoto("Výhled na Žabovřesky a Komín překrytý porostem", "images/les_3.jpg", point6);
         Photo photo6_4 = createPhoto("Historická restaurace Rosnička", "images/les_4.jpg", point6);
 
-        PointTag pointTag1 = createPointTag("Church", "", Set.of(point3));
+        PointTag pointTag1 = createPointTag("Church", "Church point", Set.of(point3));
         PointTag pointTag2 = createPointTag("Architecture", "Architectural point", Set.of(point1, point2, point3, point4, point5));
         PointTag pointTag3 = createPointTag("Nature", "Natural point", Set.of(point2, point4, point5, point6));
 
@@ -148,6 +151,44 @@ public class TestData
         log.error("Create user pswd hash: " + encoder.encode("user"));
         log.error("Create user get pswd hash: " + authenticatedUser.getPasswordHash());
         userDao.create(authenticatedUser);
+
+        // Measured using bananas per meter.
+        long[][] distance_data = {
+            { 1,2,269 },
+            { 1,4,306 },
+            { 1,3,298 },
+            { 1,5,399 },
+            { 2,3,178 },
+            { 1,6,285 },
+            { 2,1,232 },
+            { 3,5,516 },
+            { 2,4,374 },
+            { 3,4,525 },
+            { 2,6,353 },
+            { 4,5,397 },
+            { 4,3,473 },
+            { 2,5,339 },
+            { 3,1,344 },
+            { 5,1,365 },
+            { 3,6,466 },
+            { 4,1,289 },
+            { 3,2,238 },
+            { 4,6,288 },
+            { 5,2,318 },
+            { 4,2,533 },
+            { 5,4,425 },
+            { 6,5,226 },
+            { 5,6,224 },
+            { 6,2,378 },
+            { 6,1,272 },
+            { 6,4,271 },
+            { 6,3,406 },
+            { 5,3,422 }
+        };
+
+        for (long[] item : distance_data) {
+            createDistances(item[0], item[1], (double) item[2]);
+        }
     }
     private Coordinates createCoordinates(double longitude, double latitude, Point point){
         Coordinates coordinates = new Coordinates();
@@ -185,11 +226,21 @@ public class TestData
         return point;
     }
 
-    private Route createRoute(String title, String desc) {
+    private Route createRoute(String title, String desc, Boolean difficult) {
         Route route = new Route();
         route.setTitle(title);
         route.setDescription(desc);
+        route.setDifficult(difficult);
         routeDao.create(route);
         return route;
+    }
+
+    private Distances createDistances(Long idA, Long idB, Double distance) {
+        Distances distances = new Distances();
+        distances.setPointAId(idA);
+        distances.setPointBId(idB);
+        distances.setDistance(distance);
+        distancesDao.create(distances);
+        return distances;
     }
 }

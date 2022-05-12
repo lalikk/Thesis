@@ -1,5 +1,5 @@
 import ROUTE_DATA from './js-modules/route-data.js';
-import { MAKE_POINT_URL, MAKE_REMOVE_ROUTE_URL, MAKE_EDIT_ROUTE_FORM_URL } from './js-modules/constants.js';
+import { MAKE_POINT_URL, MAKE_REMOVE_ROUTE_URL, MAKE_EDIT_ROUTE_FORM_URL, URL_ROUTE_LIST_EDIT } from './js-modules/constants.js';
 import { RETRIEVE_TOKEN } from './js-modules/authorisation-check.js'
 
 $(async () => {
@@ -62,6 +62,8 @@ window.removeRoute = async function(element) {
             contentType:'application/json',
             success: function(data) {
                 console.log("Point successfully edited");
+                ROUTE_DATA.clear();
+                window.location = URL_ROUTE_LIST_EDIT;
             },
             error: function(data) {
                 console.log(data);

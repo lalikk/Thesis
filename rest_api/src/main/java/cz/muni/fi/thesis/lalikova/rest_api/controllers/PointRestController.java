@@ -1,7 +1,11 @@
 package cz.muni.fi.thesis.lalikova.rest_api.controllers;
 
+import cz.muni.fi.thesis.lalikova.dto.PhotoDto;
 import cz.muni.fi.thesis.lalikova.dto.PointCreateDto;
 import cz.muni.fi.thesis.lalikova.dto.PointDto;
+import cz.muni.fi.thesis.lalikova.dto.PointUpdateDto;
+import cz.muni.fi.thesis.lalikova.entity.Point;
+import cz.muni.fi.thesis.lalikova.facade.PhotoFacade;
 import cz.muni.fi.thesis.lalikova.facade.PointFacade;
 import cz.muni.fi.thesis.lalikova.rest_api.ApiUri;
 import org.slf4j.Logger;
@@ -60,8 +64,8 @@ public class PointRestController {
     public ResponseEntity<PointDto> create(@RequestBody PointCreateDto pointCreateDto) {
         log.info("create({})", pointCreateDto);
         try {
-            pointFacade.create(pointCreateDto);
-            return ResponseEntity.ok(pointFacade.findById((long) pointFacade.findAll().size()));
+            PointDto created = pointFacade.create(pointCreateDto);
+            return ResponseEntity.ok(pointFacade.findById(created.getId()));
         } catch (Exception ex) {
             log.error("Exception={}", ex.getCause(), ex);
             return ResponseEntity.notFound().header("message", "Create with passed body failed.\nCause:" + ex.getLocalizedMessage()).build();
@@ -69,7 +73,7 @@ public class PointRestController {
     }
 
     @PutMapping(value = ApiUri.ROOT_URI_POINTS_AUTH, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PointDto> update(@RequestBody PointDto pointDto) {
+    public ResponseEntity<PointDto> update(@RequestBody PointUpdateDto pointDto) {
         log.info("update({})", pointDto);
         try {
             pointFacade.update(pointDto);

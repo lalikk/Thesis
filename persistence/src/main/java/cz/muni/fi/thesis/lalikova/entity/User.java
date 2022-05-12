@@ -33,8 +33,8 @@ public class User {
     @Column(nullable = false)
     private String passwordHash;
 
-    @OneToMany(mappedBy = "user")
-    private Set<Point> points;
+    //@OneToMany(mappedBy = "user")
+    //private Set<Point> points;
 
     public Long getId() {
         return id;
@@ -64,14 +64,14 @@ public class User {
         return this;
     }
 
-    public Set<Point> getReviews() {
+    /*public Set<Point> getReviews() {
         return Collections.unmodifiableSet(points);
     }
 
     public User setReviews(Set<Point> points) {
         this.points = points;
         return this;
-    }
+    }*/
 
     @Override
     public boolean equals(Object o) {

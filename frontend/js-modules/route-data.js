@@ -32,6 +32,15 @@ class RouteData {
         return this.#routes[id];
     }
 
+    clear() {
+        try {
+            window.localStorage.removeItem(ROUTE_DATA_KEY);
+            window.localStorage.removeItem(ROUTE_DATA_AGE_KEY);
+        } catch (error) {
+            console.error("Error clearing routes to local storage:", error);
+        }
+    }
+
     async #ensureRoutes() {
         if(this.#routes === null) {
             this.#loadFromLocalStorage();

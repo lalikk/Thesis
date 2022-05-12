@@ -1,5 +1,6 @@
 import { RETRIEVE_TOKEN } from './js-modules/authorisation-check.js'
-import { URL_CREATE_POINT } from './js-modules/constants.js';
+import { URL_CREATE_POINT, URL_POINT_LIST_EDIT } from './js-modules/constants.js';
+import POINT_DATA from './js-modules/point-data.js';
 import TAG_DATA from './js-modules/point-tag-data.js';
 
 var pointTags;
@@ -66,6 +67,8 @@ function storePoint(point) {
         data: pointJSON,
         success: function(data) {
             console.log("Point successfully created");
+            POINT_DATA.clear();
+            window.location = URL_POINT_LIST_EDIT;
         },
         error: function(data) {
             console.log(data);

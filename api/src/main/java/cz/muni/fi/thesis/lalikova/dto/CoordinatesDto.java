@@ -1,5 +1,8 @@
 package cz.muni.fi.thesis.lalikova.dto;
 
+import net.minidev.json.annotate.JsonIgnore;
+
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 /**
@@ -7,6 +10,8 @@ import java.util.Objects;
  */
 public class CoordinatesDto {
 
+    @NotNull
+    @JsonIgnore(value = false)
     private Long id;
 
     private Double latitude;

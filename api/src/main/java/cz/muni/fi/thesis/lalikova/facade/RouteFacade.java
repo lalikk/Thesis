@@ -9,7 +9,7 @@ import java.util.List;
  * Facade interface for the routes
  */
 public interface RouteFacade {
-    void create(RouteCreateDto route);
+    RouteDto create(RouteCreateDto route);
 
     RouteDto findById(Long id);
 

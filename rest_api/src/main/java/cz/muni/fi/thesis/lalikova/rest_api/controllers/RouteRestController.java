@@ -47,21 +47,19 @@ public class RouteRestController {
         }
     }
 
-    @PostMapping(value = ApiUri.ROOT_URI_ROUTES, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed({Role.FULL})
+    @PostMapping(value = ApiUri.ROOT_URI_ROUTES_AUTH, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RouteDto> create(@RequestBody RouteCreateDto routeCreateDto) {
         log.info("create({})", routeCreateDto);
         try {
-            routeFacade.create(routeCreateDto);
-            return ResponseEntity.ok(routeFacade.findById((long) routeFacade.findAll().size()));
+            RouteDto created = routeFacade.create(routeCreateDto);
+            return ResponseEntity.ok(routeFacade.findById(created.getId()));
         } catch (Exception ex) {
             log.error("Exception={}", ex.getCause(), ex);
             return ResponseEntity.notFound().header("message", "Create with passed body failed.\nCause:" + ex.getLocalizedMessage()).build();
         }
     }
 
-    @PutMapping(value = ApiUri.ROOT_URI_ROUTES, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed({Role.FULL})
+    @PutMapping(value = ApiUri.ROOT_URI_ROUTES_AUTH, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RouteDto> update(@RequestBody RouteDto routeDto) {
         log.info("update({})", routeDto);
         try {
@@ -74,8 +72,7 @@ public class RouteRestController {
         }
     }
 
-    @DeleteMapping(value = ApiUri.ROOT_URI_ROUTE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @RolesAllowed({Role.FULL})
+    @DeleteMapping(value = ApiUri.ROOT_URI_ROUTE_AUTH, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> removeById(@PathVariable("id") Long id) {
         log.info("removeById({})", id);
         try {

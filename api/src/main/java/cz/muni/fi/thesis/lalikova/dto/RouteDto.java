@@ -13,6 +13,8 @@ public class RouteDto {
 
     private String description;
 
+    private Boolean difficult;
+
     private Set<PointDto> points;
 
     private List<Long> orderedPointIds;
@@ -31,6 +33,14 @@ public class RouteDto {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Boolean getDifficult() {
+        return difficult;
+    }
+
+    public void setDifficult(Boolean difficult) {
+        this.difficult = difficult;
     }
 
     public Set<PointDto> getPoints() {

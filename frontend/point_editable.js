@@ -1,5 +1,5 @@
 import POINT_DATA from './js-modules/point-data.js';
-import { MAKE_EDIT_POINT_FORM_URL, MAKE_REMOVE_POINT_URL } from './js-modules/constants.js';
+import { MAKE_EDIT_POINT_FORM_URL, MAKE_REMOVE_POINT_URL, URL_POINT_LIST_EDIT } from './js-modules/constants.js';
 import { RETRIEVE_TOKEN } from './js-modules/authorisation-check.js'
 
 $(async () => {
@@ -18,18 +18,6 @@ function displayPoint(point) {
     let contents = "";
     
     contents += `<div class="title-simple"><h1>${point.title}</h1></div>`;
-    contents += `
-        <button type="button" id='point-edit-button' data-id="${point.id}" onclick="location.href='${MAKE_EDIT_POINT_FORM_URL(point.id)}'" 
-                class="btn btn-primary btn-lg px-4 gap-3 position-absolute" style="right: 10rem; top: 8rem;">
-            Edit
-        </button>
-    `;    
-    contents += `
-    <button type="button" id='point-remove-button' data-removepointid="${point.id}" onclick="window.removePoint(this)" 
-            class="btn btn-primary btn-lg px-4 gap-3 position-absolute" style="right: 1rem; top: 8rem;">
-        Remove
-    </button>
-`;
     contents += `<div class="text-body"><div class="clearfix"><h4>${point.description}</h4></div></div>`;
     if(point.photos.length > 1) {
         contents += `
@@ -41,7 +29,19 @@ function displayPoint(point) {
         `;
     } 
     
-    contents += renderPointGallery(point);
+    contents += renderPointGallery(point);    
+    contents += `<div style="display: block; text-align: center;">
+    <button type="button" id='point-edit-button' data-id="${point.id}" onclick="location.href='${MAKE_EDIT_POINT_FORM_URL(point.id)}'" 
+            class="btn btn-primary btn-lg px-4 gap-3" style="margin: 0 auto;">
+        Edit
+    </button>
+`;    
+    contents += `
+    <button type="button" id='point-remove-button' data-removepointid="${point.id}" onclick="window.removePoint(this)" 
+            class="btn btn-primary btn-lg px-4 gap-3" style="margin: 0 auto;">
+        Remove
+    </button></div>
+`;
     div.innerHTML = contents;
 }
 
@@ -82,6 +82,8 @@ window.removePoint = async function(element) {
             contentType:'application/json',
             success: function(data) {
                 console.log("Point successfully edited");
+                POINT_DATA.clear();
+                window.location = URL_POINT_LIST_EDIT;
             },
             error: function(data) {
                 console.log(data);

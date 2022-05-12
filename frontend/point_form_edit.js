@@ -1,6 +1,6 @@
 import POINT_DATA from './js-modules/point-data.js';
 import TAG_DATA from './js-modules/point-tag-data.js';
-import { URL_CREATE_POINT } from './js-modules/constants.js';
+import { URL_CREATE_POINT, MAKE_EDITABLE_POINT_URL } from './js-modules/constants.js';
 import { RETRIEVE_TOKEN } from './js-modules/authorisation-check.js'
 
 var id = null;
@@ -46,13 +46,16 @@ function fillPointData(point) {
 
 window.editPoint = async function() {
     let editedPoint = {};
+    let existingPoint = await POINT_DATA.getPoint(id);
+    console.log("Existing:", existingPoint);
     editedPoint.id = id;    
     editedPoint.title = document.getElementById("pointTitleEdit").value;
     editedPoint.description = document.getElementById("pointDescriptionEdit").value;
     editedPoint.coordinates = {}
+    editedPoint.coordinates.id = existingPoint.coordinates.id;
     editedPoint.coordinates.latitude = document.getElementById("latitudeEdit").value;
     editedPoint.coordinates.longitude = document.getElementById("longitudeEdit").value;
-    editedPoint.photos = null;
+    //editedPoint.photos = existingPoint.photos;
     editedPoint.tags = [];
     await fillTags(editedPoint.tags);
     storePoint(editedPoint);
@@ -86,6 +89,8 @@ function storePoint(point) {
         contentType:'application/json',
         data: pointJSON,
         success: function(data) {
+            POINT_DATA.clear();
+            window.location = MAKE_EDITABLE_POINT_URL(point.id);
             console.log("Point successfully edited");
         },
         error: function(data) {

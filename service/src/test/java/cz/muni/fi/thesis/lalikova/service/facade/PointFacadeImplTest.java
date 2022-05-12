@@ -3,6 +3,7 @@ package cz.muni.fi.thesis.lalikova.service.facade;
 import cz.muni.fi.thesis.lalikova.ServiceConfiguration;
 import cz.muni.fi.thesis.lalikova.dto.PointCreateDto;
 import cz.muni.fi.thesis.lalikova.dto.PointDto;
+import cz.muni.fi.thesis.lalikova.dto.PointUpdateDto;
 import cz.muni.fi.thesis.lalikova.entity.Point;
 import cz.muni.fi.thesis.lalikova.facade.PointFacade;
 import cz.muni.fi.thesis.lalikova.service.BeanMappingService;
@@ -80,7 +81,7 @@ public class PointFacadeImplTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void update() {
-        PointDto pointDto = beanMappingService.mapTo(point1, PointDto.class);
+        PointUpdateDto pointDto = beanMappingService.mapTo(point1, PointUpdateDto.class);
         when(beanMappingService.mapTo(pointDto, Point.class)).thenReturn(point1);
         pointDto.setDescription("New title");
         pointFacade.update(pointDto);

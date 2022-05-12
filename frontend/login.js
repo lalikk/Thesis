@@ -13,19 +13,19 @@ window.sendLogin = async function() {
     loginInfo.login = document.getElementById("email").value;
     loginInfo.password = document.getElementById("password").value;
     let loginJSON = JSON.stringify(loginInfo);
-    $.ajax({
+    console.log(loginInfo);
+    await $.ajax({
         url:URL_USER_LOGIN,
         dataType:'json',
         type:'POST',
         contentType:'application/json',
         data: loginJSON,
         success: function(data) {
-            //console.log("Success reached");
+            console.log("Success reached");
             Cookies.set('token', JSON.stringify(processToken(data.jwt)), { sameSite: 'strict' });
         }
     });
-
-return true;
+    window.location.href="./index.html"; 
 }
 
 function processToken(token) {

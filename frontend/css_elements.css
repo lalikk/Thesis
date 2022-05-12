@@ -1,5 +1,6 @@
 body {
-    margin: 32px;
+    padding-top: 16px;
+    margin: 16px;
   }
   
   .delbtn {
@@ -46,7 +47,6 @@ body {
   }
 
 .card-planning {
-  height: 8rem;
   position: relative;
   padding: 20px;
   box-sizing: border-box;

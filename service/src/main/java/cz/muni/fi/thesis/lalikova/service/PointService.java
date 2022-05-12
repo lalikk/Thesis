@@ -7,7 +7,7 @@ import cz.muni.fi.thesis.lalikova.entity.Point;
  * Interface for the service for Point entity
  */
 public interface PointService {
-    void create(Point point);
+    Point create(Point point);
 
     Point findById(Long id);
 

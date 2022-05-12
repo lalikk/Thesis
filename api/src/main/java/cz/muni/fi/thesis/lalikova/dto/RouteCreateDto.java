@@ -19,6 +19,8 @@ public class RouteCreateDto {
 
     private String description;
 
+    private Boolean difficult;
+
     private Set<PointDto> points = new HashSet<>();         // TODO take only ids instead of objects, look into all dtos
 
     private List<Long> orderedPointIds = new ArrayList<>();
@@ -37,6 +39,14 @@ public class RouteCreateDto {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Boolean getDifficult() {
+        return difficult;
+    }
+
+    public void setDifficult(Boolean difficult) {
+        this.difficult = difficult;
     }
 
     public Set<PointDto> getPoints() {
