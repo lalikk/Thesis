@@ -11,7 +11,9 @@ public class ApiUri {
     public static final String ROOT_URI_COORDINATES = "/coordinates";
 
     public static final String ROOT_URI_DISTANCE = "/distances/{id}";
+    public static final String ROOT_URI_DISTANCE_AUTH = "/auth/distances/{id}";
     public static final String ROOT_URI_DISTANCES = "/distances";
+    public static final String ROOT_URI_DISTANCES_AUTH = "/auth/distances";
 
     public static final String ROOT_URI_PHOTO = "/photos/{id}";
     public static final String ROOT_URI_PHOTOS = "/photos";

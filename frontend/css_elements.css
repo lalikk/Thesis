@@ -80,11 +80,15 @@ body {
   margin: 0 0 20px 0;
 }
 
-.text-ellipsis--3{
+.text-ellipsis--3, .card-detail :first-child {
   text-overflow:ellipsis;
   overflow:hidden;
   display: -webkit-box !important;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   white-space: normal;
+}
+
+.card-detail :not(:first-child) {
+  display: none;
 }

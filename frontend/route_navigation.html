@@ -56,7 +56,7 @@
         <div class="hamburger side-button" onclick="document.querySelector('.side-menu-extra').classList.toggle('zero-height')">
           <div></div>
         </div>
-        <div id="side-recompute" class="recompute side-button d-none text-white" onclick="window.returnRecompute()">
+        <div id="side-recompute" class="recompute side-button d-none text-white" onclick="window.recomputeOffRoute()">
           <div>
             <a class="nav-link text-white">
               <svg class="bi d-block mx-auto mb-1" width="30" height="30">
@@ -95,9 +95,6 @@
           </div>
           <div class="more-a side-button" tabindex="0" onclick="document.querySelector('.menu').classList.toggle('active')">
             <div>
-                <!--<svg id="moreSvg" class="bi d-block mx-auto mb-1 text-white" width="30" height="30">
-                  <use xlink:href="#more" />
-                </svg>-->
               <div class="dot-typing"></div>              
             </div>
           </div>
@@ -108,15 +105,15 @@
           <div>
             <ul>
               <li><a href="index.html">Home</a></li>
-              <li style="display: block ruby;">
+              <li>
                 <a href="route_list.html">Routes</a>
-                <a id="a-routes-edit" href="route_list_edit.html" class="nav-link d-none"><svg class="bi d-block mx-auto mb-1" width="20" height="20">
+                <a id="a-routes-edit" href="route_list_edit.html" class="nav-link d-none"><svg class="bi mx-auto mb-1" width="20" height="20">
                     <use xlink:href="#planningView" />
                   </svg></a>
               </li>
-              <li style="display: block ruby;">
+              <li>
                 <a href="point_list.html">Sights</a>
-                <a id="a-points-edit" href="point_list_edit.html" class="nav-link d-none"><svg class="bi d-block mx-auto mb-1" width="20" height="20">
+                <a id="a-points-edit" href="point_list_edit.html" class="nav-link d-none"><svg class="bi mx-auto mb-1" width="20" height="20">
                     <use xlink:href="#planningView" />
                   </svg></a>
               </li>

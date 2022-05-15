@@ -24,13 +24,17 @@ async function renderPoints(points, tag = null) {
 
 function renderPointCard(point) {
     return `<div class="col-sm-6 col-lg-4 mb-4">
+                <a href="${MAKE_POINT_URL(point.id)}">
                 <div class="card">
-                    <img class="card-img-top" src="${point.photos[0] ? point.photos[0].image: ""}" width="100%" height="200" focusable="false"/>
+                    <object class="card-img-top" data="${point.photos[0] ? point.photos[0].image: ""}" width="100%" height="200" focusable="false">
+                      <img class="card-img-top" src="./images/noimage.jpg" type="image/jpeg" width="100%" height="200" focusable="false"/>
+                    </object>
                     <div class="card-body">
-                        <h5 class="card-title"><a href="${MAKE_POINT_URL(point.id)}">${point.title}</a></h5>
-                        <p class="text-ellipsis--3">${point.description}</p>
+                        <h5 class="card-title">${point.title}</h5>
+                        <div class="card-detail text-ellipsis--3">${point.description}</div>
                     </div>
                 </div>
+                </a>
             </div>`;
 }
 

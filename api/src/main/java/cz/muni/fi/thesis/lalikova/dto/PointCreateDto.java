@@ -12,16 +12,18 @@ import java.util.Set;
 public class PointCreateDto {
 
     @NotNull
-    @Size(max = 64)
+    @Size(max = 64, min = 3)
     private String title;
 
     @Size(max = 500)
     private String description;
 
+    @NotNull
     private CoordinatesCreateDto coordinates;
 
     private Set<PhotoDto> photos = new HashSet<>();
 
+    @NotNull
     private Set<PointTagDto> tags = new HashSet<>();
 
 

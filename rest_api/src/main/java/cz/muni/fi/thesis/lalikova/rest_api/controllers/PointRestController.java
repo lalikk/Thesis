@@ -56,7 +56,7 @@ public class PointRestController {
             return ResponseEntity.ok(pointFacade.findById(id));
         } catch (Exception ex) {
             log.error("Exception={}", ex.getCause(), ex);
-            return ResponseEntity.notFound().header("message", "Id not found.\nCause:" + ex.getLocalizedMessage()).build();
+            return ResponseEntity.notFound().header("message", "Id not found. Cause:" + ex.getLocalizedMessage()).build();
         }
     }
 
@@ -64,11 +64,27 @@ public class PointRestController {
     public ResponseEntity<PointDto> create(@RequestBody PointCreateDto pointCreateDto) {
         log.info("create({})", pointCreateDto);
         try {
+            boolean isValid = pointCreateDto.getTitle() != null;
+            isValid = isValid && !pointCreateDto.getTitle().isBlank();
+            isValid = isValid && (pointCreateDto.getCoordinates() != null);
+            isValid = isValid && (pointCreateDto.getCoordinates().getLatitude() != null);
+            isValid = isValid && (pointCreateDto.getCoordinates().getLongitude() != null);
+            isValid = isValid && (pointCreateDto.getCoordinates().getLatitude() > -90.0);
+            isValid = isValid && (pointCreateDto.getCoordinates().getLatitude() < 90.0);
+            isValid = isValid && (pointCreateDto.getCoordinates().getLongitude() > -180.0);
+            isValid = isValid && (pointCreateDto.getCoordinates().getLongitude() < 180.0);
+            isValid = isValid && (pointCreateDto.getTags() != null);
+            if (!isValid) {
+                return ResponseEntity
+                        .badRequest()
+                        .header("message", "Invalid point data.")
+                        .build();
+            }
             PointDto created = pointFacade.create(pointCreateDto);
             return ResponseEntity.ok(pointFacade.findById(created.getId()));
         } catch (Exception ex) {
             log.error("Exception={}", ex.getCause(), ex);
-            return ResponseEntity.notFound().header("message", "Create with passed body failed.\nCause:" + ex.getLocalizedMessage()).build();
+            return ResponseEntity.notFound().header("message", "Create with passed body failed. Cause:" + ex.getLocalizedMessage()).build();
         }
     }
 
@@ -76,12 +92,28 @@ public class PointRestController {
     public ResponseEntity<PointDto> update(@RequestBody PointUpdateDto pointDto) {
         log.info("update({})", pointDto);
         try {
+            boolean isValid = pointDto.getTitle() != null;
+            isValid = isValid && !pointDto.getTitle().isBlank();
+            isValid = isValid && (pointDto.getCoordinates() != null);
+            isValid = isValid && (pointDto.getCoordinates().getLatitude() != null);
+            isValid = isValid && (pointDto.getCoordinates().getLongitude() != null);
+            isValid = isValid && (pointDto.getCoordinates().getLatitude() > -90.0);
+            isValid = isValid && (pointDto.getCoordinates().getLatitude() < 90.0);
+            isValid = isValid && (pointDto.getCoordinates().getLongitude() > -180.0);
+            isValid = isValid && (pointDto.getCoordinates().getLongitude() < 180.0);
+            isValid = isValid && (pointDto.getTags() != null);
+            if (!isValid) {
+                return ResponseEntity
+                        .badRequest()
+                        .header("message", "Invalid point data.")
+                        .build();
+            }
             pointFacade.update(pointDto);
             Long id = pointDto.getId() != null ? pointDto.getId() : pointFacade.findAll().size();
             return ResponseEntity.ok(pointFacade.findById(id));
         } catch (Exception ex) {
             log.error("Exception={}", ex.getCause(), ex);
-            return ResponseEntity.notFound().header("message", "Update with passed body failed.\nCause:" + ex.getLocalizedMessage()).build();
+            return ResponseEntity.notFound().header("message", "Update with passed body failed. Cause:" + ex.getLocalizedMessage()).build();
         }
     }
 
@@ -93,7 +125,7 @@ public class PointRestController {
             return ResponseEntity.ok().build();
         } catch (Exception ex) {
             log.error("Exception={}", ex.getCause(), ex);
-            return ResponseEntity.notFound().header("message", "Id not found.\nCause:" + ex.getLocalizedMessage()).build();
+            return ResponseEntity.notFound().header("message", "Id not found. Cause:" + ex.getLocalizedMessage()).build();
         }
     }
 }

@@ -21,7 +21,7 @@ public class RouteCreateDto {
 
     private Boolean difficult;
 
-    private Set<PointDto> points = new HashSet<>();         // TODO take only ids instead of objects, look into all dtos
+    private Set<PointDto> points = new HashSet<>();
 
     private List<Long> orderedPointIds = new ArrayList<>();
 

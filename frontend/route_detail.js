@@ -1,6 +1,7 @@
 import ROUTE_DATA from './js-modules/route-data.js';
 import { CURRENT_ROUTE } from './js-modules/current-route.js';
-import { MAKE_POINT_URL } from './js-modules/constants.js';
+import { MAKE_POINT_URL, URL_ROUTE_PLANNING, MAKE_EDIT_ROUTE_FORM_URL, MAKE_REMOVE_ROUTE_URL, URL_ROUTE_LIST_EDIT } from './js-modules/constants.js';
+import { CHECK_VALID_LOGIN, RETRIEVE_TOKEN } from './js-modules/authorisation-check.js';
 
 $(async () => {
     let urlParams = new URLSearchParams(window.location.search);
@@ -11,32 +12,46 @@ $(async () => {
     }
     
     let route = await ROUTE_DATA.getRoute(id);
-    displayRoute(route);
+    await displayRoute(route);
 })
 
-function displayRoute(data) {
+async function displayRoute(data) {
     let table = document.querySelector("#point-list");
     let points = data.points;
 
     let contents = "";
     //contents += `<div class="title-simple"><h1>${data.title}</h1></div>\n`;
-    contents += `<div class="text-body"><div class="clearfix"><h2>${data.description}</h2></div></div>\n`;
+    contents += `<div class="text-body"><div class="clearfix"><h1>${data.description}</h1></div></div>\n`;
     contents += `<div  class="row" data-masonry='{"percentPosition": true }' style='margin-top:2rem'>`;
     for (let point of points) {
         contents += `
             <div class="col-sm-6 col-lg-4 mb-4">
+                <a href="${MAKE_POINT_URL(point.id)}">
                 <div class="card">
-                    <img class="card-img-top" src="${point.photos[0].image}" width="100%" height="200" focusable="false"/>
+                    <object class="card-img-top" data="${point.photos[0] ? point.photos[0].image: ""}" width="100%" height="200" focusable="false">
+                      <img class="card-img-top" src="./images/noimage.jpg" type="image/jpeg" width="100%" height="200" focusable="false"/>
+                    </object>
                     <div class="card-body">
-                        <h5 class="card-title"><a href=${MAKE_POINT_URL(point.id)}>${point.title}</a></h5>
-                        <div class="text-ellipsis--3">${point.description}</div>
+                        <h5 class="card-title">${point.title}</h5>
+                        <div class="card-detail text-ellipsis--3">${point.description}</div>
                     </div>
                 </div>
+                </a>
             </div>
         `;
-        //contents += `<tr><td><a href=${urlPoint}>${point.title}</a></td><td>${point.description}</td></tr>\n`;
     }
     contents += `</div>`;
+
+    contents += `
+        <button type="button" id='planning-button' class="btn btn-primary btn-lg px-4 gap-3" 
+                style="margin: 0 auto; display:block">Add to route planning</button>
+    `;
+    if (await CHECK_VALID_LOGIN()) {
+        contents += `<div class="my-2 text-center">`;
+        contents += `<button type="button" id='edit-route' class="btn btn-primary btn-lg px-4 gap-3 mx-1" onclick="location.href='${MAKE_EDIT_ROUTE_FORM_URL(data.id)}'">Edit</button>`;
+        contents += `<button type="button" id='remove-route' class="btn btn-primary btn-lg px-4 gap-3 mx-1" data-removerouteid="${data.id}" onclick="window.removeRoute(this)">Remove</button>`;
+        contents += `</div>`;
+    }
     table.innerHTML = contents;
 
     let planningButton = document.querySelector("#planning-button");
@@ -65,7 +80,7 @@ async function extractRoutePoints(element) {
 async function startPlanning(e) {
     if (CURRENT_ROUTE.isEmpty()) {
         CURRENT_ROUTE.append(await extractRoutePoints(e.target));
-        window.location.href="./route_planning.html";
+        window.location.href = URL_ROUTE_PLANNING;
     } else {
         $('#route-planning').modal('show');
     }
@@ -73,10 +88,35 @@ async function startPlanning(e) {
 
 async function replaceRoute(e) {
     CURRENT_ROUTE.refresh(await extractRoutePoints(e.target));
-    window.location.href="./route_planning.html";
+    window.location.href = URL_ROUTE_PLANNING;
 }
 
 async function extendRoute(e) {
     CURRENT_ROUTE.append(await extractRoutePoints(e.target));
-    window.location.href="./route_planning.html"; 
+    window.location.href = URL_ROUTE_PLANNING; 
+}
+
+window.removeRoute = async function(element) {
+    let routeId = element.dataset['removerouteid'];
+    let token = RETRIEVE_TOKEN();
+    let url = MAKE_REMOVE_ROUTE_URL(routeId);
+    console.log(url);
+    $.ajaxSetup({
+        headers : {
+            "Authorization": token
+        }
+        });
+        $.ajax({
+            url:url,
+            type:'DELETE',
+            contentType:'application/json',
+            success: function(data) {
+                console.log("Point successfully edited");
+                ROUTE_DATA.clear();
+                window.location = URL_ROUTE_LIST_EDIT;
+            },
+            error: function(data) {
+                console.log(data);
+            }
+        })
 }

@@ -43,7 +43,7 @@ public class RouteRestController {
             return ResponseEntity.ok(routeFacade.findById(id));
         } catch (Exception ex) {
             log.error("Exception={}", ex.getCause(), ex);
-            return ResponseEntity.notFound().header("message", "Id not found.\nCause:" + ex.getLocalizedMessage()).build();
+            return ResponseEntity.notFound().header("message", "Id not found. Cause:" + ex.getLocalizedMessage()).build();
         }
     }
 
@@ -51,11 +51,21 @@ public class RouteRestController {
     public ResponseEntity<RouteDto> create(@RequestBody RouteCreateDto routeCreateDto) {
         log.info("create({})", routeCreateDto);
         try {
+            boolean isValid = routeCreateDto.getDescription() != null;
+            isValid = isValid && !routeCreateDto.getDescription().isBlank();
+            isValid = isValid && (routeCreateDto.getDifficult() != null);
+            isValid = isValid && (routeCreateDto.getPoints() != null);
+            if (!isValid) {
+                return ResponseEntity
+                        .badRequest()
+                        .header("message", "Invalid route data.")
+                        .build();
+            }
             RouteDto created = routeFacade.create(routeCreateDto);
             return ResponseEntity.ok(routeFacade.findById(created.getId()));
         } catch (Exception ex) {
             log.error("Exception={}", ex.getCause(), ex);
-            return ResponseEntity.notFound().header("message", "Create with passed body failed.\nCause:" + ex.getLocalizedMessage()).build();
+            return ResponseEntity.notFound().header("message", "Create with passed body failed. Cause:" + ex.getLocalizedMessage()).build();
         }
     }
 
@@ -63,12 +73,22 @@ public class RouteRestController {
     public ResponseEntity<RouteDto> update(@RequestBody RouteDto routeDto) {
         log.info("update({})", routeDto);
         try {
+            boolean isValid = routeDto.getDescription() != null;
+            isValid = isValid && !routeDto.getDescription().isBlank();
+            isValid = isValid && (routeDto.getDifficult() != null);
+            isValid = isValid && (routeDto.getPoints() != null);
+            if (!isValid) {
+                return ResponseEntity
+                        .badRequest()
+                        .header("message", "Invalid route data.")
+                        .build();
+            }
             routeFacade.update(routeDto);
             Long id = routeDto.getId() != null ? routeDto.getId() : routeFacade.findAll().size();
             return ResponseEntity.ok(routeFacade.findById(id));
         } catch (Exception ex) {
             log.error("Exception={}", ex.getCause(), ex);
-            return ResponseEntity.notFound().header("message", "Update with passed body failed.\nCause:" + ex.getLocalizedMessage()).build();
+            return ResponseEntity.notFound().header("message", "Update with passed body failed. Cause:" + ex.getLocalizedMessage()).build();
         }
     }
 
@@ -80,7 +100,7 @@ public class RouteRestController {
             return ResponseEntity.ok().build();
         } catch (Exception ex) {
             log.error("Exception={}", ex.getCause(), ex);
-            return ResponseEntity.notFound().header("message", "Id not found.\nCause:" + ex.getLocalizedMessage()).build();
+            return ResponseEntity.notFound().header("message", "Id not found. Cause:" + ex.getLocalizedMessage()).build();
         }
     }
 

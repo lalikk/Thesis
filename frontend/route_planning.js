@@ -1,4 +1,3 @@
-import Cookies from './node_modules/js-cookie/dist/js.cookie.mjs'
 import POINT_DATA from './js-modules/point-data.js';
 import { VISITED_POINTS, CURRENT_ROUTE } from './js-modules/current-route.js'
 import { MAKE_POINT_URL } from './js-modules/constants.js'
@@ -12,7 +11,7 @@ $(async () => {
 async function displayCurrentRoute() {
   let currentRoute = CURRENT_ROUTE.getPlannedRoutePoints();
   displayEmptyMessage(currentRoute.length == 0);
-  displayReorderButton(!CURRENT_ROUTE.isSorted() && !CURRENT_ROUTE.isEmpty());
+  displayReorderButton(!CURRENT_ROUTE.isSorted());
   renderCards(await POINT_DATA.getPoints(currentRoute));
 }
 
@@ -28,7 +27,7 @@ function renderCards(currentRoute) {
 
 function renderCardRow(point, visited, isFirst, isLast) {
   return `
-  <div data-point="${point.id}" class="card-planning" style="background-image: url('${point.photos[0].image}');">
+  <div data-point="${point.id}" class="card-planning" style="background-image: url('${point.photos[0] ? point.photos[0].image : "./images/noimage.jpg"}');">
     <div class="inner-planning">
       <span style="display: inline-block;">      
       <a href=${MAKE_POINT_URL(point.id)} class="${visited ? "text-muted" : ""}"><h3>${point.title}</h3></a>
@@ -86,8 +85,8 @@ window.removePoint = function(element) {
 
 window.revertVisited = async function(element) {
   let pointId =element.dataset['pointadd'];
+  console.log(pointId);
   VISITED_POINTS.removeFromVisited(pointId);
-  document.querySelector(`tr[data-point="${pointId}"]`).classList.toggle("d-none", true);
   await displayCurrentRoute();
 }
 
@@ -131,6 +130,7 @@ function displayReorderButton(visible) {
 
 window.computeRouteOrder = async function() {
   if (CURRENT_ROUTE.hasVisitedPoints()) {
+    displayReorderButton(false);
     return;
   }
 

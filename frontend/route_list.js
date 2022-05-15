@@ -24,13 +24,15 @@ async function renderRoutes(routes, difficult = null) {
 
 function renderCardRow(route) {
     return `
-    <div data-route="${route.id}" class="card-planning" style="background-image: url('${route.points[0].photos[0].image}');">
+    <a href=${MAKE_ROUTE_URL(route.id)}>
+    <div data-route="${route.id}" class="card-planning" style="background-image: url('${route.points[0] ? route.points[0].photos[0].image : "./images/noimage.jpg"}');">
       <div class="inner-planning" style="padding-right:2rem;">
         <span style="display: inline-block;">      
-        <a href=${MAKE_ROUTE_URL(route.id)}><h3>${route.description}</h3></a>
+        <h3>${route.description}</h3>
         </span>
       </div>
-    </div>`;
+    </div>
+    </a>`;
   }
   
   window.toggleTagFilter = async function(element) {

@@ -1,5 +1,7 @@
 package cz.muni.fi.thesis.lalikova.dto;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
@@ -9,9 +11,13 @@ import java.util.Objects;
 public class CoordinatesCreateDto {
 
     @NotNull
+    @Min(value = -90, message = "Latitude too low.")
+    @Max(value = 90, message = "Latitude too high.")
     private Double latitude;
 
     @NotNull
+    @Min(value = -180, message = "Longitude too low.")
+    @Max(value = 180, message = "Longitude too high.")
     private Double longitude;
 
     public Double getLatitude() {

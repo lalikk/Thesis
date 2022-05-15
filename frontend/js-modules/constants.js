@@ -9,6 +9,7 @@ const BASE_URL = window.location.protocol + "//" + window.location.host;
 
 export const URL_POINT_LIST = new URL(BASE_URL + "/rest/points");
 export const URL_DISTANCES_LIST = new URL(BASE_URL + "/rest/distances");
+export const URL_DISTANCES_CREATE = new URL(BASE_URL + "/rest/auth/distances");
 export const URL_ROUTE_LIST = new URL(BASE_URL + "/rest/routes");
 export const URL_POINT_TAG_LIST = new URL(BASE_URL + "/rest/point_tags");
 
@@ -19,13 +20,14 @@ export const URL_REMOVE_ROUTE_PREFIX = new URL(BASE_URL + "/rest/auth/route")
 
 export const URL_POINT_DETAIL_PREFIX = new URL(BASE_URL + "/point_detail.html");
 export const URL_ROUTE_DETAIL_PREFIX = new URL(BASE_URL + "/route_detail.html");
-export const URL_POINT_DETAIL_PREFIX_EDITABLE = new URL(BASE_URL + "/point_editable.html");
+export const URL_POINT_DETAIL_PREFIX_EDITABLE = new URL(BASE_URL + "/point_detail.html");
 export const URL_POINT_DETAIL_PREFIX_EDIT_FORM = new URL(BASE_URL + "/point_form_edit.html"); 
 export const URL_POINT_CREATE_REDIRECT = new URL(BASE_URL + "/point_form.html");
 export const URL_POINT_LIST_EDIT = new URL(BASE_URL + "/point_list_edit.html");
 export const URL_ROUTE_LIST_EDIT = new URL(BASE_URL + "/route_list_edit.html");
+export const URL_ROUTE_PLANNING = new URL(BASE_URL + "/route_planning.html");
 
-export const URL_ROUTE_DETAIL_PREFIX_EDITABLE = new URL(BASE_URL + "/route_editable.html");
+export const URL_ROUTE_DETAIL_PREFIX_EDITABLE = new URL(BASE_URL + "/route_detail.html");
 export const URL_ROUTE_DETAIL_PREFIX_EDIT_FORM = new URL(BASE_URL + "/route_form_edit.html"); 
 export const URL_ROUTE_CREATE_REDIRECT = new URL(BASE_URL + "/route_form.html");
 

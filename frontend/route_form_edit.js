@@ -21,6 +21,7 @@ $(async () => {
     console.log(allPoints);
     console.log(routePoints);
     document.getElementById("routeDescriptionEdit").value = route.description;
+    document.getElementById("route-diff-check").checked = route.difficult;
     displaySelectedPoints();
     displayAvailablePoints();
 })
@@ -49,19 +50,24 @@ function displayAvailablePoints() {
     let div = document.getElementById("selectable_points_list_edit");
     let contents = "";
     div.innerHTML = contents;
-    contents += `<div id="point-list-available" class="container py-5">`;
+    contents += `<div id="point-list-available" class="container">`;
     contents += `<div  class="row" data-masonry='{"percentPosition": true }'>`;
     for (let point of allPoints) {
         if (!routePoints.includes(JSON.stringify(point.id))){
             contents += `
             <div class="col-sm-6 col-lg-4 mb-4">
-                <div class="card" onclick="window.moveSelectedPoints(this)"  data-selectpoint="${point.id}">
+                <div class="card" onclick="window.moveSelectedPoints(this)"  data-selectpoint="${point.id}" style="cursor:pointer;">
                 <div id="select-point-button"   style="position: absolute; top: 2rem; left: 2rem"
-                ><h1 style="width: fit-content;">+</h1></div>
-                    <img class="card-img-top" src="${point.photos[0].image}" width="100%" height="200" focusable="false"/>
+                ></div>
+                    <div>
+                        <img class="card-img-top" src="${point.photos[0].image}" width="100%" height="200" focusable="false"/>
+                        <div class="image-overlay">
+                            <span>+</span>
+                        </div>
+                    </div>
                     <div class="card-body">
-                        <h5 class="card-title"><a href=${MAKE_POINT_URL(point.id)}>${point.title}</a></h5>
-                        <p class="text-ellipsis--3">${point.description}</p>
+                        <h5 class="card-title">${point.title}</h5>
+                        <div class="card-detail text-ellipsis--3">${point.description}</div>
                     </div>
                 </div>
             </div>
@@ -76,23 +82,28 @@ function displaySelectedPoints() {
     let div = document.getElementById("route_points_list_edit");
     let contents = "";
     div.innerHTML = contents; 
-    contents += `<div id="point-list-available" class="container py-5">`;
+    contents += `<div id="point-list-available" class="container">`;
     contents += `<div  class="row" data-masonry='{"percentPosition": true }'>`;
     for (let point of allPoints) {
         if (routePoints.includes(JSON.stringify(point.id))){
             contents += `
             <div class="col-sm-6 col-lg-4 mb-4">
-            <div class="card" onclick="window.moveDeselectedPoints(this)"  data-deselectpoint="${point.id}">
+            <div class="card" onclick="window.moveDeselectedPoints(this)" data-deselectpoint="${point.id}" style="cursor:pointer;">
             <div id="select-point-button"   style="position: absolute; top: 2rem; left: 2rem"
-            ><h1 style="width: fit-content;">-</h1></div>
-                    <img class="card-img-top" src="${point.photos[0].image}" width="100%" height="200" focusable="false"/>
+            ></div>
+                    <div>
+                        <img class="card-img-top" src="${point.photos[0].image}" width="100%" height="200" focusable="false"/>
+                        <div class="image-overlay">
+                            <span>−</span>
+                        </div>
+                    </div>
                     <div class="card-body">
-                        <h5 class="card-title"><a href=${MAKE_POINT_URL(point.id)}>${point.title}</a></h5>
-                        <p class="text-ellipsis--3">${point.description}</p>
+                        <h5 class="card-title">${point.title}</h5>
+                        <div class="card-detail text-ellipsis--3">${point.description}</div>
                     </div>
                 </div>
             </div>
-        `;
+            `;
         }
     }
     contents += `</div></div>`;
@@ -105,6 +116,7 @@ window.submitRoute = async function () {
     newRoute.title = document.getElementById("routeDescriptionEdit").value; 
     newRoute.description = document.getElementById("routeDescriptionEdit").value;
     newRoute.points = await POINT_DATA.getPoints(routePoints);
+    newRoute.difficult = document.getElementById("route-diff-check").checked;
     sendRoute(newRoute);
 }
 
@@ -130,6 +142,11 @@ function sendRoute(route) {
             window.location = MAKE_EDITABLE_ROUTE_URL(route.id);
         },
         error: function(data) {
+            if (data.status == 400) {
+                alert("Invalid route data. Please check the form.");
+            } else {
+                alert("Connection error.");
+            }
             console.log(data);
         }
     })

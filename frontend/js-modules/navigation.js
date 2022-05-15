@@ -50,7 +50,7 @@ export class MapView {
             pic = JAK.mel("img", {src:SMap.CONFIG.img+"/marker/drop-blue.png"});   
         }
         location.appendChild(pic);
-        let text = JAK.mel("div", {}, {position:"absolute", left:"0px", top:"2px", textAlign:"center", width:"22px", color:"white", fontWeight:"bold"});
+        let text = JAK.mel("div", {}, {position:"absolute", left:"0px", top:"2px", textAlign:"center", width:"22px", color:"white", fontWeight:"bold", cursor: "pointer"});
         text.innerHTML = `${label}`;
         location.appendChild(text);
         var marker = new SMap.Marker(TRANSFORM_COORDINATES(point.coordinates), `point-${point.id}`, { url: location, title: point.title });
@@ -185,18 +185,20 @@ export class Navigation {
 
     monitorPointsNearby(callback) {
         navigator.geolocation.watchPosition(async (position) => {
-            let allPoints = await POINT_DATA.getAllPoints();
-            let trackedPoints = this.#filterUntracked(Object.values(allPoints));
-            let allCoordinates = EXTRACT_COORDINATES(trackedPoints);
-            let closestIndex = FIND_CLOSEST(position.coords, allCoordinates, RANGE_ON_POINT);
-            if (closestIndex != -1) {
-                callback(trackedPoints[closestIndex], null);
+            let routePointsIds = CURRENT_ROUTE.getUnvisitedRoutePoints();                                            
+            let routePoints = Object.values(await POINT_DATA.getPoints(routePointsIds));
+            let routeCoordinates = EXTRACT_COORDINATES(routePoints);
+            let closestOnRouteIndex = FIND_CLOSEST(position.coords, routeCoordinates, RANGE_ON_POINT);
+            if (closestOnRouteIndex != -1) {
+                // Callback values: [ reached, nearby ]
+                callback(routePoints[closestOnRouteIndex], null);
             } else {
-                let offRoutePoints = this.#filterPlanned(trackedPoints);
+                let allPoints = Object.values(await POINT_DATA.getAllPoints());
+                let offRoutePoints = this.#getNearbyCandidates(allPoints); 
                 let offRouteCoordinates =  EXTRACT_COORDINATES(offRoutePoints);
-                let closestNearby = FIND_CLOSEST(position.coords, offRouteCoordinates, RANGE_POINT_NEARBY);
-                if (closestNearby != -1) {
-                    callback(null, trackedPoints[closestNearby]);
+                let closestOffRouteIndex = FIND_CLOSEST(position.coords, offRouteCoordinates, RANGE_POINT_NEARBY);
+                if (closestOffRouteIndex != -1) {
+                    callback(null, offRoutePoints[closestOffRouteIndex]);
                 } else {
                     callback(null, null);
                 }
@@ -222,25 +224,21 @@ export class Navigation {
                     callback(true);
                 }
             } else {
-                if (CURRENT_ROUTE.isOffTrackLonger()) {
+                // TODO: 1ms timeout just for testing.
+                if (inUserRange.length > 0 && CURRENT_ROUTE.isOffTrackLonger(1)) {
                     console.log("ROUTE RETURN");
-                    $('#route-return').modal('show');
+                    callback(false);
                 }
             }
 
         });
     }
 
-    #filterUntracked(points) {
+    #getNearbyCandidates(points) {
         let visitedIds = VISITED_POINTS.getAllPoints();
         let ignoredIds = this.#ignoredPoints.getAllPoints();
-        return points.filter(x => !visitedIds.includes(x.id) && !ignoredIds.includes(x.id));
-    }
-
-    #filterPlanned(points) {
         let routeIds = CURRENT_ROUTE.getPlannedRoutePoints();
-        return points.filter(x => !routeIds.includes(x.id));
-
+        return points.filter(x => !visitedIds.includes(x.id) && !ignoredIds.includes(x.id) && !routeIds.includes(x.id));
     }
 }
 

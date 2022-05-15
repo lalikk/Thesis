@@ -9,8 +9,16 @@
 export async function COMPUTE_ROUTE(routePoints, userLocation = null) {
     return new Promise((success, error) => {
         let routeCoords = [];
+        console.log(userLocation.coordinates, routePoints[0].coordinates);
+        console.log(TRANSFORM_COORDINATES(userLocation.coordinates), TRANSFORM_COORDINATES(routePoints[0].coordinates));
         if (userLocation !== null) {
-            routeCoords.push(TRANSFORM_COORDINATES(userLocation.coordinates));
+            let userLocationSMAP = TRANSFORM_COORDINATES(userLocation.coordinates);
+            let firstPointSMAP = TRANSFORM_COORDINATES(routePoints[0].coordinates);
+            if (userLocationSMAP.x == firstPointSMAP.x && userLocationSMAP.y == firstPointSMAP.y) {
+                userLocationSMAP.x = userLocationSMAP.x + 0.0005;
+                userLocationSMAP.y = userLocationSMAP.y + 0.0005;
+            }
+            routeCoords.push(userLocationSMAP);
         }
         for (let point of routePoints) {
             routeCoords.push(TRANSFORM_COORDINATES(point.coordinates));
@@ -18,9 +26,11 @@ export async function COMPUTE_ROUTE(routePoints, userLocation = null) {
         if (routeCoords.length < 2) {
             success([]);
         }
+        console.log(routeCoords);
         SMap.Route.route(routeCoords, { geometry: true, itinerary: true, criterion:"turist1"})
             .then((route) => {
                 let result = route.getResults();
+                console.log(result.points);
                 let geometry = sliceGeometry(result.geometry, result.points);
                 if (userLocation === null) {
                     // Add an empty segment if user location is not provided as a stand in for the 

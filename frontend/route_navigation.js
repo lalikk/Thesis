@@ -14,7 +14,8 @@ $(async () => {
   // Open point detail on marker click.
   MAP.addMarkerClickListener(onPointMarkerClick);
 
-  let routePointIds = CURRENT_ROUTE.getActiveRoutePoints();
+  let routePointIds = await CURRENT_ROUTE.getActiveRoutePoints();
+  console.log("Route points:", routePointIds);
   let routePoints = await POINT_DATA.getPoints(routePointIds);
 
   console.log(MAP, routePoints);
@@ -31,36 +32,47 @@ $(async () => {
   
   NAVIGATION.monitorUserCoordinates(async (userLocation) => {
     MAP.refreshUserMarker(userLocation);
-    MAP.drawRouteGeometry(await ensureGeometry(), CURRENT_ROUTE.getActiveSegment(), userLocation.coordinates, !isTracked);
+    MAP.drawRouteGeometry(await ensureGeometry(), CURRENT_ROUTE.getActiveSegment(), userLocation.coordinates, !CURRENT_ROUTE.isTracked());
   }, (locationError) => {
     // TODO: Handle location error.
     showLocationError(locationError);
   });
 
-  NAVIGATION.monitorPointsNearby((pointReached, pointNearby) => {
-    console.log(pointReached);
+  NAVIGATION.monitorPointsNearby(async (pointReached, pointNearby) => {
+    console.log("Reached point", pointReached);
+    console.log("Nearby point", pointNearby);
     if (pointReached != null) {
-      VISITED_POINTS.markAsVisited(pointReached.id);            // TODO check that is not visited
+      VISITED_POINTS.markAsVisited(pointReached.id);        
       let isRouteFinished = CURRENT_ROUTE.isTraverseDone();
       document.querySelector("#button-display-reached").setAttribute("data-id", pointReached.id);
       document.querySelector("#button-display-reached").setAttribute("data-finished", isRouteFinished);
+      document.querySelector("#point-reached .modal-title").innerHTML = `You have reached "${pointReached.title}".`;
       if (isRouteFinished) {
         $('#route-completed').modal('show');
       }
       $('#point-reached').modal('show');
-      // do something if route is finished - TODO figure out 
-
+      // do something if route is finished - TODO figure out
+      
+      let routePointIds = await CURRENT_ROUTE.getActiveRoutePoints();
+      await syncMarkersWithRoute(MAP, await POINT_DATA.getPoints(routePointIds));
+      MAP.drawRouteGeometry(await ensureGeometry(), CURRENT_ROUTE.getActiveSegment(), userLocation.coordinates, !CURRENT_ROUTE.isTracked()); 
     } // Reached point has highest priority, points nearby can be added with next movement detection
     if (pointNearby != null) {
+      console.log("Nearby", pointNearby);
       document.querySelector("#button-ignore-nearby").setAttribute('data-id', pointNearby.id);
       document.querySelector("#button-recompute-add-nearby").setAttribute('data-id', pointNearby.id);
+      document.querySelector("#point-nearby .modal-title").innerHTML = `"${pointNearby.title}" is near. Add to route?`;
       $('#point-nearby').modal('show');
     }
   });
 
-  NAVIGATION.monitorOffRoute(() => {
+  NAVIGATION.monitorOffRoute((wentOffRoute) => {
     // Only triggered when not ignored
-    $('#off-route').modal('show');
+    if (wentOffRoute) {
+      $('#off-route').modal('show');
+    } else {
+      $('#route-return').modal('show');
+    }
   });
   
 });
@@ -124,7 +136,10 @@ window.returnRecompute = async function() {
 }
 
 window.recomputeOffRoute = async function() {
+  CURRENT_ROUTE.shiftVisitedToBack();
+  CURRENT_ROUTE.restartTracking();
   CURRENT_ROUTE.clearGeometry();
+  document.querySelector('#side-recompute').classList.toggle("d-none", true);
   await forceRedraw(false);
   console.log("Recompute off route.");
 }
@@ -142,6 +157,7 @@ window.ignoreOffRoute = function() {
 window.recomputeNearby = async function(element) {
   // Force recompute (clear geometry in CURRENT_ROUTE and redraw ensureGeometry())
   CURRENT_ROUTE.appendLeft(element.getAttribute("data-id"));
+  CURRENT_ROUTE.shiftVisitedToBack();
   CURRENT_ROUTE.clearGeometry();
   await forceRedraw(false);
   console.log("Recompute add nearby.", element);

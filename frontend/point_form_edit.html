@@ -7,6 +7,10 @@
   <!--link rel="stylesheet" href="assets/css/starter.css"-->
   <title>Virtual nature trail</title>
 
+
+  <script type="text/javascript" src="https://api.mapy.cz/loader.js"></script>
+  <script type="text/javascript">Loader.load();</script>
+
   <!-- Bootstrap core CSS -->
   <link href="./assets/css/starter.css" rel="stylesheet">
   <script src="./node_modules/jquery/dist/jquery.min.js"></script>
@@ -35,7 +39,7 @@
     <symbol id="planningView" viewBox="0 0 16 16">
       <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
       <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>  
-    </svg>
+    </symbol>
   </svg>
 
   <main>
@@ -75,15 +79,15 @@
           <div>
             <ul>
               <li><a href="index.html">Home</a></li>
-              <li style="display: block ruby;">
+              <li>
                 <a href="route_list.html">Routes</a>
-                <a id="a-routes-edit" href="route_list_edit.html" class="nav-link d-none"><svg class="bi d-block mx-auto mb-1" width="20" height="20">
+                <a id="a-routes-edit" href="route_list_edit.html" class="nav-link d-none"><svg class="bi mx-auto mb-1" width="20" height="20">
                     <use xlink:href="#planningView" />
                   </svg></a>
               </li>
-              <li style="display: block ruby;">
+              <li>
                 <a href="point_list.html">Sights</a>
-                <a id="a-points-edit" href="point_list_edit.html" class="nav-link d-none"><svg class="bi d-block mx-auto mb-1" width="20" height="20">
+                <a id="a-points-edit" href="point_list_edit.html" class="nav-link d-none"><svg class="bi mx-auto mb-1" width="20" height="20">
                     <use xlink:href="#planningView" />
                   </svg></a>
               </li>
@@ -101,58 +105,52 @@
       </div>
     </div> 
 
-    <div class="container">
-        <main>
+    <div class="container" style="max-width: 900px; margin-bottom: 6rem;">
           <div style="margin-top: 5rem;"><h1>Update a point</h1></div>
-          <div class="row g-5" style="margin-top: 1rem;">
-            <div class="col-md-7 col-lg-8">
-              <form class="needs-validation" novalidate>
-                <div class="row g-3">
-                  <div class="col-sm-6">
-                    <label for="pointTitle" class="form-label">Title</label>
-                    <input type="text" class="form-control" id="pointTitleEdit" placeholder="" value="" required>
-                    <div class="invalid-feedback">
-                      Valid title is required.
-                    </div>
+          <form class="needs-validation" novalidate>
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <label for="pointTitle" class="form-label">Title</label>
+                <input type="text" class="form-control" id="pointTitleEdit" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                  Valid title is required.
+                </div>
+              </div>
+  
+              <div class="col-12">
+                <label for="pointDescription" class="form-label">Additional Information</label>
+                <div class="input-group has-validation">
+                  <textarea class="form-control" id="pointDescriptionEdit" rows="16" required></textarea>
+                  <div class="invalid-feedback">
+                    At least a short information about the point is required.
                   </div>
-      
-                  <div class="col-12">
-                    <label for="pointDescription" class="form-label">Additional Information</label>
-                    <div class="input-group has-validation">
-                      <textarea class="form-control" id="pointDescriptionEdit" rows="16" required></textarea>
-                      <div class="invalid-feedback">
-                        At least a short information about the point is required.
-                      </div>
-                    </div>
-                  </div>
-      
-                  <div class="col-sm-6">
-                    <label for="latitude" class="form-label">Latitude</label>
-                    <input type="text" class="form-control" id="latitudeEdit" placeholder="" value="" required>
-                    <div class="invalid-feedback">
-                      Valid latitude is required.
-                    </div>
-                  </div>
-      
-                  <div class="col-sm-6">
-                    <label for="longitude" class="form-label">Longitude</label>
-                    <input type="text" class="form-control" id="longitudeEdit" placeholder="" value="" required>
-                    <div class="invalid-feedback">
-                      Valid longitude is required.
-                    </div>
-                  </div>
+                </div>
+              </div>
+  
+              <div class="col-sm-6">
+                <label for="latitude" class="form-label">Latitude</label>
+                <input type="text" class="form-control" id="latitudeEdit" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                  Valid latitude is required.
+                </div>
+              </div>
+  
+              <div class="col-sm-6">
+                <label for="longitude" class="form-label">Longitude</label>
+                <input type="text" class="form-control" id="longitudeEdit" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                  Valid longitude is required.
+                </div>
+              </div>
 
-                <hr class="my-4">
-                  <h4>Please check all applicable tags</h4>
+            <hr class="my-4">
+              <h4>Please check all applicable tags</h4>
 
-                  <div id="point-tags-edit"></div>
-                <hr class="my-4">
-      
-              </form>
+              <div id="point-tags-edit"></div>
+            <hr class="my-4">
             </div>
-            <button class="w-100 btn btn-primary btn-lg" onclick="window.editPoint()">Update point</button>
-          </div>
-         </main>
+          </form>
+        <button class="w-100 btn btn-primary btn-lg" onclick="window.editPoint()">Update point</button>
       </div>
       
   </main>

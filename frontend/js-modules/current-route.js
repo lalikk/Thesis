@@ -106,7 +106,7 @@ class CurrentRoute {
      * @returns true if there are points to visit in the route - the route can be drawn in map
      */
     isActive() {
-        return ROUTE_MANAGER.readActiveRoute().length == 0 && !this.isTraverseDone;
+        return ROUTE_MANAGER.computeActiveRoute().length == 0 && !this.isTraverseDone;
     }
 
     /**
@@ -114,7 +114,7 @@ class CurrentRoute {
      * @returns true if all points of route have been visited
      */
     isTraverseDone() {
-        let currentIds = ROUTE_MANAGER.readActiveRoute();
+        let currentIds = ROUTE_MANAGER.computeActiveRoute();
         let visitedIds = VISITED_POINTS.getAllPoints();
         return currentIds.every(val => visitedIds.includes(val));
     }
@@ -134,7 +134,7 @@ class CurrentRoute {
      */
     isSorted() {
         try {
-            return window.localStorage.getItem(ROUTE_SORTED_KEY) === "true";
+            return window.localStorage.getItem(ROUTE_SORTED_KEY) === "true" || ROUTE_MANAGER.readPlannedRoute().length <= 1;
         } catch (error) {
             console.error("Cannot read sorted status.", error);
             // Sorting is disabled by default.
@@ -152,7 +152,7 @@ class CurrentRoute {
 
     isOffTrackLonger(timeLimit = FIVE_MINUTES) {
         try {
-            return JSON.parse(window.localStorage.getItem(ROUTE_TRACKING_AGE_KEY)) > timeLimit;
+            return Date.now() - window.localStorage.getItem(ROUTE_TRACKING_AGE_KEY) > timeLimit;
         } catch (error) {
             console.error("Cannot read off route time.", error);
             return true;
@@ -197,6 +197,9 @@ class CurrentRoute {
         return ROUTE_MANAGER.readPlannedRoute();
     }
 
+    /**
+     * @returns route points without visited. 
+     */
     getUnvisitedRoutePoints() {
         return ROUTE_MANAGER.getUnvisitedPoints();
     }
@@ -306,6 +309,14 @@ class CurrentRoute {
         }
         return 0;
     }
+
+
+    /**
+     * Move all visited points to the back of the route.
+     */
+    shiftVisitedToBack() {
+        ROUTE_MANAGER.shiftVisitedToBack();
+    }
     
     #clearSorted() {
         try {
@@ -372,6 +383,7 @@ class CurrentRoute {
 
 class RouteManager {
 
+    // Save planned route to local storage.
     writePlannedRoute(ids) {
         try {
             window.localStorage.setItem(ROUTE_PLANNED_IDS_KEY, JSON.stringify(ids));
@@ -381,6 +393,7 @@ class RouteManager {
         }
     }
 
+    // Get planned route from local storage.
     readPlannedRoute() {
         let lastModified = window.localStorage.getItem(ROUTE_PLANNED_IDS_AGE_KEY);
         if(lastModified == null || Date.now() - lastModified > MILLIS_IN_DAY) {
@@ -405,6 +418,19 @@ class RouteManager {
         }
     }
 
+    shiftVisitedToBack() {
+        let routeBeginning = this.getUnvisitedPoints();
+        let allPoints = this.readPlannedRoute();
+        let visited = VISITED_POINTS.getAllPoints();
+        for (let v of visited) {
+            if (allPoints.includes(v)) {
+                routeBeginning.push(v);
+            }
+        }
+        this.writePlannedRoute(routeBeginning);
+    }
+
+    // Add given point ids to the planned route at the end of the route.
     appendPlannedRoute(ids) {
         let changed = false;
         let currentIds = this.readPlannedRoute();
@@ -420,6 +446,7 @@ class RouteManager {
         return changed;
     }
 
+    // Add given point ids to the planned route at the beginning of the route.
     appendLeftPlannedRoute(ids) {
         let changed = false;
         let currentIds = this.readPlannedRoute();
@@ -435,6 +462,7 @@ class RouteManager {
         return changed;
     }
 
+    // Remove id from route points.
     remove(id) {
         let ids = this.readPlannedRoute();
         let index = ids.indexOf(id);
@@ -446,12 +474,14 @@ class RouteManager {
         return -1;
     }
 
+    // Get ids of route points that form a continuous sequence. There can be visited points
+    // at the beginning of the sequence, but not in the middle.
     computeActiveRoute(ids = null) {              // TODO error handlings
         if (ids == null) {
             ids = this.readPlannedRoute();  
         }
         let visited = VISITED_POINTS.getAllPoints();
-        console.log(ids, visited);
+        //console.log(ids, visited);
         let activeIds = [];
         let index = 0;
         // Visited points from begining of the route should be displayed for history purposes
@@ -459,23 +489,25 @@ class RouteManager {
             activeIds.push(ids[index]);
             ++index;
         }
-        console.log(activeIds, index);
+        //console.log(activeIds, index);
         // After first unvisited point, add only unvisited to route, visited are by default not part of navigation
         for (; index < ids.length; ++index) {
             if (!visited.includes(ids[index])) {
                 activeIds.push(ids[index]);
-                console.log(activeIds);
+                //console.log(activeIds);
             }
         } 
         return activeIds;
     }
 
+    // Get ids of point on route that are not visited.
     getUnvisitedPoints() {
         let visitedIds = VISITED_POINTS.getAllPoints();
         let ids = this.readPlannedRoute();
         return ids.filter(x => !visitedIds.includes(x));
     }
 
+    // True if route contains a visited point (initial or somewhere in the middle).
     hasVisitedPoints() {
         let ids = this.readPlannedRoute();
         let activeIds = this.computeActiveRoute(ids);
@@ -485,8 +517,9 @@ class RouteManager {
         return !(ids.length == activeIds.length) || VISITED_POINTS.isVisited(activeIds[0]);
     }
 
+    // Number of points in route.
     getPlannedRouteSize() {
-        return this.readPlannedRoute.length;
+        return this.readPlannedRoute().length;
     }
 
 }

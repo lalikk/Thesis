@@ -48,7 +48,7 @@ public class DistancesRestController {
         }
     }
 
-    @PostMapping(value = ApiUri.ROOT_URI_DISTANCES, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = ApiUri.ROOT_URI_DISTANCES_AUTH, produces = MediaType.APPLICATION_JSON_VALUE)
     //@RolesAllowed({Role.FULL, Role.LIMITED})
     public ResponseEntity<DistancesDto> create(@RequestBody DistancesCreateDto distancesCreateDto) {
         log.info("create({})", distancesCreateDto);
@@ -61,7 +61,7 @@ public class DistancesRestController {
         }
     }
 
-    @PutMapping(value = ApiUri.ROOT_URI_DISTANCES, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = ApiUri.ROOT_URI_DISTANCES_AUTH, produces = MediaType.APPLICATION_JSON_VALUE)
     //@RolesAllowed({Role.FULL, Role.LIMITED})
     public ResponseEntity<DistancesDto> update(@RequestBody DistancesDto distancesDto) {
         log.info("update({})", distancesDto);
@@ -75,7 +75,7 @@ public class DistancesRestController {
         }
     }
 
-    @DeleteMapping(value = ApiUri.ROOT_URI_DISTANCE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = ApiUri.ROOT_URI_DISTANCE_AUTH, produces = MediaType.APPLICATION_JSON_VALUE)
     @RolesAllowed({Role.FULL, Role.LIMITED})
     public ResponseEntity<Void> removeById(@PathVariable("id") Long id) {
         log.info("removeById({})", id);
